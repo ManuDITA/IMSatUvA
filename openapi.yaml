@@ -8,7 +8,7 @@ paths:
   /stock:
     get:    
       tags: 
-        - Item Management
+        - Stock Management
       summary: Get all stock items
       operationId: getAllStock
       responses:
@@ -20,7 +20,7 @@ paths:
   /stock/{id}:
     get:
       tags: 
-        - Item Management
+        - Stock Management
       summary: Get a stock item by ID
       operationId: getStockItem
       parameters:
@@ -36,7 +36,7 @@ paths:
           description: No existing stock item
     put:
       tags: 
-        - Item Management
+        - Stock Management
       summary: Update a stock item
       operationId: updateStockItem
       parameters:
@@ -58,7 +58,7 @@ paths:
           description: Forbidden
     delete:
       tags: 
-        - Item Management
+        - Stock Management
       summary: Remove a stock item
       operationId: removeStockItem
       parameters:
@@ -78,7 +78,7 @@ paths:
   /stock/move:
     post:
       tags: 
-        - Item Management
+        - Stock Management
       summary: Move a stock item between stores
       operationId: moveStockItem
       requestBody:
@@ -98,7 +98,7 @@ paths:
         '200':
           description: Item moved successfully
 
-  /store:
+  /stores:
     get:
       tags: 
         - Store Management
@@ -251,68 +251,42 @@ paths:
         '200':
           description: Item reserved
 
-
-  /inventory:
-    get:
-      tags:
-        - developers
-      summary: searches inventory
-      operationId: searchInventory
-      description: |
-        By passing in the appropriate options, you can search for
-        available inventory in the system
-      parameters:
-        - in: query
-          name: searchString
-          description: pass an optional search string for looking up inventory
-          required: false
-          schema:
-            type: string
-        - in: query
-          name: skip
-          description: number of records to skip for pagination
-          schema:
-            type: integer
-            format: int32
-            minimum: 0
-        - in: query
-          name: limit
-          description: maximum number of records to return
-          schema:
-            type: integer
-            format: int32
-            minimum: 0
-            maximum: 50
-      responses:
-        '200':
-          description: search results matching criteria
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/InventoryItem'
-        '400':
-          description: bad input parameter
+  /admin:
     post:
       tags:
-        - admins
-      summary: adds an inventory item
-      operationId: addInventory
-      description: Adds an item to the system
-      responses:
-        '201':
-          description: item created
-        '400':
-          description: 'invalid input, object invalid'
-        '409':
-          description: an existing item already exists
+        - Admin Management
+      summary: Create new admin account
+      operationId: createAdmin
       requestBody:
+        required: true
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/InventoryItem'
-        description: Inventory item to add
+              type: object
+              properties:
+                username:
+                  type: string
+                password:
+                  type: string
+      responses:
+        '201':
+          description: Admin account created successfully
+
+  /admin/{username}:
+    delete:
+      tags:
+        - Admin Management
+      summary: Remove admin or user account
+      operationId: removeAdmin
+      parameters:
+        - name: username
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Admin account removed successfully
 components:
   schemas:
     InventoryItem:
@@ -357,3 +331,18 @@ components:
           type: string
           example: 408-867-5309
       type: object
+    Cart:
+      required:
+        - owner
+        - total Price
+        - purchased items
+      properties:
+        owner:
+          type: string
+        total Price:
+          type: integer
+        purchased items: 
+          type: array
+          items:
+            $ref: '#/components/schemas/InventoryItem'
+          
