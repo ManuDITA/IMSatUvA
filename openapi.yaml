@@ -1,0 +1,359 @@
+openapi: 3.0.0
+info:
+  title: Store and Stock Management API
+  description: API for managing stores, stock, and admin users
+  version: 1.0.0
+
+paths:
+  /stock:
+    get:    
+      tags: 
+        - Item Management
+      summary: Get all stock items
+      operationId: getAllStock
+      responses:
+        '200':
+          description: A list of stock items
+        '404':
+          description: No existing stock
+
+  /stock/{id}:
+    get:
+      tags: 
+        - Item Management
+      summary: Get a stock item by ID
+      operationId: getStockItem
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Stock item details
+        '404':
+          description: No existing stock item
+    put:
+      tags: 
+        - Item Management
+      summary: Update a stock item
+      operationId: updateStockItem
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+      responses:
+        '200':
+          description: Updated successfully
+        '403':
+          description: Forbidden
+    delete:
+      tags: 
+        - Item Management
+      summary: Remove a stock item
+      operationId: removeStockItem
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Removed successfully
+        '403':
+          description: Forbidden
+        '404':
+          description: No existing stock
+
+  /stock/move:
+    post:
+      tags: 
+        - Item Management
+      summary: Move a stock item between stores
+      operationId: moveStockItem
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                itemId:
+                  type: string
+                fromStore:
+                  type: string
+                toStore:
+                  type: string
+      responses:
+        '200':
+          description: Item moved successfully
+
+  /store:
+    get:
+      tags: 
+        - Store Management
+      summary: Get all stores
+      operationId: getAllStores
+      responses:
+        '200':
+          description: List of available stores
+
+  /stores/{id}:
+    get:
+      tags: 
+        - Store Management
+      summary: Get a store by ID
+      operationId: getStoreById
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Store details
+    put:
+      tags: 
+        - Store Management
+      summary: Update a store
+      operationId: updateStore
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+      responses:
+        '200':
+          description: Store updated
+    delete:
+      tags: 
+        - Store Management
+      summary: Remove a store
+      operationId: removeStore
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Store removed
+
+  /stock/available:
+    get:      
+      tags: 
+        - Store Management
+      summary: Get only available stock items
+      operationId: getAvailableStock
+      responses:
+        '200':
+          description: List of available stock items
+
+  /cart:
+    post:
+      tags: 
+        - User Cart Management
+      summary: Add item to user cart
+      operationId: addItemToCart
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                userId:
+                  type: string
+                itemId:
+                  type: string
+                quantity:
+                  type: integer
+      responses:
+        '200':
+          description: Item added to cart
+
+  /cart/{id}:
+    delete:
+      tags: 
+        - User Cart Management
+      summary: Remove item from user cart
+      operationId: removeItemFromCart
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Item removed from cart
+    put:
+      tags: 
+        - User Cart Management
+      summary: Update item quantity in user cart
+      operationId: updateCartItemQuantity
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                quantity:
+                  type: integer
+      responses:
+        '200':
+          description: Cart item updated
+
+  /cart/reserve:
+    post:
+      tags: 
+        - User Cart Management
+      summary: Reserve an item in the cart
+      operationId: reserveCartItem
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                userId:
+                  type: string
+                itemId:
+                  type: string
+      responses:
+        '200':
+          description: Item reserved
+
+
+  /inventory:
+    get:
+      tags:
+        - developers
+      summary: searches inventory
+      operationId: searchInventory
+      description: |
+        By passing in the appropriate options, you can search for
+        available inventory in the system
+      parameters:
+        - in: query
+          name: searchString
+          description: pass an optional search string for looking up inventory
+          required: false
+          schema:
+            type: string
+        - in: query
+          name: skip
+          description: number of records to skip for pagination
+          schema:
+            type: integer
+            format: int32
+            minimum: 0
+        - in: query
+          name: limit
+          description: maximum number of records to return
+          schema:
+            type: integer
+            format: int32
+            minimum: 0
+            maximum: 50
+      responses:
+        '200':
+          description: search results matching criteria
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/InventoryItem'
+        '400':
+          description: bad input parameter
+    post:
+      tags:
+        - admins
+      summary: adds an inventory item
+      operationId: addInventory
+      description: Adds an item to the system
+      responses:
+        '201':
+          description: item created
+        '400':
+          description: 'invalid input, object invalid'
+        '409':
+          description: an existing item already exists
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/InventoryItem'
+        description: Inventory item to add
+components:
+  schemas:
+    InventoryItem:
+      type: object
+      required:
+        - id
+        - name
+        - manufacturer
+        - releaseDate
+        - storedIn
+      properties:
+        id:
+          type: string
+          format: uuid
+          example: d290f1ee-6c54-4b01-90e6-d701748f0851
+        name:
+          type: string
+          example: Watch
+        releaseDate:
+          type: string
+          format: date-time
+          example: '2016-08-29T09:12:33.001Z'
+        manufacturer:
+          type: string
+          example: Rolex
+        storedIn:
+          $ref: "#/components/schemas/Store"
+    Store:
+      required:
+        - name
+        - address
+        - phone
+      properties:
+        name:
+          type: string
+          example: ACME Corporation
+        address:
+          type: string
+          format: address
+          example: 'Via Roma'
+        phone:
+          type: string
+          example: 408-867-5309
+      type: object
