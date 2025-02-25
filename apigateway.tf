@@ -11,14 +11,14 @@ resource "aws_api_gateway_rest_api" "ImsApi" {
 }
 
 #root resource to catch all requests so it would always be /inventoryManagement/
-resource "aws_ImsApi_resource" "inventoryManagement" {
+resource "aws_api_gateway_resource" "inventoryManagement" {
     rest_api_id = aws_api_gateway_rest_api.ImsApi.id
     parent_id = aws_api_gateway_rest_api.ImsApi.root_resource_id
     path_part = "{inventoryManagement+}" #catch-all path for the API
 }
 
 #method for the api resource which means the method will respond to ANY requests
-resource "aws_ImsApi_method" "inventoryManagement_method" {
+resource "aws_api_gateway_method" "inventoryManagement_method" {
     rest_api_id = aws_api_gateway_rest_api.ImsApi.id
     resource_id = aws_api_gateway_resource.inventoryManagement.id
     http_method = "ANY"
@@ -26,7 +26,7 @@ resource "aws_ImsApi_method" "inventoryManagement_method" {
 }
 
 
-resource "aws_ImsApi_integration" "hello_lambda_integration" {
+resource "aws_api_gateway_integration" "hello_lambda_integration" {
   # Integrate root proxy with the Lambda function
   rest_api_id             = aws_api_gateway_rest_api.ImsApi.id
   resource_id             = aws_api_gateway_method.inventoryManagement.id
