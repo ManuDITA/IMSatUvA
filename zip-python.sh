@@ -4,6 +4,9 @@ PARENT_DIR="./lambdas"
 
 
 for LAMBDA_DIR in "$PARENT_DIR"/*/; do
+    # Create the requirements.txt file
+    pip freeze > "${LAMBDA_DIR}/requirements.txt"
+    echo "requirements.txt created in $LAMBDA_DIR"
     # Get the function name from the directory name
     FUNCTION_NAME="$(basename "$LAMBDA_DIR")"
     ZIP_FILE="${LAMBDA_DIR}/${FUNCTION_NAME}.zip"
