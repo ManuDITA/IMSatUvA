@@ -29,7 +29,7 @@ resource "aws_api_gateway_method" "inventoryManagement_method" {
 resource "aws_api_gateway_integration" "hello_lambda_integration" {
   # Integrate root proxy with the Lambda function
   rest_api_id             = aws_api_gateway_rest_api.ImsApi.id
-  resource_id             = aws_api_gateway_method.inventoryManagement.id
+  resource_id             = aws_api_gateway_resource.inventoryManagement.id
   http_method             = aws_api_gateway_method.inventoryManagement_method.http_method
   integration_http_method = "POST"
   type                    = "AWS_PROXY" # Direct integration with Lambda
