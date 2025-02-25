@@ -14,7 +14,7 @@ for LAMBDA_DIR in "$PARENT_DIR"/*/; do
     fi
 
     # Create a new zip file containing all Python files in the directory
-    zip "$ZIP_FILE" "${LAMBDA_DIR}"*.py
+    zip -r "$ZIP_FILE" "${LAMBDA_DIR}"*.py
 
     echo "Lambda function '${FUNCTION_NAME}' zipped to: $ZIP_FILE"
 done
