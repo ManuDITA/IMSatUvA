@@ -19,7 +19,7 @@ module "hello-world"{
             action        = "lambda:InvokeFunction"
             function_name = module.hello-world.lambda_function_arn
             principal     = "apigateway.amazonaws.com"
-            source_arn    = "${aws_api_gateway_rest_api.api_gateway.execution_arn}/*/*" # Allow access from any method and path
+            source_arn    = "${aws_api_gateway_rest_api.ImsApi.execution_arn}/*/*" # Allow access from any method and path
         }
     }
 }
