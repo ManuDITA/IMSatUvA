@@ -30,7 +30,7 @@ jobs:
 
       - name: Build Lambda ZIPs
         run: |
-          chmod +x build_lambda.sh
+          chmod +x zip-python.sh
           ./zip-python.sh
 
       - name: Configure AWS credentials from AWS account
