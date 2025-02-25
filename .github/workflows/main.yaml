@@ -27,6 +27,11 @@ jobs:
       - name: Git checkout
         uses: actions/checkout@v3
 
+      - name: Build Lambda ZIPs
+        run: |
+          chmod +x build_lambda.sh
+          ./build_lambda.sh
+          
       - name: Configure AWS credentials from AWS account
         uses: aws-actions/configure-aws-credentials@v1
         with:
@@ -38,7 +43,7 @@ jobs:
         uses: hashicorp/setup-terraform@v3.1.2
         with:
           terraform_version: " 1.2.5"
-
+      
       - name: Terraform fmt
         id: fmt
         run: terraform fmt -check
