@@ -8,7 +8,7 @@ module "hello-world"{
     runtime       = "python3.11"
     architectures = ["arm64"]  
     timeout = 120
-    source_path = "${path.module}/../lambda/hello-world/hello-world.zip"
+    source_path = "${path.module}/../lambdas/hello-world/hello-world.zip"
     attach_cloudwatch_logs_policy = true
     cloudwatch_logs_retention_in_days = 14
 

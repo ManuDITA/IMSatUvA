@@ -1,6 +1,6 @@
 #!/bin/bash
 
-PARENT_DIR="./lambda"
+PARENT_DIR="./lambdas"
 
 
 for LAMBDA_DIR in "$PARENT_DIR"/*/; do
