@@ -187,6 +187,9 @@ paths:
     delete:
       tags: 
         - Store Management
+      security:
+        - bearerAuthUserAdmin: []
+      
       summary: Remove a store
       operationId: removeStore
       parameters:
@@ -319,7 +322,36 @@ paths:
           description: Admin account created successfully
         '401':
           $ref: '#/components/responses/UnauthorizedError'
-          
+
+  /admin/change-password:
+    put:
+      tags:
+        - Admin Management
+      security:
+        - bearerAuthAdmin: []
+      summary: Change admin password
+      operationId: changeAdminPassword
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                username:
+                  type: string
+                oldPassword:
+                  type: string
+                newPassword:
+                  type: string
+      responses:
+        '200':
+          description: Password changed successfully
+        '400':
+          description: Invalid request data
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+  
   /admin/{username}:
     delete:
       tags:
