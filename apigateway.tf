@@ -34,6 +34,8 @@ resource "aws_api_gateway_integration" "hello_lambda_integration" {
   integration_http_method = "POST"
   type                    = "AWS_PROXY" # Direct integration with Lambda
   uri                     = module.hello_world.lambda_function_invoke_arn
+
+  depends_on = [module.hello_world]
 }
 
 resource "aws_api_gateway_method_response" "hello_method_response" {
@@ -58,6 +60,7 @@ resource "aws_api_gateway_integration_response" "hello_lambda_integration_respon
   response_parameters = {
     "method.response.header.Content-Type" = "'application/json'" # Ensure the content type is set
   }
+
   depends_on = [module.hello_world]
 }
 
