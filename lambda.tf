@@ -5,7 +5,7 @@ module "hello_world" {
   function_name                     = "hello_world"
   description                       = "Testing if the API gateway works as a first trial to set up a lambda in an API gateway"
   handler                           = "hello_world.lambda_handler"
-  runtime                           = "python3.11"
+  runtime                           = "python3.9"
   architectures                     = ["arm64"]
   timeout                           = 120
   source_path                       = "${path.module}/lambdas/hello_world/"
