@@ -36,18 +36,6 @@ resource "aws_api_gateway_integration" "hello_lambda_integration" {
   uri                     = module.hello-world.lambda_function_invoke_arn
 }
 
-resource "aws_api_gateway_integration_response" "hello_lambda_integration_response" {
-  rest_api_id = aws_api_gateway_rest_api.ImsApi.id
-  resource_id = aws_api_gateway_resource.inventoryManagement.id
-  http_method = aws_api_gateway_method.inventoryManagement_method.http_method
-  status_code = "200"
-
-  response_parameters = {
-    "method.response.header.Content-Type" = "integration.response.header.Content-Type"
-  }
-}
-
-
 resource "aws_api_gateway_deployment" "ims_api_deployment" {
   rest_api_id = aws_api_gateway_rest_api.ImsApi.id
 
