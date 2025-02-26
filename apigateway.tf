@@ -43,7 +43,7 @@ resource "aws_api_gateway_deployment" "ims_api_deployment" {
     redeployment = sha1(jsonencode(aws_api_gateway_resource.inventoryManagement))
   }
 
-  depends_on = [ aws_api_gateway_integration.hello_lambda_integration ]
+  depends_on = [aws_api_gateway_integration.hello_lambda_integration]
 
   lifecycle {
     create_before_destroy = true
