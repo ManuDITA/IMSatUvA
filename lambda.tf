@@ -1,5 +1,5 @@
 
-module "hello-world" {
+module "hello_world" {
   source                            = "terraform-aws-modules/lambda/aws"
   version                           = "7.20.0"
   function_name                     = "hello_world"

@@ -33,7 +33,7 @@ resource "aws_api_gateway_integration" "hello_lambda_integration" {
   http_method             = aws_api_gateway_method.hello_method.http_method
   integration_http_method = "GET"
   type                    = "AWS_PROXY" # Direct integration with Lambda
-  uri                     = module.hello-world.lambda_function_invoke_arn
+  uri                     = module.hello_world.lambda_function_invoke_arn
 }
 
 resource "aws_api_gateway_deployment" "ims_api_deployment" {
