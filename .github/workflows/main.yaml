@@ -3,7 +3,7 @@ on:
   push:
     branches:
       - main
-      - dev
+      - feature
   pull_request:
   workflow_dispatch : #allows manual trigger with Git UI
 
@@ -101,16 +101,3 @@ jobs:
       - name: Terraform Plan Status
         if: steps.plan.outcome == 'failure'
         run: exit 1
-
-  manual-apply:
-    needs: deploy
-    runs-on: ubuntu-latest
-    environment: 
-      name: ${{ github.ref == 'refs/heads/main' && 'prod' || 'dev' }}  # Use 'dev' for feature branches
-    steps:
-      - name: Manual Approval Required
-        run: echo "Terraform apply needs to be manually approved in GitHub Actions."
-
-      - name: Terraform Apply (Manual)
-        if: github.event_name == 'workflow_dispatch'
-        run: terraform apply -auto-approve -input=false

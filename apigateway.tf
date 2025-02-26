@@ -66,5 +66,5 @@ resource "aws_api_gateway_stage" "ims_api_stage_deployment" {
 
 
   stage_name = var.environment
-  # ... other configuration ...
+
 }
