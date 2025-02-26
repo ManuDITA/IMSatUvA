@@ -30,10 +30,34 @@ resource "aws_api_gateway_integration" "hello_lambda_integration" {
   rest_api_id             = aws_api_gateway_rest_api.ImsApi.id
   resource_id             = aws_api_gateway_resource.hello_resource.id
   http_method             = aws_api_gateway_method.hello_method.http_method
+  
   integration_http_method = "POST"
   type                    = "AWS_PROXY" # Direct integration with Lambda
   uri                     = module.hello_world.lambda_function_invoke_arn
 }
+
+resource "aws_api_gateway_method_response" "hello_method_response" {
+  rest_api_id = aws_api_gateway_rest_api.ImsApi.id
+  resource_id = aws_api_gateway_resource.hello_resource.id
+  http_method = aws_api_gateway_method.hello_method.http_method
+  status_code = "200"  # Status code indicating a successful response
+
+  response_parameters = {
+    "method.response.header.Content-Type" = true  # Indicates that the response will include this header
+  }
+}
+
+resource "aws_api_gateway_integration_response" "hello_lambda_integration_response" {
+  rest_api_id = aws_api_gateway_rest_api.ImsApi.id
+  resource_id = aws_api_gateway_resource.hello_resource.id
+  http_method = aws_api_gateway_method.hello_method.http_method
+  status_code = aws_api_gateway_method_response.hello_method_response.status_code
+
+  response_parameters = {
+    "method.response.header.Content-Type" = "'application/json'"  # Ensure the content type is set
+  }
+}
+
 
 resource "aws_api_gateway_deployment" "ims_api_deployment" {
   rest_api_id = aws_api_gateway_rest_api.ImsApi.id
