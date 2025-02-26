@@ -1,14 +1,14 @@
 
 module "hello_world" {
-  source                            = "terraform-aws-modules/lambda/aws"
-  version                           = "7.20.0"
-  function_name                     = "hello_world"
-  description                       = "Testing if the API gateway works as a first trial to set up a lambda in an API gateway"
-  handler                           = "hello_world.lambda_handler"
-  runtime                           = "python3.9"
-  architectures                     = ["arm64"]
-  timeout                           = 120
-  source_path                       = "${path.module}/lambdas/hello_world/"
+  source        = "terraform-aws-modules/lambda/aws"
+  version       = "7.20.0"
+  function_name = "hello_world"
+  description   = "Testing if the API gateway works as a first trial to set up a lambda in an API gateway"
+  handler       = "hello_world.lambda_handler"
+  runtime       = "python3.9"
+  architectures = ["arm64"]
+  timeout       = 120
+  source_path   = "${path.module}/lambdas/hello_world/"
 
   #specifies that api_gateway can invoke the lambda
   allowed_triggers = {
