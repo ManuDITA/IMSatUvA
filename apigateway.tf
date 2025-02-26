@@ -51,7 +51,7 @@ resource "aws_api_gateway_integration_response" "hello_lambda_integration_respon
   rest_api_id = aws_api_gateway_rest_api.ImsApi.id
   resource_id = aws_api_gateway_resource.hello_resource.id
   http_method = aws_api_gateway_method.hello_method.http_method
-  status_code = aws_api_gateway_method_response.hello_method_response.status_code
+  status_code = "200"
 
   response_parameters = {
     "method.response.header.Content-Type" = "'application/json'" # Ensure the content type is set
