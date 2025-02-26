@@ -20,7 +20,7 @@ resource "aws_api_gateway_resource" "hello_resource" {
 #method for the api resource which means the method will respond to ANY requests
 resource "aws_api_gateway_method" "hell_method" {
   rest_api_id   = aws_api_gateway_rest_api.ImsApi.id
-  resource_id   = aws_api_gateway_resource.inventoryManagement.id
+  resource_id   = aws_api_gateway_resource.hello_resource.id
   http_method   = "GET"
   authorization = "NONE"
 }
@@ -40,7 +40,7 @@ resource "aws_api_gateway_deployment" "ims_api_deployment" {
   rest_api_id = aws_api_gateway_rest_api.ImsApi.id
 
   triggers = {
-    redeployment = sha1(jsonencode(aws_api_gateway_resource.inventoryManagement))
+    redeployment = sha1(jsonencode(aws_api_gateway_resource.hello_resource))
   }
 
   depends_on = [aws_api_gateway_integration.hello_lambda_integration]
