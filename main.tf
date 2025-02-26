@@ -10,6 +10,7 @@ terraform {
     bucket = "oicd-tfstates-bucket"
     key    = "terraform.tfstate"
     region = "eu-west-3"
+    dynamodb_table = "terraform-state-lock-dynamodb"
 
   }
 }
