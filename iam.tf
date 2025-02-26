@@ -13,8 +13,7 @@ resource "aws_iam_role" "lambda_exec_role" {
 }
 
 #attach predefined policy tp previously created role
-resource "aws_iam_policy_attachment" "lambda_policy_attachment" {
-  name       = "lambda-policy-attachment"
-  roles      = [aws_iam_role.lambda_exec_role.name]
+resource "aws_iam_role_policy_attachment" "lambda_policy_attachment" {
+  role       = aws_iam_role.lambda_exec_role.name
   policy_arn = "arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
 }
