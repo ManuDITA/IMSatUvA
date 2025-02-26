@@ -5,6 +5,13 @@ terraform {
       version = "~> 5.0"
     }
   }
+
+  backend "s3" {
+    bucket = "oicd-tfstates-bucket"
+    key    = "terraform.tfstate"
+    region = "eu-west-3"
+
+  }
 }
 
 provider "aws" {
