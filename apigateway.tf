@@ -40,8 +40,8 @@ resource "aws_api_gateway_deployment" "ims_api_deployment" {
   rest_api_id = aws_api_gateway_rest_api.ImsApi.id
 
   triggers = {
-  redeployment = sha1(jsonencode(aws_api_gateway_resource.inventoryManagement))
-}
+    redeployment = sha1(jsonencode(aws_api_gateway_resource.inventoryManagement))
+  }
 
   lifecycle {
     create_before_destroy = true
