@@ -2,7 +2,7 @@
 module "hello-world" {
   source                            = "terraform-aws-modules/lambda/aws"
   version                           = "7.20.0"
-  function_name                     = "hello-world-lambda"
+  function_name                     = "hello-world"
   description                       = "Testing if the API gateway works as a first trial to set up a lambda in an API gateway"
   handler                           = "hello-world.lambda_handler"
   runtime                           = "python3.11"
