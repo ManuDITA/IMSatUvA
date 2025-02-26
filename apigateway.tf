@@ -25,13 +25,12 @@ resource "aws_api_gateway_method" "hello_method" {
   authorization = "NONE"
 }
 
-
 resource "aws_api_gateway_integration" "hello_lambda_integration" {
   # Integrate root proxy with the Lambda function
   rest_api_id             = aws_api_gateway_rest_api.ImsApi.id
   resource_id             = aws_api_gateway_resource.hello_resource.id
   http_method             = aws_api_gateway_method.hello_method.http_method
-  integration_http_method = "GET"
+  integration_http_method = "POST"
   type                    = "AWS_PROXY" # Direct integration with Lambda
   uri                     = module.hello_world.lambda_function_invoke_arn
 }
@@ -55,6 +54,4 @@ resource "aws_api_gateway_stage" "ims_api_stage_deployment" {
   rest_api_id   = aws_api_gateway_rest_api.ImsApi.id
 
   stage_name = "dev"
-
-
 }

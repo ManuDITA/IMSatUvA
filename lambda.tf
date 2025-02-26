@@ -9,7 +9,7 @@ module "hello_world" {
   architectures = ["arm64"]
   timeout       = 120
   source_path   = "${path.module}/lambdas/hello_world/"
-
+  
   #specifies that api_gateway can invoke the lambda
   allowed_triggers = {
     api_gateway = {
