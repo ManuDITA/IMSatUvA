@@ -45,6 +45,8 @@ resource "aws_api_gateway_method_response" "hello_method_response" {
   response_parameters = {
     "method.response.header.Content-Type" = true # Indicates that the response will include this header
   }
+
+  depends_on = [module.hello_world]
 }
 
 resource "aws_api_gateway_integration_response" "hello_lambda_integration_response" {
@@ -56,6 +58,7 @@ resource "aws_api_gateway_integration_response" "hello_lambda_integration_respon
   response_parameters = {
     "method.response.header.Content-Type" = "'application/json'" # Ensure the content type is set
   }
+  depends_on = [module.hello_world]
 }
 
 
