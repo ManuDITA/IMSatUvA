@@ -2,27 +2,27 @@
 #source : https://atsss.medium.com/small-lambda-function-with-python-and-terraform-f3100015f970 
 
 resource "aws_api_gateway_rest_api" "ImsApi" {
-    name = "Inventory-management-rest-api"
-    description = "Api Gateway Rest API for Inventory Management prototype"
+  name        = "Inventory-management-rest-api"
+  description = "Api Gateway Rest API for Inventory Management prototype"
 
-    endpoint_configuration {
-      types = ["REGIONAL"]
-    }
+  endpoint_configuration {
+    types = ["REGIONAL"]
+  }
 }
 
 #root resource to catch all requests so it would always be /inventoryManagement/
 resource "aws_api_gateway_resource" "inventoryManagement" {
-    rest_api_id = aws_api_gateway_rest_api.ImsApi.id
-    parent_id = aws_api_gateway_rest_api.ImsApi.root_resource_id
-    path_part = "{inventoryManagement+}" #catch-all path for the API
+  rest_api_id = aws_api_gateway_rest_api.ImsApi.id
+  parent_id   = aws_api_gateway_rest_api.ImsApi.root_resource_id
+  path_part   = "{inventoryManagement+}" #catch-all path for the API
 }
 
 #method for the api resource which means the method will respond to ANY requests
 resource "aws_api_gateway_method" "inventoryManagement_method" {
-    rest_api_id = aws_api_gateway_rest_api.ImsApi.id
-    resource_id = aws_api_gateway_resource.inventoryManagement.id
-    http_method = "ANY"
-    authorization = "NONE"
+  rest_api_id   = aws_api_gateway_rest_api.ImsApi.id
+  resource_id   = aws_api_gateway_resource.inventoryManagement.id
+  http_method   = "ANY"
+  authorization = "NONE"
 }
 
 
@@ -50,7 +50,7 @@ resource "aws_api_gateway_integration_response" "hello_lambda_integration_respon
 
 resource "aws_api_gateway_deployment" "ims_api_deployment" {
   rest_api_id = aws_api_gateway_rest_api.ImsApi.id
-  
+
   triggers = {
     redeployment = sha1(jsonencode(aws_api_gateway_rest_api.ImsApi.body))
   }
@@ -62,8 +62,8 @@ resource "aws_api_gateway_deployment" "ims_api_deployment" {
 
 resource "aws_api_gateway_stage" "ims_api_stage_deployment" {
   deployment_id = aws_api_gateway_deployment.ims_api_deployment.id
-  rest_api_id = aws_api_gateway_rest_api.ImsApi.id
- 
+  rest_api_id   = aws_api_gateway_rest_api.ImsApi.id
+
 
   stage_name = var.environment
   # ... other configuration ...
