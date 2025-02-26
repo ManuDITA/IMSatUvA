@@ -9,7 +9,6 @@ module "hello_world" {
   architectures                     = ["arm64"]
   timeout                           = 120
   source_path                       = "${path.module}/lambdas/hello_world/"
-  cloudwatch_logs_retention_in_days = 0
 
   #specifies that api_gateway can invoke the lambda
   allowed_triggers = {
