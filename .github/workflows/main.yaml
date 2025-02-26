@@ -28,11 +28,6 @@ jobs:
       - name: Git checkout
         uses: actions/checkout@v3
         
-      - name: Build Lambda ZIPs
-        run: |
-          chmod +x zip-python.sh
-          ./zip-python.sh
-
       - name: Configure AWS credentials from AWS account
         uses: aws-actions/configure-aws-credentials@v1
         with:

@@ -8,7 +8,7 @@ module "hello-world"{
     runtime       = "python3.11"
     architectures = ["arm64"]  
     timeout = 120
-    source_path = "${path.module}/lambdas/hello-world/hello-world.zip"
+    source_path = "${path.module}/lambdas/hello-world/hello-world"
     cloudwatch_logs_retention_in_days = 14
 
     #specifies that api_gateway can invoke the lambda

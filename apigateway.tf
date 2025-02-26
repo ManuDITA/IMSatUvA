@@ -31,7 +31,40 @@ resource "aws_api_gateway_integration" "hello_lambda_integration" {
   rest_api_id             = aws_api_gateway_rest_api.ImsApi.id
   resource_id             = aws_api_gateway_resource.inventoryManagement.id
   http_method             = aws_api_gateway_method.inventoryManagement_method.http_method
-  integration_http_method = "POST"
+  integration_http_method = "GET"
   type                    = "AWS_PROXY" # Direct integration with Lambda
   uri                     = module.hello-world.lambda_function_invoke_arn
+}
+
+resource "aws_api_gateway_integration_response" "hello_lambda_integration_response" {
+  rest_api_id = aws_api_gateway_rest_api.ImsApi.id
+  resource_id = aws_api_gateway_resource.inventoryManagement.id
+  http_method = aws_api_gateway_method.inventoryManagement_method.http_method
+  status_code = "200"
+
+  response_parameters = {
+    "method.response.header.Content-Type" = "integration.response.header.Content-Type"
+  }
+}
+
+
+resource "aws_api_gateway_deployment" "ims_api_deployment" {
+  rest_api_id = aws_api_gateway_rest_api.ImsApi.id
+  
+  triggers = {
+    redeployment = sha1(jsonencode(aws_api_gateway_rest_api.ImsApi.body))
+  }
+
+  lifecycle {
+    create_before_destroy = true
+  }
+}
+
+resource "aws_api_gateway_stage" "ims_api_stage_deployment" {
+  deployment_id = aws_api_gateway_deployment.ims_api_deployment.id
+  rest_api_id = aws_api_gateway_rest_api.ImsApi.id
+ 
+
+  stage_name = var.environment
+  # ... other configuration ...
 }
