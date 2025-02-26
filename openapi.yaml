@@ -4,16 +4,34 @@ info:
   description: API for managing stores, stock, and admin users
   version: 1.0.0
 
+servers:
+  - url: https://{env}.example.com/{version}
+    variables:
+      env:
+        default: dev    
+        enum:
+          - prod         
+          - dev     
+          - testing
+      version:
+        default: v1
+
 paths:
   /stock:
-    get:    
+    get:
       tags: 
-        - Stock Management
+        - Stock Management      
       summary: Get all stock items
       operationId: getAllStock
       responses:
         '200':
           description: A list of stock items
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/InventoryItem"
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
         '404':
           description: No existing stock
 
@@ -37,6 +55,8 @@ paths:
     put:
       tags: 
         - Stock Management
+      security:
+        - bearerAuth: []
       summary: Update a stock item
       operationId: updateStockItem
       parameters:
@@ -59,6 +79,8 @@ paths:
     delete:
       tags: 
         - Stock Management
+      security:
+        - bearerAuth: []
       summary: Remove a stock item
       operationId: removeStockItem
       parameters:
@@ -79,6 +101,8 @@ paths:
     post:
       tags: 
         - Stock Management
+      security:
+        - bearerAuth: []
       summary: Move a stock item between stores
       operationId: moveStockItem
       requestBody:
@@ -287,6 +311,7 @@ paths:
       responses:
         '200':
           description: Admin account removed successfully
+
 components:
   schemas:
     InventoryItem:
@@ -345,4 +370,11 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/InventoryItem'
-          
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+  responses:
+    UnauthorizedError:
+      description: Access token is missing or invalid
