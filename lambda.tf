@@ -11,14 +11,11 @@ module "hello_world" {
   source_path   = "${path.module}/lambdas/hello_world/"
   publish       = true
 
-  #specifies that api_gateway can invoke the lambda
+  # Allow the API Gateway to invoke the Lambda functions
   allowed_triggers = {
-    api_gateway = {
-      statement_id  = "AllowAPIGatewayInvoke"
-      action        = "lambda:InvokeFunction"
-      function_name = "hello_world"
-      principal     = "apigateway.amazonaws.com"
-      source_arn    = "${aws_api_gateway_rest_api.ImsApi.execution_arn}/*/*" # Allow access from any method and path
+    APIGatewayAny = {
+      service    = "apigateway"
+      source_arn = "${aws_api_gateway_rest_api.ImsApi.execution_arn}/*/*" # Allow access from any method and path
     }
   }
 }
