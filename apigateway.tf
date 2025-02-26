@@ -14,7 +14,7 @@ resource "aws_api_gateway_rest_api" "ImsApi" {
 resource "aws_api_gateway_resource" "hello_resource" {
   rest_api_id = aws_api_gateway_rest_api.ImsApi.id
   parent_id   = aws_api_gateway_rest_api.ImsApi.root_resource_id
-  path_part   = "hello" #catch-all path for the API
+  path_part   = "hello"
 }
 
 #method for the api resource which means the method will respond to ANY requests

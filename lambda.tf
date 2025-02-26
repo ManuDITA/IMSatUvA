@@ -16,7 +16,7 @@ module "hello-world" {
     api_gateway = {
       statement_id  = "AllowAPIGatewayInvoke"
       action        = "lambda:InvokeFunction"
-      function_name = module.hello-world.lambda_function_arn
+      function_name = "hello-world"
       principal     = "apigateway.amazonaws.com"
       source_arn    = "${aws_api_gateway_rest_api.ImsApi.execution_arn}/*/*" # Allow access from any method and path
     }
