@@ -65,6 +65,6 @@ resource "aws_api_gateway_stage" "ims_api_stage_deployment" {
   rest_api_id   = aws_api_gateway_rest_api.ImsApi.id
 
 
-  stage_name = var.environment
+  stage_name = "dev"
 
 }
