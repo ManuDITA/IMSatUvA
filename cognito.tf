@@ -20,6 +20,13 @@ resource "aws_cognito_user_pool_client" "ims_cognito_client" {
   supported_identity_providers         = ["COGNITO"]
 }
 
+# Configure Cognito client style
+resource "aws_cognito_user_pool_ui_customization" "ims_user_pool_ui" {
+  css          = ".label-customizable {font-weight: 400;}"
+  user_pool_id = aws_cognito_user_pool_domain.ims_cognito_domain.user_pool_id
+  client_id    = aws_cognito_user_pool_client.ims_cognito_client.id
+}
+
 # Configure the Cognito User Groups
 resource "aws_cognito_user_group" "ims_user_group" {
   user_pool_id = aws_cognito_user_pool.ims_user_pool.id
