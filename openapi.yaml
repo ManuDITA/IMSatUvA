@@ -5,6 +5,9 @@ info:
   version: 1.0.0
 
 servers:
+  # Added by API Auto Mocking Plugin
+  - description: SwaggerHub API Auto Mocking
+    url: https://virtserver.swaggerhub.com/uvadevopslab/tutorial/1.0.0
   - url: https://{env}.example.com/{version}
     variables:
       env:
@@ -17,68 +20,34 @@ servers:
         default: v1
 
 paths:
-  /stock:
+  /items:
     get:
       tags: 
-        - Stock Management  
+        - Item Management  
       security:
-        - bearerAuthUser: []
-      summary: Get all stock items
-      operationId: getAllStock
+        - bearerAuthAdmin: []
+      summary: Gets all stock item definitions
+      operationId: getAllItemDefs
       responses:
         '200':
-          description: A list of stock items
+          description: Success
           content:
             application/json:
               schema:
                 type: array
                 items:
-                  $ref: "#/components/schemas/InventoryItem"
+                  $ref: "#/components/schemas/ItemTemplate"
         '401':
-          $ref: '#/components/responses/UnauthorizedError'
-        '404':
-          description: No existing stock
-
-  /stock/{id}:
-    get:
-      tags: 
-        - Stock Management
-      security:
-        - bearerAuthUser: []
-      summary: Get a stock item by ID
-      operationId: getStockItem
-      parameters:
-        - name: id
-          in: path
-          required: true
-          schema:
-            type: string
-            format: uuid
-      responses:
-        '200':
-          description: Stock item details
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/InventoryItem"
-        '401':
-          $ref: '#/components/responses/UnauthorizedError'
-        '404':
-          description: No existing stock item
+          $ref: '#/components/responses/UnauthorizedResponse'
+        '403':
+          $ref: '#/components/responses/ForbiddenResponse'
     put:
       tags: 
-        - Stock Management
+        - Item Management
       security:
-        - bearerAuthUserAdmin: []
-      summary: Update a stock item
-      operationId: updateStockItem
-      parameters:
-        - name: id
-          in: path
-          required: true
-          schema:
-            type: string
-            format: uuid
+        - bearerAuthAdmin: []
+      summary: Adds or updates item definition
+      operationId: updateItemDef
       requestBody:
         required: true
         content:
@@ -87,22 +56,28 @@ paths:
               type: object
       responses:
         '200':
-          description: Updated successfully
+          description: Added/Updated successfully
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/InventoryItem"
+                $ref: "#/components/schemas/ItemTemplate"
+        '401':
+          $ref: '#/components/responses/UnauthorizedResponse'
         '403':
-          description: Forbidden
-    delete:
+          $ref: '#/components/responses/ForbiddenResponse'
+        '404':
+          $ref: '#/components/responses/NotFoundResponse'
+
+  /items/{itemId}:
+    get:
       tags: 
-        - Stock Management
+        - Item Management
       security:
-        - bearerAuthUserAdmin: []
-      summary: Remove a stock item
-      operationId: removeStockItem
+        - bearerAuthAdmin: []
+      summary: Gets target item definition
+      operationId: getItemDef
       parameters:
-        - name: id
+        - name: itemId
           in: path
           required: true
           schema:
@@ -110,17 +85,50 @@ paths:
             format: uuid
       responses:
         '200':
-          description: Removed successfully
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ItemTemplate"
+        '401':
+          $ref: '#/components/responses/UnauthorizedResponse'
         '403':
-          description: Forbidden
+          $ref: '#/components/responses/ForbiddenResponse'
         '404':
-          description: No existing stock
+          $ref: '#/components/responses/NotFoundResponse'
+    delete:
+      tags: 
+        - Item Management
+      security:
+        - bearerAuthAdmin: []
+      summary: Deletes target item definition
+      operationId: deleteItemDef
+      parameters:
+        - name: itemId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Deleted successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ItemTemplate"
+        '401':
+          $ref: '#/components/responses/UnauthorizedResponse'
+        '403':
+          $ref: '#/components/responses/ForbiddenResponse'
+        '404':
+          $ref: '#/components/responses/NotFoundResponse'
 
   /stores:
     get:
       tags: 
         - Store Management
-      summary: Get all stores
+      summary: Gets all stores
       security:
         - bearerAuthUser: []
       operationId: getAllStores
@@ -133,43 +141,15 @@ paths:
                 type: array
                 items:
                   $ref: "#/components/schemas/Store"
-
-  /stores/{id}:
-    get:
-      tags: 
-        - Store Management
-      security:
-        - bearerAuthUserAdmin: []
-      summary: Get a store by ID
-      operationId: getStoreById
-      parameters:
-        - name: id
-          in: path
-          required: true
-          schema:
-            type: string
-            format: uuid
-      responses:
-        '200':
-          description: Store details
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Store"
+        '401':
+          $ref: '#/components/responses/UnauthorizedResponse'
     put:
       tags: 
         - Store Management
       security:
-        - bearerAuthUserAdmin: []
-      summary: Update a store
+        - bearerAuthAdmin: []
+      summary: Adds or updates a store
       operationId: updateStore
-      parameters:
-        - name: id
-          in: path
-          required: true
-          schema:
-            type: string
-            format: uuid
       requestBody:
         required: true
         content:
@@ -183,15 +163,44 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Store"
+        '401':
+          $ref: '#/components/responses/UnauthorizedResponse'
+        '403':
+          $ref: '#/components/responses/ForbiddenResponse'
+
+  /stores/{storeId}:
+    get:
+      tags: 
+        - Store Management
+      security:
+        - bearerAuthUser: []
+      summary: Gets target store
+      operationId: getStoreById
+      parameters:
+        - name: storeId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Store details
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Store"
+        '401':
+          $ref: '#/components/responses/UnauthorizedResponse'
     delete:
       tags: 
         - Store Management
       security:
-        - bearerAuthUserAdmin: []
-      summary: Remove a store
-      operationId: removeStore
+        - bearerAuthAdmin: []
+      summary: Deletes a store
+      operationId: deletetore
       parameters:
-        - name: id
+        - name: storeId
           in: path
           required: true
           schema:
@@ -200,17 +209,23 @@ paths:
       responses:
         '200':
           description: Store removed
+        '401':
+          $ref: '#/components/responses/UnauthorizedResponse'
+        '403':
+          $ref: '#/components/responses/ForbiddenResponse'
+        '404':
+          $ref: '#/components/responses/NotFoundResponse'
 
-  /store/{id}/stock/:
+  /stores/{storeId}/stock/:
     get:   
       tags:
         - Store Management
       security:
-        - bearerAuthUserAdmin: []
-      summary: Get stock items for a given store
+        - bearerAuthUser: []
+      summary: Gets all stock items from specified store
       operationId: getStoreInventory
       parameters:
-        - name: id
+        - name: storeId
           in: path
           required: true
           schema:
@@ -218,30 +233,69 @@ paths:
             format: uuid
       responses:
         '200':
-          description: Get list of stock items for the given store
+          description: Success
           content:
             application/json:
               schema:
                 type: array
                 items:
-                  $ref: "#/components/schemas/StockItem"
-                  
-  /store/{id}/stock/{iid}:
-    get:   
+                  $ref: "#/components/schemas/StoreItem"
+        '401':
+          $ref: '#/components/responses/UnauthorizedResponse'
+        '404':
+          $ref: '#/components/responses/NotFoundResponse'
+    put:   
       tags:
         - Store Management
       security:
-        - bearerAuthUserAdmin: []
-      summary: Get stock items for a given store
-      operationId: getStoreSingleItem
+        - bearerAuthAdmin: []
+      summary: Adds or updates stock item from specified store
+      operationId: updateStoreItem
       parameters:
-        - name: id
+        - name: storeId
           in: path
           required: true
           schema:
             type: string
             format: uuid
-        - name: iid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/StoreItem"
+        '401':
+          $ref: '#/components/responses/UnauthorizedResponse'
+        '403':
+          $ref: '#/components/responses/ForbiddenResponse'
+        '404':
+          $ref: '#/components/responses/NotFoundResponse'
+                  
+  /stores/{storeId}/stock/{stockId}:
+    get:   
+      tags:
+        - Store Management
+      security:
+        - bearerAuthUser: []
+      summary: Gets stock item from specified store
+      operationId: getStoreItem
+      parameters:
+        - name: storeId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+        - name: stockId
           in: path
           required: true
           schema:
@@ -249,27 +303,30 @@ paths:
             format: uuid
       responses:
         '200':
-          description: List of available stock items
+          description: Success
           content:
             application/json:
               schema:
-                  $ref: "#/components/schemas/StockItem"
-    
+                  $ref: "#/components/schemas/StoreItem"
+        '401':
+          $ref: '#/components/responses/UnauthorizedResponse'
+        '404':
+          $ref: '#/components/responses/NotFoundResponse'
     post:
       tags: 
         - Store Management
       security:
-        - bearerAuthUserAdmin: []
-      summary: Move a stock item between stores
+        - bearerAuthAdmin: []
+      summary: Moves specified stock item to target store
       operationId: moveStockItem
       parameters:
-        - name: id
+        - name: storeId
           in: path
           required: true
           schema:
             type: string
             format: uuid
-        - name: iid
+        - name: stockId
           in: path
           required: true
           schema:
@@ -290,18 +347,28 @@ paths:
                   format: uuid
       responses:
         '200':
-          description: Item moved successfully
-
-  /cart/{userId}:
-    get:   
+          $ref: "#/components/responses/SuccessResponse"
+        '401':
+          $ref: '#/components/responses/UnauthorizedResponse'
+        '403':
+          $ref: '#/components/responses/ForbiddenResponse'
+        '404':
+          $ref: '#/components/responses/NotFoundResponse'
+    delete:   
       tags:
-        - User Cart Management
+        - Store Management
       security:
-        - bearerAuthUserAdmin: []
-      summary: Get the target user's cart
-      operationId: getUserCart
+        - bearerAuthAdmin: []
+      summary: Deletes stock item from specified store
+      operationId: deleteStoreItem
       parameters:
-        - name: userId
+        - name: storeId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+        - name: stockId
           in: path
           required: true
           schema:
@@ -309,126 +376,107 @@ paths:
             format: uuid
       responses:
         '200':
-          description: List of available stock items
+          description: Success
+          content:
+            application/json:
+              schema:
+                  $ref: "#/components/schemas/StoreItem"
+        '401':
+          $ref: '#/components/responses/UnauthorizedResponse'
+        '403':
+          $ref: '#/components/responses/ForbiddenResponse'
+        '404':
+          $ref: '#/components/responses/NotFoundResponse'
+        
+
+  /cart:
+    get:   
+      tags:
+        - User Cart Management
+      security:
+        - bearerAuthUser: []
+      summary: Gets the logged-in user's shopping cart
+      operationId: getUserCart
+      responses:
+        '200':
+          description: Success
           content:
             application/json:
               schema:
                 type: array
                 items:
-                  $ref: "#/components/schemas/StockItem"
-
-  /cart/{userId}/stock/{iid}:
-    post:
-      tags:
-        - User Cart Management
-      security:
-        - bearerAuthUser: []
-      summary: Add item to user cart
-      parameters:
-        - name: userId
-          in: path
-          required: true
-          schema:
-            type: string
-            format: uuid
-        - name: iid
-          in: path
-          required: true
-          schema:
-            type: string
-            format: uuid
-      operationId: addItemToCart
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                quantity:
-                  type: integer
-      responses:
-        '200':
-          description: Item added to cart
-    delete:
-      tags: 
-        - User Cart Management
-      security:
-        - bearerAuthUser: []
-      
-      summary: Remove item from user cart
-      operationId: removeItemFromCart
-      parameters:
-        - name: userId
-          in: path
-          required: true
-          schema:
-            type: string
-            format: uuid
-        - name: iid
-          in: path
-          required: true
-          schema:
-            type: string
-            format: uuid
-      responses:
-        '200':
-          description: Item removed from cart
+                  $ref: "#/components/schemas/StoreItem"
+        '401':
+          $ref: '#/components/responses/UnauthorizedResponse'
+        '404':
+          $ref: '#/components/responses/NotFoundResponse'
     put:
       tags: 
         - User Cart Management
       security:
         - bearerAuthUser: []
-      summary: Update item quantity in user cart
-      operationId: updateCartItemQuantity
-      parameters:
-        - name: userId
-          in: path
-          required: true
-          schema:
-            type: string
-            format: uuid
-        - name: iid
-          in: path
-          required: true
-          schema:
-            type: string
-            format: uuid
+      summary: Adds or updates stock item to the logged-in user's shopping cart
+      operationId: updateCartItem
       requestBody:
         required: true
         content:
           application/json:
             schema:
               type: object
-              properties:
-                quantity:
-                  type: integer
       responses:
         '200':
-          description: Cart item updated
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/StoreItem"
+        '401':
+          $ref: '#/components/responses/UnauthorizedResponse'
+        '404':
+          $ref: '#/components/responses/NotFoundResponse'
 
-  /cart/{userId}/reserve/{iid}:
+  /cart/stock/{stockId}:
+    delete:
+      tags: 
+        - User Cart Management
+      security:
+        - bearerAuthUser: []
+      summary: Removes stock item from the logged-in user's shopping cart
+      operationId: removeItemFromCart
+      parameters:
+        - name: stockId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/StoreItem"
+        '401':
+          $ref: '#/components/responses/UnauthorizedResponse'
+        '404':
+          $ref: '#/components/responses/NotFoundResponse'
+
+  /cart/reserve/{stockId}:
     post:
       tags: 
         - User Cart Management
       security:
         - bearerAuthUser: []
-      
-      summary: Reserve an item in the cart
+      summary: Reserves an out-of-stock stock item
+      operationId: reserveStockItem
       parameters:
-        - name: userId
+        - name: stockId
           in: path
           required: true
           schema:
             type: string
             format: uuid
-        - name: iid
-          in: path
-          required: true
-          schema:
-            type: string
-            format: uuid
-      operationId: reserveCartItem
       requestBody:
         required: true
         content:
@@ -441,12 +489,15 @@ paths:
                   format: email
       responses:
         '200':
-          description: Item reserved
-
+          $ref: '#/components/responses/SuccessResponse'
+        '401':
+          $ref: '#/components/responses/UnauthorizedResponse'
+        '404':
+          $ref: '#/components/responses/NotFoundResponse'
 
 components:
   schemas:
-    InventoryItem:
+    ItemTemplate:
       type: object
       required:
         - id
@@ -460,14 +511,14 @@ components:
         name:
           type: string
           example: Watch
-    StockItem:
+    StoreItem:
       type: object
       required:
         - id
         - quantity
       properties:
         item:
-          $ref: "#/components/schemas/InventoryItem"
+          $ref: "#/components/schemas/ItemTemplate"
         quantity:
           type: integer
           format: int32
@@ -490,10 +541,16 @@ components:
       type: http
       scheme: bearer
       bearerFormat: JWT
-    bearerAuthUserAdmin:
+    bearerAuthAdmin:
       type: http
       scheme: bearer
       bearerFormat: JWT
   responses:
-    UnauthorizedError:
-      description: Access token is missing or invalid
+    SuccessResponse:
+      description: Success
+    UnauthorizedResponse:
+      description: You need to be authenticated to perform this action.
+    ForbiddenResponse:
+      description: You don't have the necessary permissions to perform this action.
+    NotFoundResponse:
+      description: Resource not found
