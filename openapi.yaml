@@ -20,7 +20,9 @@ paths:
   /stock:
     get:
       tags: 
-        - Stock Management      
+        - Stock Management  
+      security:
+        - bearerAuthUser: []
       summary: Get all stock items
       operationId: getAllStock
       responses:
@@ -41,6 +43,8 @@ paths:
     get:
       tags: 
         - Stock Management
+      security:
+        - bearerAuthUser: []
       summary: Get a stock item by ID
       operationId: getStockItem
       parameters:
@@ -49,6 +53,7 @@ paths:
           required: true
           schema:
             type: string
+            format: uuid
       responses:
         '200':
           description: Stock item details
@@ -64,7 +69,7 @@ paths:
       tags: 
         - Stock Management
       security:
-        - bearerAuthUser: []
+        - bearerAuthUserAdmin: []
       summary: Update a stock item
       operationId: updateStockItem
       parameters:
@@ -73,6 +78,7 @@ paths:
           required: true
           schema:
             type: string
+            format: uuid
       requestBody:
         required: true
         content:
@@ -85,16 +91,14 @@ paths:
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: "#/components/schemas/InventoryItem"
+                $ref: "#/components/schemas/InventoryItem"
         '403':
           description: Forbidden
     delete:
       tags: 
         - Stock Management
       security:
-        - bearerAuthUser: []
+        - bearerAuthUserAdmin: []
       summary: Remove a stock item
       operationId: removeStockItem
       parameters:
@@ -103,6 +107,7 @@ paths:
           required: true
           schema:
             type: string
+            format: uuid
       responses:
         '200':
           description: Removed successfully
@@ -111,45 +116,30 @@ paths:
         '404':
           description: No existing stock
 
-  /stock/move:
-    post:
-      tags: 
-        - Stock Management
-      security:
-        - bearerAuthUser: []
-      summary: Move a stock item between stores
-      operationId: moveStockItem
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                itemId:
-                  type: string
-                fromStore:
-                  type: string
-                toStore:
-                  type: string
-      responses:
-        '200':
-          description: Item moved successfully
-
   /stores:
     get:
       tags: 
         - Store Management
       summary: Get all stores
+      security:
+        - bearerAuthUser: []
       operationId: getAllStores
       responses:
         '200':
           description: List of available stores
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Store"
 
   /stores/{id}:
     get:
       tags: 
         - Store Management
+      security:
+        - bearerAuthUserAdmin: []
       summary: Get a store by ID
       operationId: getStoreById
       parameters:
@@ -158,15 +148,19 @@ paths:
           required: true
           schema:
             type: string
+            format: uuid
       responses:
         '200':
           description: Store details
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Store"
     put:
       tags: 
         - Store Management
       security:
         - bearerAuthUserAdmin: []
-      
       summary: Update a store
       operationId: updateStore
       parameters:
@@ -175,6 +169,7 @@ paths:
           required: true
           schema:
             type: string
+            format: uuid
       requestBody:
         required: true
         content:
@@ -184,12 +179,15 @@ paths:
       responses:
         '200':
           description: Store updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Store"
     delete:
       tags: 
         - Store Management
       security:
         - bearerAuthUserAdmin: []
-      
       summary: Remove a store
       operationId: removeStore
       parameters:
@@ -198,27 +196,147 @@ paths:
           required: true
           schema:
             type: string
+            format: uuid
       responses:
         '200':
           description: Store removed
 
-  /stock/available:
-    get:      
-      tags: 
+  /store/{id}/stock/:
+    get:   
+      tags:
         - Store Management
-      summary: Get only available stock items
-      operationId: getAvailableStock
+      security:
+        - bearerAuthUserAdmin: []
+      summary: Get stock items for a given store
+      operationId: getStoreInventory
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Get list of stock items for the given store
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/StockItem"
+                  
+  /store/{id}/stock/{iid}:
+    get:   
+      tags:
+        - Store Management
+      security:
+        - bearerAuthUserAdmin: []
+      summary: Get stock items for a given store
+      operationId: getStoreSingleItem
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+        - name: iid
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
       responses:
         '200':
           description: List of available stock items
-
-  /cart/{id}:
+          content:
+            application/json:
+              schema:
+                  $ref: "#/components/schemas/StockItem"
+    
     post:
       tags: 
+        - Store Management
+      security:
+        - bearerAuthUserAdmin: []
+      summary: Move a stock item between stores
+      operationId: moveStockItem
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+        - name: iid
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                quantity:
+                  type: integer
+                  format: int32
+                toStore:
+                  type: string
+                  format: uuid
+      responses:
+        '200':
+          description: Item moved successfully
+
+  /cart/{userId}:
+    get:   
+      tags:
+        - User Cart Management
+      security:
+        - bearerAuthUserAdmin: []
+      summary: Get the target user's cart
+      operationId: getUserCart
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: List of available stock items
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/StockItem"
+
+  /cart/{userId}/stock/{iid}:
+    post:
+      tags:
         - User Cart Management
       security:
         - bearerAuthUser: []
       summary: Add item to user cart
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+        - name: iid
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
       operationId: addItemToCart
       requestBody:
         required: true
@@ -227,10 +345,6 @@ paths:
             schema:
               type: object
               properties:
-                userId:
-                  type: string
-                itemId:
-                  type: string
                 quantity:
                   type: integer
       responses:
@@ -245,11 +359,18 @@ paths:
       summary: Remove item from user cart
       operationId: removeItemFromCart
       parameters:
-        - name: id
+        - name: userId
           in: path
           required: true
           schema:
             type: string
+            format: uuid
+        - name: iid
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
       responses:
         '200':
           description: Item removed from cart
@@ -261,11 +382,18 @@ paths:
       summary: Update item quantity in user cart
       operationId: updateCartItemQuantity
       parameters:
-        - name: id
+        - name: userId
           in: path
           required: true
           schema:
             type: string
+            format: uuid
+        - name: iid
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
       requestBody:
         required: true
         content:
@@ -279,7 +407,7 @@ paths:
         '200':
           description: Cart item updated
 
-  /cart/reserve/{id}:
+  /cart/{userId}/reserve/{iid}:
     post:
       tags: 
         - User Cart Management
@@ -287,6 +415,19 @@ paths:
         - bearerAuthUser: []
       
       summary: Reserve an item in the cart
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+        - name: iid
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
       operationId: reserveCartItem
       requestBody:
         required: true
@@ -295,177 +436,21 @@ paths:
             schema:
               type: object
               properties:
-                userId:
+                email:
                   type: string
-                itemId:
-                  type: string
+                  format: email
       responses:
         '200':
           description: Item reserved
 
-  /admin:
-    post:
-      tags:
-        - Admin Management
-      security:
-        - bearerAuthUserAdmin: []
-      summary: Create new admin account
-      operationId: createAdmin
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: "#/components/schemas/LoginUser"
-      responses:
-        '200':
-          description: Admin account created successfully
-        '401':
-          $ref: '#/components/responses/UnauthorizedError'
-
-  /admin/change-password:
-    put:
-      tags:
-        - Admin Management
-      security:
-        - bearerAuthAdmin: []
-      summary: Change admin password
-      operationId: changeAdminPassword
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                username:
-                  type: string
-                oldPassword:
-                  type: string
-                newPassword:
-                  type: string
-      responses:
-        '200':
-          description: Password changed successfully
-        '400':
-          description: Invalid request data
-        '401':
-          $ref: '#/components/responses/UnauthorizedError'
-  
-  /admin/{username}:
-    delete:
-      tags:
-        - Admin Management
-      security:
-        - bearerAuthUserAdmin: []
-      summary: Remove admin or user account
-      operationId: removeAdmin
-      parameters:
-        - name: username
-          in: path
-          required: true
-          schema:
-            type: string
-      responses:
-        '200':
-          description: Admin account removed successfully
-
-  /user/register:
-    post:
-      tags:
-        - User Management
-      summary: Register a new user
-      operationId: registerUser
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: "#/components/schemas/LoginUser"
-      responses:
-        '201':
-          description: User registered successfully
-        '400':
-          description: Invalid request data
-
-  /user/login:
-    post:
-      tags:
-        - User Management
-      summary: User login
-      operationId: loginUser
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: "#/components/schemas/LoginUser"
-      responses:
-        '200':
-          description: Login successful
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  token:
-                    type: string
-        '401':
-          $ref: '#/components/responses/UnauthorizedError'
-
-  /user/change-password:
-    put:
-      tags:
-        - User Management
-      security:
-        - bearerAuthUser: []
-      summary: Change user password
-      operationId: changePassword
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                username:
-                  type: string
-                oldPassword:
-                  type: string
-                newPassword:
-                  type: string
-      responses:
-        '200':
-          description: Password changed successfully
-        '400':
-          description: Invalid request data
-        '401':
-          $ref: '#/components/responses/UnauthorizedError'
-
 
 components:
   schemas:
-    LoginUser:
-      type: object
-      required:
-        - username
-        - password
-      properties:
-        username:
-          type: string
-          format: string
-          example: Emanuele
-        password:
-          type: string
-          format: password
-          example: veryStrongPassword123!
     InventoryItem:
       type: object
       required:
         - id
         - name
-        - manufacturer
-        - releaseDate
         - storedIn
       properties:
         id:
@@ -475,20 +460,22 @@ components:
         name:
           type: string
           example: Watch
-        releaseDate:
-          type: string
-          format: date-time
-          example: '2016-08-29T09:12:33.001Z'
-        manufacturer:
-          type: string
-          example: Rolex
-        storedIn:
-          $ref: "#/components/schemas/Store"
+    StockItem:
+      type: object
+      required:
+        - id
+        - quantity
+      properties:
+        item:
+          $ref: "#/components/schemas/InventoryItem"
+        quantity:
+          type: integer
+          format: int32
+          example: 1102
     Store:
       required:
         - name
         - address
-        - phone
       properties:
         name:
           type: string
@@ -497,24 +484,7 @@ components:
           type: string
           format: address
           example: 'Via Roma'
-        phone:
-          type: string
-          example: 408-867-5309
       type: object
-    Cart:
-      required:
-        - owner
-        - total Price
-        - purchased items
-      properties:
-        owner:
-          type: string
-        total Price:
-          type: integer
-        purchased items: 
-          type: array
-          items:
-            $ref: '#/components/schemas/InventoryItem'
   securitySchemes:
     bearerAuthUser:
       type: http
