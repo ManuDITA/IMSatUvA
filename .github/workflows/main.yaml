@@ -3,7 +3,7 @@ on:
   push:
     branches:
       - main
-      - feature/*
+      
   pull_request:
   workflow_dispatch: #allows manual trigger with Git UI
 
@@ -60,7 +60,7 @@ jobs:
           AWS_BUCKET_NAME: ${{ secrets.AWS_BUCKET_NAME }}
           AWS_BUCKET_KEY_NAME: ${{ secrets.AWS_BUCKET_KEY_NAME }}
         run: | 
-          BRANCh_NAME= $(echo $GITHUB_REF | sed 's/refs\/heads\///')
+          BRANCH_NAME=$(echo $GITHUB_REF | sed 's/refs\/heads\///')
           terraform init -backend-config="bucket=${AWS_BUCKET_NAME}" -backend-config="key=${AWS_BUCKET_KEY_NAME}" -backend-config="region=${AWS_REGION}" -backend-config="workspace=${BRANCH_NAME}"
     
       - name: Terraform Validate
