@@ -105,7 +105,7 @@ jobs:
 
     - name: Set Terraform State File for Cleanup
       run: |
-        BRANCH_NAME=$(echo "${{ github.event.ref }}" | sed 's/refs\/heads\///')
+        BRANCH_NAME=$(echo $GITHUB_REF | sed 's/refs\/heads\///')
         echo "TF_STATE_KEY=feature-${BRANCH_NAME}.tfstate" >> $GITHUB_ENV
 
     - name: Terraform Init
