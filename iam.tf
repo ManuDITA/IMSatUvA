@@ -10,6 +10,10 @@ resource "aws_iam_role" "lambda_exec_role" {
       Action    = "sts:AssumeRole"
     }]
   })
+
+  lifecycle {
+    ignore_changes = [name, assume_role_policy]
+  }
 }
 
 #attach predefined policy tp previously created role
