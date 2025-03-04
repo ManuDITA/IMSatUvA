@@ -84,14 +84,17 @@ jobs:
       - name: Manual Terraform Apply (Feature branch)
         if: github.ref != 'refs/head/master' && github.event_name=='workflow_dispatch'
         run: |
-         terraform apply -auto-approve -input=false ||
-         (if grep -q "EntityAlreadyExists" terraform.log; then echo "Ignoring existing resource error"; else exit 1; fi)
-      
+          set -o pipefail
+          terraform apply -auto-approve | tee terraform.log || 
+          (if grep -q "EntityAlreadyExists" terraform.log; then echo "Ignoring existing resource error"; else exit 1; fi)
+
       - name: Auto Terraform Apply (main branch)
         if: github.ref == 'ref/head/master'
         run: |
-         terraform apply -auto-approve -input=false ||
-         (if grep -q "EntityAlreadyExists" terraform.log; then echo "Ignoring existing resource error"; else exit 1; fi)
+          set -o pipefail
+          terraform apply -auto-approve | tee terraform.log || 
+          (if grep -q "EntityAlreadyExists" terraform.log; then echo "Ignoring existing resource error"; else exit 1; fi)
+
   cleanup:
     if: github.event.ref_type == 'branch' && github.event_name == 'delete'
     runs-on: ubuntu-latest
