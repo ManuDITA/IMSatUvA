@@ -67,7 +67,10 @@ jobs:
           
           # Select or create workspace with sanitized name
           terraform workspace select $WORKSPACE_NAME || terraform workspace new $WORKSPACE_NAME
-    
+      
+      - name: terraform refresh
+        run: terraform refresh
+      
       - name: Terraform Validate
         id: validate
         run: terraform validate -no-color
