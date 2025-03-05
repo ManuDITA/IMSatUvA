@@ -30,6 +30,7 @@ jobs:
         run: |
           BRANCH_NAME=$(echo "${{ github.ref }}" | sed 's/refs\/heads\///')
           echo "BRANCH_NAME=${BRANCH_NAME}" >> $GITHUB_ENV
+          
       - name: Git checkout
         uses: actions/checkout@v3
 
@@ -50,9 +51,11 @@ jobs:
           if [[ "${{ github.ref }}" == "refs/heads/main" ]]; then
             echo "TF_STATE_KEY=main.tfstate" >> $GITHUB_ENV
           else
-            echo "TF_STATE_KEY=feature-${BRANCH_NAME}.tfstate" >> $GITHUB_ENV
+            # Replace slashes with hyphens for workspace name
+            SANITIZED_BRANCH_NAME=$(echo "${BRANCH_NAME}" | sed 's/\//-/g')
+            echo "TF_STATE_KEY=feature-${SANITIZED_BRANCH_NAME}.tfstate" >> $GITHUB_ENV
           fi
-        
+
       - name: Terraform fmt
         id: fmt
         run: terraform fmt
@@ -67,8 +70,8 @@ jobs:
           terraform init -backend-config="bucket=${AWS_BUCKET_NAME}" -backend-config="key=${AWS_BUCKET_KEY_NAME}" -backend-config="region=${AWS_REGION}"
           
           # Select or create workspace with sanitized name
-          terraform workspace select $BRANCH_NAME || terraform workspace new $BRANCH_NAME
-      
+          terraform workspace select $SANITIZED_BRANCH_NAME || terraform workspace new $SANITIZED_BRANCH_NAME
+
       - name: terraform refresh
         run: terraform refresh
       
