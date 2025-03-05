@@ -6,8 +6,8 @@
 resource "aws_api_gateway_rest_api" "ims_api" {
   name        = "ims-rest-api.${terraform.workspace}"
   description = "REST API Gateway for the Inventory Management System"
-  
-  body = jsonencode(yamldecode(templatefile("${path.module}/openapi.yaml",{
+
+  body = jsonencode(yamldecode(templatefile("${path.module}/openapi.yaml", {
     move_stock_item_arn = module.move_store_item.lambda_function_invoke_arn
   })))
 
@@ -22,9 +22,7 @@ resource "aws_api_gateway_deployment" "ims_api_deployment" {
 
   # Trigger the deployment when the resources change
   triggers = {
-    redeployment = sha1(jsonencode([
-      aws_api_gateway_rest_api.ims_api.body
-    ]))
+    redeployment = sha1(aws_api_gateway_rest_api.ims_api.body)
   }
 
   depends_on = [aws_api_gateway_rest_api.ims_api]
