@@ -360,7 +360,7 @@ paths:
         httpMethod: "POST"
         uri: "${move_stock_item_arn}"
         responses:
-          default:F
+          default:
             statusCode: "200"
             responseParameters:
               method.response.header.Access-Control-Allow-Origin: "'*'"

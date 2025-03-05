@@ -22,7 +22,7 @@ resource "aws_api_gateway_resource" "hello_resource" {
   path_part   = "hello"
 }
 
-# An example ethod for the root resource
+# An example method for the root resource
 resource "aws_api_gateway_method" "hello_method" {
   rest_api_id   = aws_api_gateway_rest_api.ims_api.id
   resource_id   = aws_api_gateway_resource.hello_resource.id
