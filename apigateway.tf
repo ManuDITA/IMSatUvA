@@ -7,19 +7,14 @@ resource "aws_api_gateway_rest_api" "ims_api" {
   name        = "ims-rest-api.${terraform.workspace}"
   description = "REST API Gateway for the Inventory Management System"
   
-  body = data.template_file.user_api_swagger
+  body = templatefile("${path.module}/openapi.yaml",{
+    move_stock_item_arn = module.move_store_item.lambda_function_invoke_arn
+  })
   endpoint_configuration {
     types = ["REGIONAL"]
   }
 }
 
-data "template_file" "user_api_swagger" {
-  template = file("${path.module}/openapi.yaml")
-
-  vars = {
-     move_stock_item_arn = module.move_store_item.lambda_function_invoke_arn
-  }
-}
 # Deploy the API Gateway
 resource "aws_api_gateway_deployment" "ims_api_deployment" {
   rest_api_id = aws_api_gateway_rest_api.ims_api.id
