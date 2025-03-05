@@ -482,6 +482,8 @@ paths:
         - Authentication Test
       summary: Temporary endpoint to test authenticaiton
       operationId: authTest
+      security:
+        - cognito_token_authorizer: []
       x-amazon-apigateway-integration:
         type: "aws_proxy"
         httpMethod: "POST"
@@ -501,6 +503,8 @@ paths:
         - Authentication Test
       summary: Temporary endpoint to test admin authorization
       operationId: authTestAdmin
+      security:
+        - cognito_token_authorizer: []
       x-amazon-apigateway-integration:
         type: "aws_proxy"
         httpMethod: "POST"
