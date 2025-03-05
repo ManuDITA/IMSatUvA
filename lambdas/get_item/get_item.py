@@ -12,7 +12,7 @@ def lambda_handler(event, context):
     try:
         item = table.get_item(item_id, ReturnValues='ALL_OLD')['Item']
     except KeyError:
-        return 400, 'Resource not found'
+        return 404, 'Resource not found'
 
     body = json.dumps(item)
 
