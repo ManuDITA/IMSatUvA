@@ -290,6 +290,11 @@ paths:
           $ref: '#/components/responses/UnauthorizedResponse'
         '404':
           $ref: '#/components/responses/NotFoundResponse'
+    x-amazon-apigateway-integration:
+        type: "aws_proxy"
+        httpMethod: "GET"
+        uri: "${move_stock_item_arn}"
+        passthroughBehavior: "when_no_match"
     post:
       tags: 
         - Store Management
@@ -339,8 +344,6 @@ paths:
     delete:   
       tags:
         - Store Management
-      security:
-        - JWTAuth: []
       summary: Deletes stock item from specified store
       operationId: deleteStoreItem
       parameters:
@@ -369,6 +372,11 @@ paths:
           $ref: '#/components/responses/ForbiddenResponse'
         '404':
           $ref: '#/components/responses/NotFoundResponse'
+      x-amazon-apigateway-integration:
+        type: "aws_proxy"
+        httpMethod: "DELETE"
+        uri: "${move_stock_item_arn}"
+        passthroughBehavior: "when_no_match"
   /cart:
     get:   
       tags:
