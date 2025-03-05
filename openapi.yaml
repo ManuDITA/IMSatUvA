@@ -1,4 +1,4 @@
-openapi: 3.0.0
+openapi: 3.0.1
 info:
   title: Store and Stock Management API
   description: API for managing stores, stock, and admin users
@@ -355,15 +355,10 @@ paths:
         '404':
           $ref: '#/components/responses/NotFoundResponse'
       x-amazon-apigateway-integration:
-        type: AWS_PROXY
+        type: aws_proxy
         passthroughBehavior: "when_no_match"
         httpMethod: "POST"
         uri: "${move_stock_item_arn}"
-        responses:
-          default:
-            statusCode: "200"
-            responseParameters:
-              method.response.header.Access-Control-Allow-Origin: "'*'"
     delete:   
       tags:
         - Store Management
