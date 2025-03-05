@@ -59,7 +59,7 @@ resource "aws_cognito_identity_pool_roles_attachment" "ims_identity_pool_roles" 
   role_mapping {
     identity_provider         = "${aws_cognito_user_pool.ims_user_pool.endpoint}:${aws_cognito_user_pool_client.ims_cognito_client.id}"
     ambiguous_role_resolution = "AuthenticatedRole"
-    type                      = "Token"
+    type                      = "Rules"
 
     mapping_rule {
       claim      = "cognito:groups"
