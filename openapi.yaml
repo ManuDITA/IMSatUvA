@@ -20,281 +20,281 @@ servers:
         default: v1
 
 paths:
-  /items:
-    get:
-      tags: 
-        - Item Management  
-      summary: Gets all stock item definitions
-      operationId: getAllItemDefs
-      responses:
-        '200':
-          description: Success
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: "#/components/schemas/ItemTemplate"
-        '401':
-          $ref: '#/components/responses/UnauthorizedResponse'
-        '403':
-          $ref: '#/components/responses/ForbiddenResponse'
-    put:
-      tags: 
-        - Item Management
-      summary: Adds or updates item definition
-      operationId: updateItemDef
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-      responses:
-        '200':
-          description: Added/Updated successfully
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/ItemTemplate"
-        '401':
-          $ref: '#/components/responses/UnauthorizedResponse'
-        '403':
-          $ref: '#/components/responses/ForbiddenResponse'
-        '404':
-          $ref: '#/components/responses/NotFoundResponse'
+  # /items:
+  #   get:
+  #     tags: 
+  #       - Item Management  
+  #     summary: Gets all stock item definitions
+  #     operationId: getAllItemDefs
+  #     responses:
+  #       '200':
+  #         description: Success
+  #         content:
+  #           application/json:
+  #             schema:
+  #               type: array
+  #               items:
+  #                 $ref: "#/components/schemas/ItemTemplate"
+  #       '401':
+  #         $ref: '#/components/responses/UnauthorizedResponse'
+  #       '403':
+  #         $ref: '#/components/responses/ForbiddenResponse'
+  #   put:
+  #     tags: 
+  #       - Item Management
+  #     summary: Adds or updates item definition
+  #     operationId: updateItemDef
+  #     requestBody:
+  #       required: true
+  #       content:
+  #         application/json:
+  #           schema:
+  #             type: object
+  #     responses:
+  #       '200':
+  #         description: Added/Updated successfully
+  #         content:
+  #           application/json:
+  #             schema:
+  #               $ref: "#/components/schemas/ItemTemplate"
+  #       '401':
+  #         $ref: '#/components/responses/UnauthorizedResponse'
+  #       '403':
+  #         $ref: '#/components/responses/ForbiddenResponse'
+  #       '404':
+  #         $ref: '#/components/responses/NotFoundResponse'
 
-  /items/{itemId}:
-    get:
-      tags: 
-        - Item Management
-      summary: Gets target item definition
-      operationId: getItemDef
-      parameters:
-        - name: itemId
-          in: path
-          required: true
-          schema:
-            type: string
-            format: uuid
-      responses:
-        '200':
-          description: Success
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/ItemTemplate"
-        '401':
-          $ref: '#/components/responses/UnauthorizedResponse'
-        '403':
-          $ref: '#/components/responses/ForbiddenResponse'
-        '404':
-          $ref: '#/components/responses/NotFoundResponse'
-    delete:
-      tags: 
-        - Item Management
-      summary: Deletes target item definition
-      operationId: deleteItemDef
-      parameters:
-        - name: itemId
-          in: path
-          required: true
-          schema:
-            type: string
-            format: uuid
-      responses:
-        '200':
-          description: Deleted successfully
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/ItemTemplate"
-        '401':
-          $ref: '#/components/responses/UnauthorizedResponse'
-        '403':
-          $ref: '#/components/responses/ForbiddenResponse'
-        '404':
-          $ref: '#/components/responses/NotFoundResponse'
+  # /items/{itemId}:
+  #   get:
+  #     tags: 
+  #       - Item Management
+  #     summary: Gets target item definition
+  #     operationId: getItemDef
+  #     parameters:
+  #       - name: itemId
+  #         in: path
+  #         required: true
+  #         schema:
+  #           type: string
+  #           format: uuid
+  #     responses:
+  #       '200':
+  #         description: Success
+  #         content:
+  #           application/json:
+  #             schema:
+  #               $ref: "#/components/schemas/ItemTemplate"
+  #       '401':
+  #         $ref: '#/components/responses/UnauthorizedResponse'
+  #       '403':
+  #         $ref: '#/components/responses/ForbiddenResponse'
+  #       '404':
+  #         $ref: '#/components/responses/NotFoundResponse'
+  #   delete:
+  #     tags: 
+  #       - Item Management
+  #     summary: Deletes target item definition
+  #     operationId: deleteItemDef
+  #     parameters:
+  #       - name: itemId
+  #         in: path
+  #         required: true
+  #         schema:
+  #           type: string
+  #           format: uuid
+  #     responses:
+  #       '200':
+  #         description: Deleted successfully
+  #         content:
+  #           application/json:
+  #             schema:
+  #               $ref: "#/components/schemas/ItemTemplate"
+  #       '401':
+  #         $ref: '#/components/responses/UnauthorizedResponse'
+  #       '403':
+  #         $ref: '#/components/responses/ForbiddenResponse'
+  #       '404':
+  #         $ref: '#/components/responses/NotFoundResponse'
 
-  /stores:
-    get:
-      tags: 
-        - Store Management
-      summary: Gets all stores
-      operationId: getAllStores
-      responses:
-        '200':
-          description: List of available stores
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: "#/components/schemas/Store"
-        '401':
-          $ref: '#/components/responses/UnauthorizedResponse'
-    put:
-      tags: 
-        - Store Management
-      summary: Adds or updates a store
-      operationId: updateStore
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-      responses:
-        '200':
-          description: Store updated
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Store"
-        '401':
-          $ref: '#/components/responses/UnauthorizedResponse'
-        '403':
-          $ref: '#/components/responses/ForbiddenResponse'
+  # /stores:
+  #   get:
+  #     tags: 
+  #       - Store Management
+  #     summary: Gets all stores
+  #     operationId: getAllStores
+  #     responses:
+  #       '200':
+  #         description: List of available stores
+  #         content:
+  #           application/json:
+  #             schema:
+  #               type: array
+  #               items:
+  #                 $ref: "#/components/schemas/Store"
+  #       '401':
+  #         $ref: '#/components/responses/UnauthorizedResponse'
+  #   put:
+  #     tags: 
+  #       - Store Management
+  #     summary: Adds or updates a store
+  #     operationId: updateStore
+  #     requestBody:
+  #       required: true
+  #       content:
+  #         application/json:
+  #           schema:
+  #             type: object
+  #     responses:
+  #       '200':
+  #         description: Store updated
+  #         content:
+  #           application/json:
+  #             schema:
+  #               $ref: "#/components/schemas/Store"
+  #       '401':
+  #         $ref: '#/components/responses/UnauthorizedResponse'
+  #       '403':
+  #         $ref: '#/components/responses/ForbiddenResponse'
 
-  /stores/{storeId}:
-    get:
-      tags: 
-        - Store Management
-      summary: Gets target store
-      operationId: getStoreById
-      parameters:
-        - name: storeId
-          in: path
-          required: true
-          schema:
-            type: string
-            format: uuid
-      responses:
-        '200':
-          description: Store details
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Store"
-        '401':
-          $ref: '#/components/responses/UnauthorizedResponse'
-    delete:
-      tags: 
-        - Store Management
-      summary: Deletes a store
-      operationId: deletetore
-      parameters:
-        - name: storeId
-          in: path
-          required: true
-          schema:
-            type: string
-            format: uuid
-      responses:
-        '200':
-          description: Store removed
-        '401':
-          $ref: '#/components/responses/UnauthorizedResponse'
-        '403':
-          $ref: '#/components/responses/ForbiddenResponse'
-        '404':
-          $ref: '#/components/responses/NotFoundResponse'
+  # /stores/{storeId}:
+  #   get:
+  #     tags: 
+  #       - Store Management
+  #     summary: Gets target store
+  #     operationId: getStoreById
+  #     parameters:
+  #       - name: storeId
+  #         in: path
+  #         required: true
+  #         schema:
+  #           type: string
+  #           format: uuid
+  #     responses:
+  #       '200':
+  #         description: Store details
+  #         content:
+  #           application/json:
+  #             schema:
+  #               $ref: "#/components/schemas/Store"
+  #       '401':
+  #         $ref: '#/components/responses/UnauthorizedResponse'
+  #   delete:
+  #     tags: 
+  #       - Store Management
+  #     summary: Deletes a store
+  #     operationId: deletetore
+  #     parameters:
+  #       - name: storeId
+  #         in: path
+  #         required: true
+  #         schema:
+  #           type: string
+  #           format: uuid
+  #     responses:
+  #       '200':
+  #         description: Store removed
+  #       '401':
+  #         $ref: '#/components/responses/UnauthorizedResponse'
+  #       '403':
+  #         $ref: '#/components/responses/ForbiddenResponse'
+  #       '404':
+  #         $ref: '#/components/responses/NotFoundResponse'
 
-  /stores/{storeId}/stock/:
-    get:   
-      tags:
-        - Store Management
-      summary: Gets all stock items from specified store
-      operationId: getStoreInventory
-      parameters:
-        - name: storeId
-          in: path
-          required: true
-          schema:
-            type: string
-            format: uuid
-      responses:
-        '200':
-          description: Success
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: "#/components/schemas/StoreItem"
-        '401':
-          $ref: '#/components/responses/UnauthorizedResponse'
-        '404':
-          $ref: '#/components/responses/NotFoundResponse'
-    put:   
-      tags:
-        - Store Management
-      summary: Adds or updates stock item from specified store
-      operationId: updateStoreItem
-      parameters:
-        - name: storeId
-          in: path
-          required: true
-          schema:
-            type: string
-            format: uuid
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-      responses:
-        '200':
-          description: Success
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: "#/components/schemas/StoreItem"
-        '401':
-          $ref: '#/components/responses/UnauthorizedResponse'
-        '403':
-          $ref: '#/components/responses/ForbiddenResponse'
-        '404':
-          $ref: '#/components/responses/NotFoundResponse'
+  # /stores/{storeId}/stock/:
+  #   get:   
+  #     tags:
+  #       - Store Management
+  #     summary: Gets all stock items from specified store
+  #     operationId: getStoreInventory
+  #     parameters:
+  #       - name: storeId
+  #         in: path
+  #         required: true
+  #         schema:
+  #           type: string
+  #           format: uuid
+  #     responses:
+  #       '200':
+  #         description: Success
+  #         content:
+  #           application/json:
+  #             schema:
+  #               type: array
+  #               items:
+  #                 $ref: "#/components/schemas/StoreItem"
+  #       '401':
+  #         $ref: '#/components/responses/UnauthorizedResponse'
+  #       '404':
+  #         $ref: '#/components/responses/NotFoundResponse'
+  #   put:   
+  #     tags:
+  #       - Store Management
+  #     summary: Adds or updates stock item from specified store
+  #     operationId: updateStoreItem
+  #     parameters:
+  #       - name: storeId
+  #         in: path
+  #         required: true
+  #         schema:
+  #           type: string
+  #           format: uuid
+  #     requestBody:
+  #       required: true
+  #       content:
+  #         application/json:
+  #           schema:
+  #             type: object
+  #     responses:
+  #       '200':
+  #         description: Success
+  #         content:
+  #           application/json:
+  #             schema:
+  #               type: array
+  #               items:
+  #                 $ref: "#/components/schemas/StoreItem"
+  #       '401':
+  #         $ref: '#/components/responses/UnauthorizedResponse'
+  #       '403':
+  #         $ref: '#/components/responses/ForbiddenResponse'
+  #       '404':
+  #         $ref: '#/components/responses/NotFoundResponse'
                   
   /stores/{storeId}/stock/{itemId}:
-    get:   
-      tags:
-        - Store Management
-      summary: Gets stock item from specified store
-      operationId: getStoreItem
-      parameters:
-        - name: storeId
-          in: path
-          required: true
-          schema:
-            type: string
-            format: uuid
-        - name: itemId
-          in: path
-          required: true
-          schema:
-            type: string
-            format: uuid
-      responses:
-        '200':
-          description: Success
-          content:
-            application/json:
-              schema:
-                  $ref: "#/components/schemas/StoreItem"
-        '401':
-          $ref: '#/components/responses/UnauthorizedResponse'
-        '404':
-          $ref: '#/components/responses/NotFoundResponse'
-    x-amazon-apigateway-integration:
-        type: "aws_proxy"
-        httpMethod: "GET"
-        uri: "${move_stock_item_arn}"
-        passthroughBehavior: "when_no_match"
+    # get:   
+    #   tags:
+    #     - Store Management
+    #   summary: Gets stock item from specified store
+    #   operationId: getStoreItem
+    #   parameters:
+    #     - name: storeId
+    #       in: path
+    #       required: true
+    #       schema:
+    #         type: string
+    #         format: uuid
+    #     - name: itemId
+    #       in: path
+    #       required: true
+    #       schema:
+    #         type: string
+    #         format: uuid
+    #   responses:
+    #     '200':
+    #       description: Success
+    #       content:
+    #         application/json:
+    #           schema:
+    #               $ref: "#/components/schemas/StoreItem"
+    #     '401':
+    #       $ref: '#/components/responses/UnauthorizedResponse'
+    #     '404':
+    #       $ref: '#/components/responses/NotFoundResponse'
+    # x-amazon-apigateway-integration:
+    #     type: "aws_proxy"
+    #     httpMethod: "POST"
+    #     uri: "${move_stock_item_arn}"
+    #     passthroughBehavior: "when_no_match"
     post:
       tags: 
         - Store Management
@@ -335,145 +335,144 @@ paths:
           $ref: '#/components/responses/ForbiddenResponse'
         '404':
           $ref: '#/components/responses/NotFoundResponse'
-        
       x-amazon-apigateway-integration:
         type: "aws_proxy"
         httpMethod: "POST"
         uri: "${move_stock_item_arn}"
         passthroughBehavior: "when_no_match"
-    delete:   
-      tags:
-        - Store Management
-      summary: Deletes stock item from specified store
-      operationId: deleteStoreItem
-      parameters:
-        - name: storeId
-          in: path
-          required: true
-          schema:
-            type: string
-            format: uuid
-        - name: itemId
-          in: path
-          required: true
-          schema:
-            type: string
-            format: uuid
-      responses:
-        '200':
-          description: Success
-          content:
-            application/json:
-              schema:
-                  $ref: "#/components/schemas/StoreItem"
-        '401':
-          $ref: '#/components/responses/UnauthorizedResponse'
-        '403':
-          $ref: '#/components/responses/ForbiddenResponse'
-        '404':
-          $ref: '#/components/responses/NotFoundResponse'
-      x-amazon-apigateway-integration:
-        type: "aws_proxy"
-        httpMethod: "DELETE"
-        uri: "${move_stock_item_arn}"
-        passthroughBehavior: "when_no_match"
-  /cart:
-    get:   
-      tags:
-        - User Cart Management
-      summary: Gets the logged-in user's shopping cart
-      operationId: getUserCart
-      responses:
-        '200':
-          description: Success
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: "#/components/schemas/StoreItem"
-        '401':
-          $ref: '#/components/responses/UnauthorizedResponse'
-        '404':
-          $ref: '#/components/responses/NotFoundResponse'
-    put:
-      tags: 
-        - User Cart Management
-      summary: Adds or updates stock item to the logged-in user's shopping cart
-      operationId: updateCartItem
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-      responses:
-        '200':
-          description: Success
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/StoreItem"
-        '401':
-          $ref: '#/components/responses/UnauthorizedResponse'
-        '404':
-          $ref: '#/components/responses/NotFoundResponse'
+    # delete:   
+    #   tags:
+    #     - Store Management
+    #   summary: Deletes stock item from specified store
+    #   operationId: deleteStoreItem
+    #   parameters:
+    #     - name: storeId
+    #       in: path
+    #       required: true
+    #       schema:
+    #         type: string
+    #         format: uuid
+    #     - name: itemId
+    #       in: path
+    #       required: true
+    #       schema:
+    #         type: string
+    #         format: uuid
+    #   responses:
+    #     '200':
+    #       description: Success
+    #       content:
+    #         application/json:
+    #           schema:
+    #               $ref: "#/components/schemas/StoreItem"
+    #     '401':
+    #       $ref: '#/components/responses/UnauthorizedResponse'
+    #     '403':
+    #       $ref: '#/components/responses/ForbiddenResponse'
+    #     '404':
+    #       $ref: '#/components/responses/NotFoundResponse'
+    #   x-amazon-apigateway-integration:
+    #     type: "aws_proxy"
+    #     httpMethod: "POST"
+    #     uri: "${move_stock_item_arn}"
+    #     passthroughBehavior: "when_no_match"
+  # /cart:
+  #   get:   
+  #     tags:
+  #       - User Cart Management
+  #     summary: Gets the logged-in user's shopping cart
+  #     operationId: getUserCart
+  #     responses:
+  #       '200':
+  #         description: Success
+  #         content:
+  #           application/json:
+  #             schema:
+  #               type: array
+  #               items:
+  #                 $ref: "#/components/schemas/StoreItem"
+  #       '401':
+  #         $ref: '#/components/responses/UnauthorizedResponse'
+  #       '404':
+  #         $ref: '#/components/responses/NotFoundResponse'
+  #   put:
+  #     tags: 
+  #       - User Cart Management
+  #     summary: Adds or updates stock item to the logged-in user's shopping cart
+  #     operationId: updateCartItem
+  #     requestBody:
+  #       required: true
+  #       content:
+  #         application/json:
+  #           schema:
+  #             type: object
+  #     responses:
+  #       '200':
+  #         description: Success
+  #         content:
+  #           application/json:
+  #             schema:
+  #               $ref: "#/components/schemas/StoreItem"
+  #       '401':
+  #         $ref: '#/components/responses/UnauthorizedResponse'
+  #       '404':
+  #         $ref: '#/components/responses/NotFoundResponse'
 
-  /cart/stock/{itemId}:
-    delete:
-      tags: 
-        - User Cart Management
-      summary: Removes stock item from the logged-in user's shopping cart
-      operationId: removeItemFromCart
-      parameters:
-        - name: itemId
-          in: path
-          required: true
-          schema:
-            type: string
-            format: uuid
-      responses:
-        '200':
-          description: Success
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/StoreItem"
-        '401':
-          $ref: '#/components/responses/UnauthorizedResponse'
-        '404':
-          $ref: '#/components/responses/NotFoundResponse'
+  # /cart/stock/{itemId}:
+  #   delete:
+  #     tags: 
+  #       - User Cart Management
+  #     summary: Removes stock item from the logged-in user's shopping cart
+  #     operationId: removeItemFromCart
+  #     parameters:
+  #       - name: itemId
+  #         in: path
+  #         required: true
+  #         schema:
+  #           type: string
+  #           format: uuid
+  #     responses:
+  #       '200':
+  #         description: Success
+  #         content:
+  #           application/json:
+  #             schema:
+  #               $ref: "#/components/schemas/StoreItem"
+  #       '401':
+  #         $ref: '#/components/responses/UnauthorizedResponse'
+  #       '404':
+  #         $ref: '#/components/responses/NotFoundResponse'
 
-  /cart/reserve/{itemId}:
-    post:
-      tags: 
-        - User Cart Management
-      summary: Reserves an out-of-stock stock item
-      operationId: reserveStockItem
-      parameters:
-        - name: itemId
-          in: path
-          required: true
-          schema:
-            type: string
-            format: uuid
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                email:
-                  type: string
-                  format: email
-      responses:
-        '200':
-          $ref: '#/components/responses/SuccessResponse'
-        '401':
-          $ref: '#/components/responses/UnauthorizedResponse'
-        '404':
-          $ref: '#/components/responses/NotFoundResponse'
+  # /cart/reserve/{itemId}:
+  #   post:
+  #     tags: 
+  #       - User Cart Management
+  #     summary: Reserves an out-of-stock stock item
+  #     operationId: reserveStockItem
+  #     parameters:
+  #       - name: itemId
+  #         in: path
+  #         required: true
+  #         schema:
+  #           type: string
+  #           format: uuid
+  #     requestBody:
+  #       required: true
+  #       content:
+  #         application/json:
+  #           schema:
+  #             type: object
+  #             properties:
+  #               email:
+  #                 type: string
+  #                 format: email
+  #     responses:
+  #       '200':
+  #         $ref: '#/components/responses/SuccessResponse'
+  #       '401':
+  #         $ref: '#/components/responses/UnauthorizedResponse'
+  #       '404':
+  #         $ref: '#/components/responses/NotFoundResponse'
 
 components:
   schemas:
@@ -519,7 +518,7 @@ components:
       type: object
   securitySchemes:
     JWTAuth:
-      type: https
+      type: http
       scheme: bearer
       bearerFormat: JWT
   responses:

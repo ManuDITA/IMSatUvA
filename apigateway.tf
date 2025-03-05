@@ -22,7 +22,7 @@ resource "aws_api_gateway_deployment" "ims_api_deployment" {
 
   # Trigger the deployment when the resources change
   triggers = {
-    redeployment = sha1(aws_api_gateway_rest_api.ims_api.body)
+    redeployment = sha1(jsonencode((aws_api_gateway_rest_api.ims_api.body)))
   }
 
   depends_on = [aws_api_gateway_rest_api.ims_api]
