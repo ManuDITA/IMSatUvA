@@ -29,6 +29,7 @@ resource "aws_iam_role_policy_attachment" "lambda_policy_attachment" {
 }
 
 # Cognito User Role
+# Source: https://docs.aws.amazon.com/cognito/latest/developerguide/role-based-access-control.html
 resource "aws_iam_role" "cognito_user_role" {
   name = "CognitoUserRole"
   assume_role_policy = jsonencode({
@@ -59,7 +60,7 @@ resource "aws_iam_role_policy" "user_allow_policy" {
     Statement = [{
       Effect   = "Allow",
       Action   = ["execute-api:Invoke"],
-      Resource = ["arn:aws:execute-api:${var.aws_region}:${data.aws_caller_identity.current.account_id}:${aws_api_gateway_rest_api.ims_api.id}/${aws_api_gateway_stage.ims_api_stage_deployment.stage_name}/*"]
+      Resource = ["arn:aws:execute-api:${var.aws_region}:${data.aws_caller_identity.current.account_id}:${aws_api_gateway_rest_api.ims_api.id}/${aws_api_gateway_stage.ims_api_stage_deployment.stage_name}/auth_test"]
     }]
   })
 }
