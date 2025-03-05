@@ -374,7 +374,7 @@ paths:
           $ref: '#/components/responses/NotFoundResponse'
       x-amazon-apigateway-integration:
         type: "aws_proxy"
-        httpMethod: "DELETE"
+        httpMethod: "POST"
         uri: "${move_stock_item_arn}"
         passthroughBehavior: "when_no_match"
   /cart:
