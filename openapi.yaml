@@ -56,7 +56,7 @@ paths:
               $ref: '#/components/schemas/ItemTemplateNoID'
       responses:
         '200':
-          $ref: '#/components/schemas/ItemTemplate'
+          $ref: '#/components/responses/SuccessResponse'
         '401':
           $ref: '#/components/responses/UnauthorizedResponse'
         '403':
