@@ -3,6 +3,8 @@ on:
   push:
     branches:
       - master
+    types:
+      - deleted  
   pull_request:
     types:
       - closed #will trigger cleanup where pr is merged and closed
@@ -19,7 +21,7 @@ env:
 
 jobs:
   deploy:
-    if: github.event.pull_request.merged != true && github.event.pull_request.base.ref != 'master'
+    if: github.event.pull_request.merged != true && github.event.pull_request.base.ref != 'master' && github.event.delete.ref == null
     runs-on: ubuntu-latest
     defaults:
       run:
@@ -83,7 +85,7 @@ jobs:
         run: terraform apply -auto-approve -input=false
 
   cleanup:
-    if: github.event.pull_request.merged == true || github.event.pull_request.base.ref == 'master'
+    if: github.event.pull_request.merged == true || github.event.pull_request.base.ref == 'master' || github.event.delete.ref != null
     runs-on: ubuntu-latest
 
     steps:
