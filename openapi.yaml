@@ -41,6 +41,32 @@ paths:
           $ref: '#/components/responses/UnauthorizedResponse'
         '403':
           $ref: '#/components/responses/ForbiddenResponse'
+    post:
+      tags: 
+        - Item Management
+      security:
+        - bearerAuthUser: []
+      summary: Creates a stock item definition
+      operationId: postItemDefs
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                obj:
+                  $ref: "#/components/schemas/ItemTemplateNoID"
+                warehouseId:
+                  example: w1001
+                  type: string
+      responses:
+        '200':
+          description: Success
+        '401':
+          $ref: '#/components/responses/UnauthorizedResponse'
+        '403':
+          $ref: '#/components/responses/ForbiddenResponse'   
     put:
       tags: 
         - Item Management
@@ -510,6 +536,15 @@ components:
         name:
           type: string
           example: Watch
+    ItemTemplateNoID:
+      type: object
+      required:
+        - name
+      properties:
+        name:
+          type: string
+          example: Watch
+        
     StoreItem:
       type: object
       required:
