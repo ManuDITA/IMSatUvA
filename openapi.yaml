@@ -489,6 +489,15 @@ components:
         name:
           type: string
           example: Watch
+    ItemTemplateNoID:
+      type: object
+      required:
+        - name
+      properties:
+        name:
+          type: string
+          example: Watch
+        
     StoreItem:
       type: object
       required:
