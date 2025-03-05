@@ -4,6 +4,8 @@ on:
     branches:
       - master
   pull_request:
+    types:
+      - closed #will trigger cleanup where pr is merged and closed
   workflow_dispatch: # allows manual trigger with Git UI
 
 permissions:
@@ -79,7 +81,7 @@ jobs:
         run: terraform apply -auto-approve -input=false
 
   cleanup:
-    if: github.event.ref_type == 'branch' && github.event_name == 'delete'
+    if: github.event.pull_request.merged == true || github.event.pull_request.base.ref == 'master'
     runs-on: ubuntu-latest
 
     steps:
@@ -100,11 +102,11 @@ jobs:
 
       - name: Set Terraform State File for Cleanup
         run: |
-          BRANCH_NAME=$(echo $GITHUB_REF | sed 's/refs\/heads\///')
-          echo "TF_STATE_KEY=feature-${BRANCH_NAME}.tfstate" >> $GITHUB_ENV
+          DELETE_BRANCH_NAME=${{ github.event.pull_request.head.ref }} 
+          echo "TF_STATE_KEY=feature-${DELETE_BRANCH_NAME}.tfstate" >> $GITHUB_ENV
 
       - name: Terraform Init
-        run: terraform init -backend-config="bucket=${{ secrets.AWS_BUCKET_NAME }}" -backend-config="key=feature-${BRANCH_NAME}.tfstate" -backend-config="region=${AWS_REGION}"
+        run: terraform init -backend-config="bucket=${{ secrets.AWS_BUCKET_NAME }}" -backend-config="key=feature-${DELETE_BRANCH_NAME}.tfstate" -backend-config="region=${AWS_REGION}"
 
       - name: Destroy Feature Branch Resources
         run: terraform destroy -auto-approve
