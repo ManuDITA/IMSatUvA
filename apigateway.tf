@@ -29,6 +29,7 @@ resource "aws_api_gateway_deployment" "ims_api_deployment" {
   lifecycle {
     create_before_destroy = true
   }
+  depends_on = [ aws_api_gateway_rest_api.ims_api ]
   
 }
 
