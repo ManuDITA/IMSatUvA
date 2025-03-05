@@ -41,7 +41,7 @@ paths:
           $ref: '#/components/responses/UnauthorizedResponse'
         '403':
           $ref: '#/components/responses/ForbiddenResponse'
-    post:
+    put:
       tags: 
         - Item Management
       security:
@@ -53,46 +53,14 @@ paths:
         content:
           application/json:
             schema:
-              type: object
-              properties:
-                obj:
-                  $ref: "#/components/schemas/ItemTemplateNoID"
-                warehouseId:
-                  example: w1001
-                  type: string
+              $ref: '#/components/schemas/ItemTemplateNoID'
       responses:
         '200':
-          description: Success
+          $ref: '#/components/responses/SuccessResponse'
         '401':
           $ref: '#/components/responses/UnauthorizedResponse'
         '403':
           $ref: '#/components/responses/ForbiddenResponse'   
-    put:
-      tags: 
-        - Item Management
-      security:
-        - bearerAuthAdmin: []
-      summary: Adds or updates item definition
-      operationId: updateItemDef
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-      responses:
-        '200':
-          description: Added/Updated successfully
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/ItemTemplate"
-        '401':
-          $ref: '#/components/responses/UnauthorizedResponse'
-        '403':
-          $ref: '#/components/responses/ForbiddenResponse'
-        '404':
-          $ref: '#/components/responses/NotFoundResponse'
 
   /items/{itemId}:
     get:
@@ -264,7 +232,38 @@ paths:
             application/json:
               schema:
                 type: array
-                items:
+        '401':
+          $ref: '#/components/responses/UnauthorizedResponse'
+        '404':
+          $ref: '#/components/responses/NotFoundResponse'
+                  
+  /stores/{storeId}/{itemId}:
+    get:   
+      tags:
+        - Store Management
+      security:
+        - bearerAuthUser: []
+      summary: Gets item from specified store
+      operationId: getStoreItem
+      parameters:
+        - name: storeId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+        - name: itemId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
                   $ref: "#/components/schemas/StoreItem"
         '401':
           $ref: '#/components/responses/UnauthorizedResponse'
@@ -289,7 +288,7 @@ paths:
         content:
           application/json:
             schema:
-              type: object
+              $ref: "#/components/schemas/StoreItem"
       responses:
         '200':
           description: Success
@@ -303,39 +302,6 @@ paths:
           $ref: '#/components/responses/UnauthorizedResponse'
         '403':
           $ref: '#/components/responses/ForbiddenResponse'
-        '404':
-          $ref: '#/components/responses/NotFoundResponse'
-                  
-  /stores/{storeId}/stock/{itemId}:
-    get:   
-      tags:
-        - Store Management
-      security:
-        - bearerAuthUser: []
-      summary: Gets stock item from specified store
-      operationId: getStoreItem
-      parameters:
-        - name: storeId
-          in: path
-          required: true
-          schema:
-            type: string
-            format: uuid
-        - name: itemId
-          in: path
-          required: true
-          schema:
-            type: string
-            format: uuid
-      responses:
-        '200':
-          description: Success
-          content:
-            application/json:
-              schema:
-                  $ref: "#/components/schemas/StoreItem"
-        '401':
-          $ref: '#/components/responses/UnauthorizedResponse'
         '404':
           $ref: '#/components/responses/NotFoundResponse'
     post:
@@ -461,7 +427,7 @@ paths:
         '404':
           $ref: '#/components/responses/NotFoundResponse'
 
-  /cart/stock/{itemId}:
+  /cart/{itemId}:
     delete:
       tags: 
         - User Cart Management
