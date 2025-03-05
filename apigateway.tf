@@ -74,9 +74,6 @@ resource "aws_api_gateway_deployment" "ims_api_deployment" {
   # Trigger the deployment when the resources change
   triggers = {
     redeployment = sha1(jsonencode([
-      aws_api_gateway_resource.hello_resource.id,
-      aws_api_gateway_method.hello_method.id,
-      aws_api_gateway_integration.hello_lambda_integration.id,
       aws_api_gateway_rest_api.ims_api.body
     ]))
   }
@@ -84,7 +81,7 @@ resource "aws_api_gateway_deployment" "ims_api_deployment" {
   lifecycle {
     create_before_destroy = true
   }
-  depends_on = [aws_api_gateway_rest_api.ims_api] 
+  
 }
 
 # Create a stage for the deployment
