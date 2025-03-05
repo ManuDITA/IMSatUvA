@@ -260,7 +260,7 @@ paths:
         '404':
           $ref: '#/components/responses/NotFoundResponse'
                   
-  /stores/{storeId}/stock/{stockId}:
+  /stores/{storeId}/stock/{itemId}:
     get:   
       tags:
         - Store Management
@@ -273,7 +273,7 @@ paths:
           schema:
             type: string
             format: uuid
-        - name: stockId
+        - name: itemId
           in: path
           required: true
           schema:
@@ -302,7 +302,7 @@ paths:
           schema:
             type: string
             format: uuid
-        - name: stockId
+        - name: itemId
           in: path
           required: true
           schema:
@@ -349,7 +349,7 @@ paths:
           schema:
             type: string
             format: uuid
-        - name: stockId
+        - name: itemId
           in: path
           required: true
           schema:
@@ -368,8 +368,6 @@ paths:
           $ref: '#/components/responses/ForbiddenResponse'
         '404':
           $ref: '#/components/responses/NotFoundResponse'
-        
-
   /cart:
     get:   
       tags:
@@ -412,14 +410,14 @@ paths:
         '404':
           $ref: '#/components/responses/NotFoundResponse'
 
-  /cart/stock/{stockId}:
+  /cart/stock/{itemId}:
     delete:
       tags: 
         - User Cart Management
       summary: Removes stock item from the logged-in user's shopping cart
       operationId: removeItemFromCart
       parameters:
-        - name: stockId
+        - name: itemId
           in: path
           required: true
           schema:
@@ -437,14 +435,14 @@ paths:
         '404':
           $ref: '#/components/responses/NotFoundResponse'
 
-  /cart/reserve/{stockId}:
+  /cart/reserve/{itemId}:
     post:
       tags: 
         - User Cart Management
       summary: Reserves an out-of-stock stock item
       operationId: reserveStockItem
       parameters:
-        - name: stockId
+        - name: itemId
           in: path
           required: true
           schema:
@@ -475,7 +473,6 @@ components:
       required:
         - id
         - name
-        - storedIn
       properties:
         id:
           type: string
@@ -490,17 +487,19 @@ components:
         - id
         - quantity
       properties:
-        item:
-          $ref: "#/components/schemas/ItemTemplate"
         quantity:
           type: integer
           format: int32
           example: 1102
     Store:
       required:
+        - id
         - name
         - address
       properties:
+        id:
+          type: string
+          format: uuid
         name:
           type: string
           example: ACME Corporation

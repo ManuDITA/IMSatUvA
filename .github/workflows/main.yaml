@@ -4,7 +4,7 @@ on:
     branches:
       - master
   pull_request:
-  workflow_dispatch: #allows manual trigger with Git UI
+  workflow_dispatch: # allows manual trigger with Git UI
 
 permissions:
   id-token: write  # Required for AWS OIDC connection
@@ -37,8 +37,7 @@ jobs:
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v3.1.2
         with:
-          terraform_version: " 1.2.5"
-      
+          terraform_version: "1.2.5" 
       - name: Terraform fmt
         id: fmt
         run: terraform fmt
@@ -49,9 +48,12 @@ jobs:
         env:
           AWS_BUCKET_NAME: ${{ secrets.AWS_BUCKET_NAME }}
           AWS_BUCKET_KEY_NAME: ${{ secrets.AWS_BUCKET_KEY_NAME }}
-        run: terraform init -backend-config="bucket=${AWS_BUCKET_NAME}" -backend-config="key=${AWS_BUCKET_KEY_NAME}" -backend-config="region=${AWS_REGION}"
-      
-      - name: terraform refresh
+        run: | 
+          BRANCH_NAME=$(echo $GITHUB_REF | sed 's/refs\/heads\///')
+          terraform init -backend-config="bucket=${AWS_BUCKET_NAME}" -backend-config="key=${AWS_BUCKET_KEY_NAME}" -backend-config="region=${AWS_REGION}"
+          terraform workspace select ${BRANCH_NAME} || terraform workspace new ${BRANCH_NAME}
+
+      - name: Terraform Refresh
         run: terraform refresh
       
       - name: Terraform Validate
@@ -68,11 +70,11 @@ jobs:
         run: exit 1
 
       - name: Manual Terraform Apply (Feature branch)
-        if: github.ref != 'refs/head/master' && github.event_name =='workflow_dispatch'
+        if: github.ref != 'refs/heads/master' && github.event_name == 'workflow_dispatch'
         run: terraform apply -auto-approve -input=false
 
       - name: Auto Terraform Apply (main branch)
-        if: github.ref == 'ref/head/master'
+        if: github.ref == 'refs/heads/master'
         run: terraform apply -auto-approve -input=false
 
   cleanup:
@@ -80,28 +82,28 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Git checkout
-      uses: actions/checkout@v3
+      - name: Git checkout
+        uses: actions/checkout@v3
 
-    - name: Configure AWS credentials
-      uses: aws-actions/configure-aws-credentials@v1
-      with:
-        role-to-assume: ${{ secrets.AWS_ROLE }}
-        aws-region: ${{ secrets.AWS_REGION }}
-        role-session-name: GitHub-OIDC-TERRAFORM
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          role-to-assume: ${{ secrets.AWS_ROLE }}
+          aws-region: ${{ secrets.AWS_REGION }}
+          role-session-name: GitHub-OIDC-TERRAFORM
 
-    - name: Setup Terraform
-      uses: hashicorp/setup-terraform@v3.1.2
-      with:
-        terraform_version: "1.2.5"
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3.1.2
+        with:
+          terraform_version: "1.2.5"
 
-    - name: Set Terraform State File for Cleanup
-      run: |
-        BRANCH_NAME=$(echo $GITHUB_REF | sed 's/refs\/heads\///')
-        echo "TF_STATE_KEY=feature-${BRANCH_NAME}.tfstate" >> $GITHUB_ENV
+      - name: Set Terraform State File for Cleanup
+        run: |
+          BRANCH_NAME=$(echo $GITHUB_REF | sed 's/refs\/heads\///')
+          echo "TF_STATE_KEY=feature-${BRANCH_NAME}.tfstate" >> $GITHUB_ENV
 
-    - name: Terraform Init
-      run: terraform init -backend-config="bucket=${{ secrets.AWS_BUCKET_NAME }}" -backend-config="key=${{ env.TF_STATE_KEY }}" -backend-config="region=${AWS_REGION}"
+      - name: Terraform Init
+        run: terraform init -backend-config="bucket=${{ secrets.AWS_BUCKET_NAME }}" -backend-config="key=feature-${BRANCH_NAME}.tfstate" -backend-config="region=${AWS_REGION}"
 
-    - name: Destroy Feature Branch Resources
-      run: terraform destroy -auto-approve
+      - name: Destroy Feature Branch Resources
+        run: terraform destroy -auto-approve
