@@ -340,7 +340,7 @@ paths:
       tags:
         - Store Management
       security:
-        - bearerAuthAdmin: []
+        - JWTAuth: []
       summary: Deletes stock item from specified store
       operationId: deleteStoreItem
       parameters:
@@ -511,7 +511,7 @@ components:
       type: object
   securitySchemes:
     JWTAuth:
-      type: https
+      type: http
       scheme: bearer
       bearerFormat: JWT
   responses:
