@@ -4,7 +4,8 @@ on:
     branches:
       - master
   pull_request:
-    - closed #will trigger cleanup where pr is merged and closed
+    types:
+      - closed #will trigger cleanup where pr is merged and closed
   workflow_dispatch: # allows manual trigger with Git UI
 
 permissions:
@@ -80,7 +81,7 @@ jobs:
         run: terraform apply -auto-approve -input=false
 
   cleanup:
-    if: github.event.pull_request.merged == true && github.event.pull_request.base.ref == 'master'
+    if: github.event.pull_request.merged == true || github.event.pull_request.base.ref == 'master'
     runs-on: ubuntu-latest
 
     steps:
