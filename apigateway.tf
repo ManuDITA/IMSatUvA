@@ -10,6 +10,7 @@ resource "aws_api_gateway_rest_api" "ims_api" {
   body = jsonencode(yamldecode(templatefile("${path.module}/openapi.yaml",{
     move_stock_item_arn = module.move_store_item.lambda_function_invoke_arn
   })))
+
   endpoint_configuration {
     types = ["REGIONAL"]
   }
@@ -26,11 +27,11 @@ resource "aws_api_gateway_deployment" "ims_api_deployment" {
     ]))
   }
 
+  depends_on = [aws_api_gateway_rest_api.ims_api]
+
   lifecycle {
     create_before_destroy = true
   }
-  depends_on = [ aws_api_gateway_rest_api.ims_api ]
-  
 }
 
 # Create a stage for the deployment

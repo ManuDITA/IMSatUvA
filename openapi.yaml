@@ -330,11 +330,12 @@ paths:
           $ref: '#/components/responses/ForbiddenResponse'
         '404':
           $ref: '#/components/responses/NotFoundResponse'
+        
       x-amazon-apigateway-integration:
-        type: AWS_PROXY
-        passthroughBehavior: "when_no_match"
+        type: aws_proxy
         httpMethod: "POST"
         uri: "${move_stock_item_arn}"
+        passthroughBehavior: "when_no_match"
     delete:   
       tags:
         - Store Management
