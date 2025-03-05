@@ -355,7 +355,7 @@ paths:
         '404':
           $ref: '#/components/responses/NotFoundResponse'
       x-amazon-apigateway-integration:
-        type: HTTP_PROXY
+        type: AWS_PROXY
         passthroughBehavior: "when_no_match"
         httpMethod: "POST"
         uri: "${move_stock_item_arn}"
