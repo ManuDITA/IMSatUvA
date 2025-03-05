@@ -39,31 +39,33 @@ paths:
   #         $ref: '#/components/responses/UnauthorizedResponse'
   #       '403':
   #         $ref: '#/components/responses/ForbiddenResponse'
-  #   put:
+  #   post:
   #     tags: 
-  #       - Item Management
-  #     summary: Adds or updates item definition
-  #     operationId: updateItemDef
-  #     requestBody:
-  #       required: true
+  #        - Item Management
+  #      security:
+  #        - bearerAuthUser: []
+  #      summary: Creates a stock item definition
+  #      operationId: postItemDefs
+  #      requestBody:
+  #        required: true
   #       content:
-  #         application/json:
-  #           schema:
-  #             type: object
-  #     responses:
-  #       '200':
-  #         description: Added/Updated successfully
-  #         content:
+  #
   #           application/json:
-  #             schema:
-  #               $ref: "#/components/schemas/ItemTemplate"
-  #       '401':
-  #         $ref: '#/components/responses/UnauthorizedResponse'
-  #       '403':
-  #         $ref: '#/components/responses/ForbiddenResponse'
-  #       '404':
-  #         $ref: '#/components/responses/NotFoundResponse'
-
+  #            schema:
+  #              type: object
+  #              properties:
+  #                obj:
+  #                  $ref: "#/components/schemas/ItemTemplateNoID"
+  #                warehouseId:
+  #                  example: w1001
+  #                  type: string
+  #      responses:
+  #        '200':
+  #          description: Success
+  #        '401':
+  #          $ref: '#/components/responses/UnauthorizedResponse'
+  #        '403':
+  #          $ref: '#/components/responses/ForbiddenResponse'   
   # /items/{itemId}:
   #   get:
   #     tags: 
