@@ -48,10 +48,10 @@ jobs:
         env:
           AWS_BUCKET_NAME: ${{ secrets.AWS_BUCKET_NAME }}
           AWS_BUCKET_KEY_NAME: ${{ secrets.AWS_BUCKET_KEY_NAME }}
-        run: | 
-          BRANCH_NAME=$(echo $GITHUB_REF | sed 's/refs\/heads\///')
-          terraform init -backend-config="bucket=${AWS_BUCKET_NAME}" -backend-config="key=${AWS_BUCKET_KEY_NAME}" -backend-config="region=${AWS_REGION}"
-          terraform workspace select ${BRANCH_NAME} || terraform workspace new ${BRANCH_NAME}
+        run: | # doing this to get clean name without / and then get a terraform safe name
+           BRANCH_NAME=$(echo $GITHUB_REF | sed 's|refs/heads/||' | sed 's|/|-|g')  
+           terraform init -backend-config="bucket=${AWS_BUCKET_NAME}" -backend-config="region=${AWS_REGION}"
+           terraform workspace select ${BRANCH_NAME} || terraform workspace new ${BRANCH_NAME}
 
       - name: Terraform Refresh
         run: terraform refresh
