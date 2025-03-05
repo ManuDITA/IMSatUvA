@@ -31,11 +31,13 @@ resource "aws_cognito_user_pool_ui_customization" "ims_user_pool_ui" {
 resource "aws_cognito_user_group" "ims_user_group" {
   user_pool_id = aws_cognito_user_pool.ims_user_pool.id
   name         = "Users"
+  role_arn     = aws_iam_role.cognito_user_role.arn
 }
 
 resource "aws_cognito_user_group" "ims_admin_group" {
   user_pool_id = aws_cognito_user_pool.ims_user_pool.id
   name         = "Admins"
+  role_arn     = aws_iam_role.cognito_admin_role.arn
 }
 
 resource "aws_cognito_identity_pool" "ims_identity_pool" {
