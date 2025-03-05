@@ -37,3 +37,35 @@ resource "aws_cognito_user_group" "ims_admin_group" {
   user_pool_id = aws_cognito_user_pool.ims_user_pool.id
   name         = "Admins"
 }
+
+resource "aws_cognito_identity_pool" "ims_identity_pool" {
+  identity_pool_name               = "ims_identity_pool"
+  allow_unauthenticated_identities = false
+
+  cognito_identity_providers {
+    client_id               = aws_cognito_user_pool_client.ims_cognito_client.id
+    provider_name           = aws_cognito_user_pool.ims_user_pool.endpoint
+    server_side_token_check = true
+  }
+}
+
+resource "aws_cognito_identity_pool_roles_attachment" "ims_identity_pool_roles" {
+  identity_pool_id = aws_cognito_identity_pool.ims_identity_pool.id
+
+  roles = {
+    authenticated = aws_iam_role.cognito_user_role.arn
+  }
+
+  role_mapping {
+    identity_provider         = "${aws_cognito_user_pool.ims_user_pool.endpoint}:${aws_cognito_user_pool_client.ims_cognito_client.id}"
+    ambiguous_role_resolution = "AuthenticatedRole"
+    type                      = "Token"
+
+    mapping_rule {
+      claim      = "cognito:groups"
+      match_type = "Contains"
+      value      = "Admins"
+      role_arn   = aws_iam_role.cognito_admin_role.arn
+    }
+  }
+}

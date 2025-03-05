@@ -1,4 +1,8 @@
-#iam role for lambda to assume
+# Retrieve AWS Account ID
+# Source: https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/caller_identity
+data "aws_caller_identity" "current" {}
+
+# IAM role for lambda to assume
 resource "aws_iam_role" "lambda_exec_role" {
   name = "lambda-exec-role-${terraform.workspace}"
 
@@ -17,9 +21,96 @@ resource "aws_iam_role" "lambda_exec_role" {
   }
 }
 
-#attach predefined policy tp previously created role
+# Attach predefined policy tp previously created role
 resource "aws_iam_role_policy_attachment" "lambda_policy_attachment" {
   role       = aws_iam_role.lambda_exec_role.name
   policy_arn = "arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
   depends_on = [aws_iam_role.lambda_exec_role]
+}
+
+# Cognito User Role
+resource "aws_iam_role" "cognito_user_role" {
+  name = "CognitoUserRole"
+  assume_role_policy = jsonencode({
+    Version = "2012-10-17",
+    Statement = [{
+      Effect = "Allow",
+      Principal = {
+        Federated = "cognito-identity.amazonaws.com"
+      },
+      Action = "sts:AssumeRoleWithWebIdentity",
+      Condition = {
+        "StringEquals" : {
+          "cognito-identity.amazonaws.com:aud" : aws_cognito_identity_pool.ims_identity_pool.id
+        },
+        "ForAnyValue:StringLike" : {
+          "cognito-identity.amazonaws.com:amr" : "authenticated"
+        }
+      }
+    }]
+  })
+}
+
+resource "aws_iam_role_policy" "user_allow_policy" {
+  name = "user-allow-policy"
+  role = aws_iam_role.cognito_user_role.id
+  policy = jsonencode({
+    Version = "2012-10-17",
+    Statement = [{
+      Effect   = "Allow",
+      Action   = ["execute-api:Invoke"],
+      Resource = ["arn:aws:execute-api:${var.aws_region}:${data.aws_caller_identity.current.account_id}:${aws_api_gateway_rest_api.ims_api.id}/${aws_api_gateway_stage.ims_api_stage_deployment.stage_name}/*"]
+    }]
+  })
+}
+
+resource "aws_iam_role_policy" "user_deny_policy" {
+  name = "user-deny-policy"
+  role = aws_iam_role.cognito_user_role.id
+  policy = jsonencode({
+    Version = "2012-10-17",
+    Statement = [{
+      Effect = "Deny",
+      Action = ["execute-api:Invoke"],
+      Resource = [
+        "arn:aws:execute-api:${var.aws_region}:${data.aws_caller_identity.current.account_id}:${aws_api_gateway_rest_api.ims_api.id}/${aws_api_gateway_stage.ims_api_stage_deployment.stage_name}/auth_test_admin/GET",
+      ]
+    }]
+  })
+}
+
+# Cognito Admin Role
+resource "aws_iam_role" "cognito_admin_role" {
+  name = "CognitoAdminRole"
+  assume_role_policy = jsonencode({
+    Version = "2012-10-17",
+    Statement = [{
+      Effect = "Allow",
+      Principal = {
+        Federated = "cognito-identity.amazonaws.com"
+      },
+      Action = "sts:AssumeRoleWithWebIdentity",
+      Condition = {
+        "StringEquals" : {
+          "cognito-identity.amazonaws.com:aud" : aws_cognito_identity_pool.ims_identity_pool.id
+        },
+        "ForAnyValue:StringLike" : {
+          "cognito-identity.amazonaws.com:amr" : "authenticated"
+        }
+      }
+    }]
+  })
+}
+
+resource "aws_iam_role_policy" "admin_allow_policy" {
+  name = "admin-allow-policy"
+  role = aws_iam_role.cognito_admin_role.id
+  policy = jsonencode({
+    Version = "2012-10-17",
+    Statement = [{
+      Effect   = "Allow",
+      Action   = ["execute-api:Invoke"],
+      Resource = ["arn:aws:execute-api:${var.aws_region}:${data.aws_caller_identity.current.account_id}:${aws_api_gateway_rest_api.ims_api.id}/${aws_api_gateway_stage.ims_api_stage_deployment.stage_name}/*"]
+    }]
+  })
 }
