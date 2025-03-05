@@ -84,6 +84,7 @@ resource "aws_api_gateway_deployment" "ims_api_deployment" {
   lifecycle {
     create_before_destroy = true
   }
+  depends_on = [aws_api_gateway_integration.hello_lambda_integration] 
 }
 
 # Create a stage for the deployment
