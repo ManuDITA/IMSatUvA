@@ -1,7 +1,19 @@
 # Source(s):
 # - https://medium.com/@m.farhatmaher/how-to-deploy-a-dash-app-on-aws-lambda-with-terraform-cbaa2f2bf9b1
 # - https://atsss.medium.com/small-lambda-function-with-python-and-terraform-f3100015f970 
-c
+
+# Create a REST API Gateway
+resource "aws_api_gateway_rest_api" "ims_api" {
+  name        = "ims-rest-api.${terraform.workspace}"
+  description = "REST API Gateway for the Inventory Management System"
+  
+  body = jsonencode(yamldecode(templatefile("${path.module}/openapi.yaml",{
+    move_stock_item_arn = module.move_store_item.lambda_function_invoke_arn
+  })))
+  endpoint_configuration {
+    types = ["REGIONAL"]
+  }
+}
 
 # Deploy the API Gateway
 resource "aws_api_gateway_deployment" "ims_api_deployment" {
