@@ -41,7 +41,7 @@ paths:
           $ref: '#/components/responses/UnauthorizedResponse'
         '403':
           $ref: '#/components/responses/ForbiddenResponse'
-    post:
+    put:
       tags: 
         - Item Management
       security:
@@ -53,46 +53,14 @@ paths:
         content:
           application/json:
             schema:
-              type: object
-              properties:
-                obj:
-                  $ref: "#/components/schemas/ItemTemplateNoID"
-                warehouseId:
-                  example: w1001
-                  type: string
+              $ref: '#/components/schemas/ItemTemplateNoID'
       responses:
         '200':
-          description: Success
+          $ref: '#/components/schemas/ItemTemplate'
         '401':
           $ref: '#/components/responses/UnauthorizedResponse'
         '403':
           $ref: '#/components/responses/ForbiddenResponse'   
-    put:
-      tags: 
-        - Item Management
-      security:
-        - bearerAuthAdmin: []
-      summary: Adds or updates item definition
-      operationId: updateItemDef
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-      responses:
-        '200':
-          description: Added/Updated successfully
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/ItemTemplate"
-        '401':
-          $ref: '#/components/responses/UnauthorizedResponse'
-        '403':
-          $ref: '#/components/responses/ForbiddenResponse'
-        '404':
-          $ref: '#/components/responses/NotFoundResponse'
 
   /items/{itemId}:
     get:
