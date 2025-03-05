@@ -3,6 +3,8 @@ on:
   push:
     branches:
       - master
+    types:
+      - deleted  
   pull_request:
     types:
       - closed #will trigger cleanup where pr is merged and closed
@@ -19,7 +21,7 @@ env:
 
 jobs:
   deploy:
-    if: github.event.pull_request.merged != true && github.event.pull_request.base.ref != 'master'
+    if: github.event.pull_request.merged != true && github.event.pull_request.base.ref != 'master' && github.event.delete.ref == null
     runs-on: ubuntu-latest
     defaults:
       run:
@@ -83,7 +85,7 @@ jobs:
         run: terraform apply -auto-approve -input=false
 
   cleanup:
-    if: github.event.pull_request.merged == true || github.event.pull_request.base.ref == 'master'
+    if: github.event.pull_request.merged == true || github.event.pull_request.base.ref == 'master' || github.event.delete.ref != null
     runs-on: ubuntu-latest
 
     steps:
@@ -109,9 +111,14 @@ jobs:
           echo "TF_STATE_KEY=feature-${DELETE_BRANCH_NAME}.tfstate" >> $GITHUB_ENV
 
       - name: Terraform Init
-        run: terraform init -backend-config="bucket=${AWS_BUCKET_NAME}" -backend-config="key=feature-${DELETE_BRANCH_NAME}.tfstate" -backend-config="region=${AWS_REGION}"
-
-
+        id: init
+        env:
+          AWS_BUCKET_NAME: ${{ secrets.AWS_BUCKET_NAME }}
+          AWS_BUCKET_KEY_NAME: ${{ secrets.AWS_BUCKET_KEY_NAME }}
+        run: | # doing this to get clean name without / and then get a terraform safe name
+           BRANCH_NAME=$(echo $GITHUB_REF | sed 's|refs/heads/||' | sed 's|/|-|g')  
+           terraform init -backend-config="bucket=${AWS_BUCKET_NAME}" -backend-config="key=feature-${GITHUB_REF}.tfstate" -backend-config="region=${AWS_REGION}"
+           
       - name: Select Terraform Workspace
         run: |
          terraform workspace select ${DELETE_BRANCH_NAME} || echo "Workspace not found, skipping."
