@@ -1,6 +1,6 @@
 #iam role for lambda to assume
 resource "aws_iam_role" "lambda_exec_role" {
-  name = "lambda-exec-role"
+  name = "lambda-exec-role-${terraform.workspace}"
 
   assume_role_policy = jsonencode({ # policy that specifies which entities can assume
     Version = "2012-10-17",

@@ -4,7 +4,7 @@
 
 # Create a REST API Gateway
 resource "aws_api_gateway_rest_api" "ims_api" {
-  name        = "ims-rest-api"
+  name        = "ims-rest-api.${terraform.workspace}"
   description = "REST API Gateway for the Inventory Management System"
   
   body = templatefile("${path.module}/openapi.yaml",{
