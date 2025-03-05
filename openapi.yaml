@@ -264,7 +264,38 @@ paths:
             application/json:
               schema:
                 type: array
-                items:
+        '401':
+          $ref: '#/components/responses/UnauthorizedResponse'
+        '404':
+          $ref: '#/components/responses/NotFoundResponse'
+                  
+  /stores/{storeId}/{itemId}:
+    get:   
+      tags:
+        - Store Management
+      security:
+        - bearerAuthUser: []
+      summary: Gets item from specified store
+      operationId: getStoreItem
+      parameters:
+        - name: storeId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+        - name: itemId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
                   $ref: "#/components/schemas/StoreItem"
         '401':
           $ref: '#/components/responses/UnauthorizedResponse'
@@ -289,7 +320,7 @@ paths:
         content:
           application/json:
             schema:
-              type: object
+              $ref: "#/components/schemas/StoreItem"
       responses:
         '200':
           description: Success
@@ -303,39 +334,6 @@ paths:
           $ref: '#/components/responses/UnauthorizedResponse'
         '403':
           $ref: '#/components/responses/ForbiddenResponse'
-        '404':
-          $ref: '#/components/responses/NotFoundResponse'
-                  
-  /stores/{storeId}/stock/{itemId}:
-    get:   
-      tags:
-        - Store Management
-      security:
-        - bearerAuthUser: []
-      summary: Gets stock item from specified store
-      operationId: getStoreItem
-      parameters:
-        - name: storeId
-          in: path
-          required: true
-          schema:
-            type: string
-            format: uuid
-        - name: itemId
-          in: path
-          required: true
-          schema:
-            type: string
-            format: uuid
-      responses:
-        '200':
-          description: Success
-          content:
-            application/json:
-              schema:
-                  $ref: "#/components/schemas/StoreItem"
-        '401':
-          $ref: '#/components/responses/UnauthorizedResponse'
         '404':
           $ref: '#/components/responses/NotFoundResponse'
     post:
@@ -461,7 +459,7 @@ paths:
         '404':
           $ref: '#/components/responses/NotFoundResponse'
 
-  /cart/stock/{itemId}:
+  /cart/{itemId}:
     delete:
       tags: 
         - User Cart Management
