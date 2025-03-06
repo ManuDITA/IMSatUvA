@@ -475,6 +475,66 @@ paths:
   #         $ref: '#/components/responses/UnauthorizedResponse'
   #       '404':
   #         $ref: '#/components/responses/NotFoundResponse'
+  
+  /auth_test:
+    get:
+      tags: 
+        - Authentication Test
+      summary: Temporary endpoint to test authenticaiton
+      operationId: authTest
+      security:
+        - cognito_iam_authorizer: []
+      x-amazon-apigateway-integration:
+        type: "aws_proxy"
+        httpMethod: "POST"
+        uri: "${auth_test_user_arn}"
+        passthroughBehavior: "when_no_match"
+      responses:
+        '200':
+          $ref: '#/components/responses/SuccessResponse'
+        '401':
+          $ref: '#/components/responses/UnauthorizedResponse'
+        '403':
+          $ref: '#/components/responses/ForbiddenResponse'
+          
+  /auth_test_admin:
+    get:
+      tags: 
+        - Authentication Test
+      summary: Temporary endpoint to test admin authorization
+      operationId: authTestAdmin
+      security:
+        - cognito_iam_authorizer: []
+      x-amazon-apigateway-integration:
+        type: "aws_proxy"
+        httpMethod: "POST"
+        uri: "${auth_test_admin_arn}"
+        passthroughBehavior: "when_no_match"
+      responses:
+        '200':
+          $ref: '#/components/responses/SuccessResponse'
+        '401':
+          $ref: '#/components/responses/UnauthorizedResponse'
+        '403':
+          $ref: '#/components/responses/ForbiddenResponse'
+  /get_credentials:
+    get:
+      tags:
+      - Authorization
+      summary: Get temporary AWS credentials from Cognito ID token
+      operationId: getCredentials
+      security:
+        - cognito_token_authorizer: []
+      x-amazon-apigateway-integration:
+        type: "aws_proxy"
+        httpMethod: "POST"
+        uri: "${get_credentials_arn}"
+        passthroughBehavior: "when_no_match"
+      responses:
+        '200':
+          $ref: '#/components/responses/SuccessResponse'
+        '401':
+          $ref: '#/components/responses/UnauthorizedResponse'
 
 components:
   schemas:
@@ -528,10 +588,21 @@ components:
           example: 'Via Roma'
       type: object
   securitySchemes:
-    JWTAuth:
-      type: http
-      scheme: bearer
-      bearerFormat: JWT
+    cognito_iam_authorizer:
+      type: apiKey
+      name: "Authorization"
+      in: "header"
+      x-amazon-apigateway-authtype: "awsSigv4"
+    cognito_token_authorizer:
+      type: apiKey
+      name: "Authorization"
+      in: "header"
+      x-amazon-apigateway-authtype: "COGNITO_USER_POOLS"
+      x-amazon-apigateway-authorizer:
+        type: "COGNITO_USER_POOLS"
+        providerARNs:
+          - "${cognito_user_pool_arn}"
+
   responses:
     SuccessResponse:
       description: Success
