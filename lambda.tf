@@ -107,6 +107,7 @@ module "get_credentials" {
   environment_variables = {
     "IDENTITY_POOL_ID" = aws_cognito_identity_pool.ims_identity_pool.id
     "AWS_ACCOUNT_ID"   = data.aws_caller_identity.current.account_id
+    "USER_POOL_ID"     = aws_cognito_user_pool.ims_user_pool.id
     "TF_AWS_REGION"    = var.aws_region
   }
 }
