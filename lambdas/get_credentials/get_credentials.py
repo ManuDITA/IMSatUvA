@@ -3,7 +3,9 @@ import boto3
 import os
 
 def lambda_handler(event, context):
-    id_token = event["headers"]["Authorization"]
+    auth_header = event["headers"]["Authorization"]
+    id_token = auth_header.split(" ")[1] # Remove the "Bearer" prefix
+    account_id = os.getenv("AWS_ACCOUNT_ID")
     aws_region = os.getenv("TF_AWS_REGION")
     identity_pool_id = os.getenv("IDENTITY_POOL_ID")
 
@@ -12,6 +14,7 @@ def lambda_handler(event, context):
 
     # Get the identity id
     identity_response = identity_client.get_id(
+        AccountId = account_id,
         IdentityPoolId = identity_pool_id,
         Logins = {
             f"cognito-idp.{aws_region}.amazonaws.com/{identity_pool_id}": id_token
