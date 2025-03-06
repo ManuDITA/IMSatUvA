@@ -81,3 +81,29 @@ module "auth_test_admin" {
     }
   }
 }
+
+module "get_credentials" {
+  source        = "terraform-aws-modules/lambda/aws"
+  version       = "7.20.0"
+  function_name = "get_credentials"
+  description   = "Get the credentials of the user invoking the lambda function"
+  handler       = "get_credentials.lambda_handler"
+  runtime       = "python3.13"
+  architectures = ["arm64"]
+  timeout       = 120
+  source_path   = "${path.module}/lambdas/get_credentials/"
+  publish       = true
+
+  # Allow the API Gateway to invoke the Lambda functions
+  allowed_triggers = {
+    APIGatewayAny = {
+      service    = "apigateway"
+      source_arn = "${aws_api_gateway_rest_api.ims_api.execution_arn}/*/*" # Allow access from any method and path
+    }
+  }
+
+  environment_variables = {
+    "IDENTITY_POOL_ID" = aws_cognito_identity_pool.ims_identity_pool.id
+    "TF_AWS_REGION"       = var.aws_region
+  }
+}

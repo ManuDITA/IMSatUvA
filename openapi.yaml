@@ -483,7 +483,7 @@ paths:
       summary: Temporary endpoint to test authenticaiton
       operationId: authTest
       security:
-        - cognito_token_authorizer: []
+        - cognito_iam_authorizer: []
       x-amazon-apigateway-integration:
         type: "aws_proxy"
         httpMethod: "POST"
@@ -504,7 +504,7 @@ paths:
       summary: Temporary endpoint to test admin authorization
       operationId: authTestAdmin
       security:
-        - cognito_token_authorizer: []
+        - cognito_iam_authorizer: []
       x-amazon-apigateway-integration:
         type: "aws_proxy"
         httpMethod: "POST"
@@ -517,6 +517,24 @@ paths:
           $ref: '#/components/responses/UnauthorizedResponse'
         '403':
           $ref: '#/components/responses/ForbiddenResponse'
+  /get_credentials:
+    get:
+      tags:
+      - Authorization
+      summary: Get temporary AWS credentials from Cognito ID token
+      operationId: getCredentials
+      security:
+        - cognito_token_authorizer: []
+      x-amazon-apigateway-integration:
+        type: "aws_proxy"
+        httpMethod: "POST"
+        uri: "${get_credentials_arn}"
+        passthroughBehavior: "when_no_match"
+      responses:
+        '200':
+          $ref: '#/components/responses/SuccessResponse'
+        '401':
+          $ref: '#/components/responses/UnauthorizedResponse'
 
 components:
   schemas:
@@ -570,6 +588,11 @@ components:
           example: 'Via Roma'
       type: object
   securitySchemes:
+    cognito_iam_authorizer:
+      type: apiKey
+      name: "Authorization"
+      in: "header"
+      x-amazon-apigateway-authtype: "awsSigv4"
     cognito_token_authorizer:
       type: apiKey
       name: "Authorization"
@@ -579,6 +602,7 @@ components:
         type: "COGNITO_USER_POOLS"
         providerARNs:
           - "${cognito_user_pool_arn}"
+
   responses:
     SuccessResponse:
       description: Success
