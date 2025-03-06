@@ -114,7 +114,7 @@ jobs:
           BRANCH_NAME=$(echo $DELETE_BRANCH_NAME | sed 's|refs/heads/||' | sed 's|/|-|g' | sed 's|env:/||g')
 
           echo "Branch that was deleted: ${BRANCH_NAME}"
-          echo "TF_STATE_KEY=${BRANCH_NAME}.tfstate" >> $GITHUB_ENV
+          echo "TF_STATE_KEY=key:/${BRANCH_NAME}/${BRANCH_NAME}.tfstate" >> $GITHUB_ENV
 
       - name: Terraform Init
         id: init
