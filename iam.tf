@@ -21,6 +21,23 @@ resource "aws_iam_role" "lambda_exec_role" {
   }
 }
 
+# Get credentials lambda function policy
+resource "aws_iam_policy" "get_credentials_policy" {
+  name        = "get-credentials-policy"
+  description = "Policy for the get_credentials lambda function"
+  policy = jsonencode({
+    Version = "2012-10-17",
+    Statement = [{
+      Effect = "Allow",
+      Action = [
+        "cognito-identity:GetId",
+        "cognito-identity:GetCredentialsForIdentity"
+      ],
+      Resource = ["arn:aws:cognito-identity:${var.aws_region}:${data.aws_caller_identity.current.account_id}:identitypool/${aws_cognito_identity_pool.ims_identity_pool.id}"]
+    }]
+  })
+}
+
 # Attach predefined policy tp previously created role
 resource "aws_iam_role_policy_attachment" "lambda_policy_attachment" {
   role       = aws_iam_role.lambda_exec_role.name

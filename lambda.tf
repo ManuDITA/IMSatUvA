@@ -93,6 +93,8 @@ module "get_credentials" {
   timeout       = 120
   source_path   = "${path.module}/lambdas/get_credentials/"
   publish       = true
+  attach_policy = true
+  policy        = aws_iam_policy.get_credentials_policy.arn
 
   # Allow the API Gateway to invoke the Lambda functions
   allowed_triggers = {
@@ -104,6 +106,6 @@ module "get_credentials" {
 
   environment_variables = {
     "IDENTITY_POOL_ID" = aws_cognito_identity_pool.ims_identity_pool.id
-    "TF_AWS_REGION"       = var.aws_region
+    "TF_AWS_REGION"    = var.aws_region
   }
 }

@@ -26,7 +26,6 @@ def lambda_handler(event, context):
             f"cognito-idp.{aws_region}.amazonaws.com/{identity_pool_id}": id_token
         }
     )
-
     credentials = credentials_response["Credentials"]
 
     return {
