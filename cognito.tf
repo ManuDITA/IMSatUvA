@@ -65,8 +65,8 @@ resource "aws_cognito_identity_pool_roles_attachment" "ims_identity_pool_roles" 
 
     mapping_rule {
       claim      = "cognito:groups"
-      match_type = "Equals"
-      value      = "Admins"
+      match_type = "Contains"
+      value      = aws_cognito_user_group.ims_admin_group.name
       role_arn   = aws_iam_role.cognito_admin_role.arn
     }
   }
