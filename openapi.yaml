@@ -574,12 +574,11 @@ components:
       type: apiKey
       name: "Authorization"
       in: "header"
-      x-amazon-apigateway-authtype: "awsSigv4"
-      # x-amazon-apigateway-authtype: "COGNITO_USER_POOLS"
-      # x-amazon-apigateway-authorizer:
-      #   type: "COGNITO_USER_POOLS"
-      #   providerARNs:
-      #     - "${cognito_user_pool_arn}"
+      x-amazon-apigateway-authtype: "COGNITO_USER_POOLS"
+      x-amazon-apigateway-authorizer:
+        type: "COGNITO_USER_POOLS"
+        providerARNs:
+          - "${cognito_user_pool_arn}"
   responses:
     SuccessResponse:
       description: Success
