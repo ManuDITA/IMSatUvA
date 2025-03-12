@@ -235,3 +235,87 @@ module "get_credentials" {
     "TF_AWS_REGION"    = var.aws_region
   }
 }
+
+module "get_all_stores" {
+  source        = "terraform-aws-modules/lambda/aws"
+  version       = "7.20.0"
+  function_name = "get_all_stores"
+  description   = "Get a list of all defined stores"
+  handler       = "get_all_stores.lambda_handler"
+  runtime       = "python3.13"
+  architectures = ["arm64"]
+  timeout       = 120
+  source_path   = "${path.module}/lambdas/get_all_stores/"
+  publish       = true
+
+  # Allow the API Gateway to invoke the Lambda functions
+  allowed_triggers = {
+    APIGatewayAny = {
+      service    = "apigateway"
+      source_arn = "${aws_api_gateway_rest_api.ims_api.execution_arn}/*/*" # Allow access from any method and path
+    }
+  }
+}
+
+module "add_store" {
+  source        = "terraform-aws-modules/lambda/aws"
+  version       = "7.20.0"
+  function_name = "add_store"
+  description   = "Add a store"
+  handler       = "add_store.lambda_handler"
+  runtime       = "python3.13"
+  architectures = ["arm64"]
+  timeout       = 120
+  source_path   = "${path.module}/lambdas/add_store/"
+  publish       = true
+
+  # Allow the API Gateway to invoke the Lambda functions
+  allowed_triggers = {
+    APIGatewayAny = {
+      service    = "apigateway"
+      source_arn = "${aws_api_gateway_rest_api.ims_api.execution_arn}/*/*" # Allow access from any method and path
+    }
+  }
+}
+
+module "get_store" {
+  source        = "terraform-aws-modules/lambda/aws"
+  version       = "7.20.0"
+  function_name = "get_store"
+  description   = "Get a list of all defined stores"
+  handler       = "get_store.lambda_handler"
+  runtime       = "python3.13"
+  architectures = ["arm64"]
+  timeout       = 120
+  source_path   = "${path.module}/lambdas/get_store/"
+  publish       = true
+
+  # Allow the API Gateway to invoke the Lambda functions
+  allowed_triggers = {
+    APIGatewayAny = {
+      service    = "apigateway"
+      source_arn = "${aws_api_gateway_rest_api.ims_api.execution_arn}/*/*" # Allow access from any method and path
+    }
+  }
+}
+
+module "delete_store" {
+  source        = "terraform-aws-modules/lambda/aws"
+  version       = "7.20.0"
+  function_name = "delete_store"
+  description   = "Get a list of all defined stores"
+  handler       = "delete_store.lambda_handler"
+  runtime       = "python3.13"
+  architectures = ["arm64"]
+  timeout       = 120
+  source_path   = "${path.module}/lambdas/delete_store/"
+  publish       = true
+
+  # Allow the API Gateway to invoke the Lambda functions
+  allowed_triggers = {
+    APIGatewayAny = {
+      service    = "apigateway"
+      source_arn = "${aws_api_gateway_rest_api.ims_api.execution_arn}/*/*" # Allow access from any method and path
+    }
+  }
+}
