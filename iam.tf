@@ -23,7 +23,7 @@ resource "aws_iam_role" "lambda_exec_role" {
 
 # Get credentials lambda function policy
 resource "aws_iam_policy" "get_credentials_policy" {
-  name        = "get-credentials-policy-${terraform.workspace}"
+  name        = "get-credentials-policy"
   description = "Policy for the get_credentials lambda function"
   policy = jsonencode({
     Version = "2012-10-17",
@@ -70,7 +70,7 @@ resource "aws_iam_role" "cognito_user_role" {
 }
 
 resource "aws_iam_role_policy" "user_allow_policy" {
-  name = "user-allow-policy-${terraform.workspace}"
+  name = "user-allow-policy"
   role = aws_iam_role.cognito_user_role.id
   policy = jsonencode({
     Version = "2012-10-17",
@@ -83,7 +83,7 @@ resource "aws_iam_role_policy" "user_allow_policy" {
 }
 
 resource "aws_iam_role_policy" "user_deny_policy" {
-  name = "user-deny-policy-${terraform.workspace}"
+  name = "user-deny-policy"
   role = aws_iam_role.cognito_user_role.id
   policy = jsonencode({
     Version = "2012-10-17",
@@ -99,7 +99,7 @@ resource "aws_iam_role_policy" "user_deny_policy" {
 
 # Cognito Admin Role
 resource "aws_iam_role" "cognito_admin_role" {
-  name = "CognitoAdminRole-${terraform.workspace}"
+  name = "CognitoAdminRole"
   assume_role_policy = jsonencode({
     Version = "2012-10-17",
     Statement = [{
@@ -121,7 +121,7 @@ resource "aws_iam_role" "cognito_admin_role" {
 }
 
 resource "aws_iam_role_policy" "admin_allow_policy" {
-  name = "admin-allow-policy-${terraform.workspace}"
+  name = "admin-allow-policy"
   role = aws_iam_role.cognito_admin_role.id
   policy = jsonencode({
     Version = "2012-10-17",
