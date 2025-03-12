@@ -86,6 +86,8 @@ module "get_credentials" {
   source        = "terraform-aws-modules/lambda/aws"
   version       = "7.20.0"
   function_name = "get_credentials-${terraform.workspace}"
+  description   = "Get the credentials of the user invoking the lambda function"
+  handler       = "get_credentials.lambda_handler"
   runtime       = "python3.13"
   architectures = ["arm64"]
   timeout       = 120
