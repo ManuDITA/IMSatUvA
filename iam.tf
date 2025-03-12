@@ -48,7 +48,7 @@ resource "aws_iam_role_policy_attachment" "lambda_policy_attachment" {
 # Cognito User Role
 # Source: https://docs.aws.amazon.com/cognito/latest/developerguide/role-based-access-control.html
 resource "aws_iam_role" "cognito_user_role" {
-  name = "CognitoUserRole-${terraform.workspace}"
+  name = "CognitoUserRole"
   assume_role_policy = jsonencode({
     Version = "2012-10-17",
     Statement = [{
