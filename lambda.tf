@@ -85,7 +85,7 @@ module "auth_test_admin" {
 module "get_credentials" {
   source        = "terraform-aws-modules/lambda/aws"
   version       = "7.20.0"
-  function_name = "get_credentials-${terraform.workspace}"Fco
+  function_name = "get_credentials-${terraform.workspace}"
   runtime       = "python3.13"
   architectures = ["arm64"]
   timeout       = 120
