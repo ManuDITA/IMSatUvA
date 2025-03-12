@@ -63,9 +63,6 @@ jobs:
           terraform workspace list
           echo "Current workspace:"
           terraform workspace show
-           
-      - name: Terraform Refresh
-        run: terraform refresh
       
       - name: Terraform Validate
         id: validate
