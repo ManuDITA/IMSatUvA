@@ -43,7 +43,7 @@ module "move_store_item" {
 module "auth_test_user" {
   source        = "terraform-aws-modules/lambda/aws"
   version       = "7.20.0"
-  function_name = "auth_test_user"
+  function_name = "auth_test_user-${terraform.workspace}"
   description   = "Testing if the lambda function can be invoked by any authenticated user via the API Gateway"
   handler       = "auth_test_user.lambda_handler"
   runtime       = "python3.13"
@@ -64,7 +64,7 @@ module "auth_test_user" {
 module "auth_test_admin" {
   source        = "terraform-aws-modules/lambda/aws"
   version       = "7.20.0"
-  function_name = "auth_test_admin"
+  function_name = "auth_test_admin-${terraform.workspace}"
   description   = "Testing if the lambda function can be invoked by any authorized admin via the API Gateway"
   handler       = "auth_test_admin.lambda_handler"
   runtime       = "python3.13"
@@ -85,9 +85,7 @@ module "auth_test_admin" {
 module "get_credentials" {
   source        = "terraform-aws-modules/lambda/aws"
   version       = "7.20.0"
-  function_name = "get_credentials"
-  description   = "Get the credentials of the user invoking the lambda function"
-  handler       = "get_credentials.lambda_handler"
+  function_name = "get_credentials-${terraform.workspace}"Fco
   runtime       = "python3.13"
   architectures = ["arm64"]
   timeout       = 120
@@ -109,5 +107,5 @@ module "get_credentials" {
     "AWS_ACCOUNT_ID"   = data.aws_caller_identity.current.account_id
     "USER_POOL_ID"     = aws_cognito_user_pool.ims_user_pool.id
     "TF_AWS_REGION"    = var.aws_region
-  }
+}
 }

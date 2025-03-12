@@ -54,12 +54,16 @@ jobs:
           AWS_BUCKET_NAME: ${{ secrets.AWS_BUCKET_NAME }}
           AWS_BUCKET_KEY_NAME: ${{ secrets.AWS_BUCKET_KEY_NAME }}
         run: | # doing this to get clean name without / and then get a terraform safe name
-           BRANCH_NAME=$(echo $GITHUB_REF | sed 's|refs/heads/||' | sed 's|/|-|g')  
-           terraform init -backend-config="bucket=${AWS_BUCKET_NAME}" -backend-config="key=feature-${BRANCH_NAME}.tfstate" -backend-config="region=${AWS_REGION}"
-
+          BRANCH_NAME=$(echo $GITHUB_REF | sed 's|refs/heads/||' | sed 's|/|-|g' | sed 's|env:/||g') 
+          TF_STATE_KEY="${BRANCH_NAME}.tfstate"  
+          echo "TF_STATE_KEY=${TF_STATE_KEY}" >> $GITHUB_ENV  
+          terraform init -backend-config="bucket=${AWS_BUCKET_NAME}" -backend-config="key=${TF_STATE_KEY}" -backend-config="region=${AWS_REGION}"
+          terraform workspace select "${BRANCH_NAME}" || terraform workspace new "${BRANCH_NAME}"
+          echo "Checking workspace list:"
+          terraform workspace list
+          echo "Current workspace:"
+          terraform workspace show
            
-           terraform workspace select ${BRANCH_NAME} || terraform workspace new ${BRANCH_NAME}
-
       - name: Terraform Refresh
         run: terraform refresh
       
@@ -107,9 +111,10 @@ jobs:
       - name: Set Terraform State File for Cleanup
         run: |
           DELETE_BRANCH_NAME=${{ github.event.pull_request.head.ref }} 
-          BRANCH_NAME=$(echo $DELETE_BRANCH_NAME | sed 's|/|-|g')  
+          BRANCH_NAME=$(echo $DELETE_BRANCH_NAME | sed 's|refs/heads/||' | sed 's|/|-|g' | sed 's|env:/||g')
+
           echo "Branch that was deleted: ${BRANCH_NAME}"
-          echo "TF_STATE_KEY=feature-${BRANCH_NAME}.tfstate" >> $GITHUB_ENV
+          echo "TF_STATE_KEY=key:/${BRANCH_NAME}/${BRANCH_NAME}.tfstate" >> $GITHUB_ENV
 
       - name: Terraform Init
         id: init
@@ -118,7 +123,7 @@ jobs:
           AWS_BUCKET_KEY_NAME: ${{ secrets.AWS_BUCKET_KEY_NAME }}
         run: | # doing this to get clean name without / and then get a terraform safe name
            BRANCH_NAME=$(echo $GITHUB_REF | sed 's|refs/heads/||' | sed 's|/|-|g')  
-           terraform init -backend-config="bucket=${AWS_BUCKET_NAME}" -backend-config="key=feature-${BRANCH_NAME}.tfstate" -backend-config="region=${AWS_REGION}"
+           terraform init -backend-config="bucket=${AWS_BUCKET_NAME}" -backend-config="key=${BRANCH_NAME}.tfstate" -backend-config="region=${AWS_REGION}"
            
       - name: Select Terraform Workspace
         run: |
