@@ -11,6 +11,14 @@ module "hello_world" {
   lambda_role   = aws_iam_role.lambda_exec_role.arn
   source_path   = "${path.module}/lambdas/hello_world/"
   publish       = true
+
+  # Allow the API Gateway to invoke the Lambda functions
+  allowed_triggers = {
+    APIGatewayAny = {
+      service    = "apigateway"
+      source_arn = "${aws_api_gateway_rest_api.ims_api.execution_arn}/*/*" # Allow access from any method and path
+    }
+  }
 }
 
 module "move_store_item" {
@@ -26,6 +34,14 @@ module "move_store_item" {
   lambda_role   = aws_iam_role.lambda_exec_role.arn
   source_path   = "${path.module}/lambdas/move_store_item/"
   publish       = true
+
+  # Allow the API Gateway to invoke the Lambda functions
+  allowed_triggers = {
+    APIGatewayAny = {
+      service    = "apigateway"
+      source_arn = "${aws_api_gateway_rest_api.ims_api.execution_arn}/*/*" # Allow access from any method and path
+    }
+  }
 }
 
 module "get_all_items" {
@@ -47,6 +63,14 @@ module "get_all_items" {
     }
   ]
   publish = true
+
+  # Allow the API Gateway to invoke the Lambda functions
+  allowed_triggers = {
+    APIGatewayAny = {
+      service    = "apigateway"
+      source_arn = "${aws_api_gateway_rest_api.ims_api.execution_arn}/*/*" # Allow access from any method and path
+    }
+  }
 }
 
 module "register_item" {
@@ -68,6 +92,14 @@ module "register_item" {
     }
   ]
   publish = true
+
+  # Allow the API Gateway to invoke the Lambda functions
+  allowed_triggers = {
+    APIGatewayAny = {
+      service    = "apigateway"
+      source_arn = "${aws_api_gateway_rest_api.ims_api.execution_arn}/*/*" # Allow access from any method and path
+    }
+  }
 }
 
 module "delete_item" {
@@ -89,6 +121,14 @@ module "delete_item" {
     }
   ]
   publish = true
+
+  # Allow the API Gateway to invoke the Lambda functions
+  allowed_triggers = {
+    APIGatewayAny = {
+      service    = "apigateway"
+      source_arn = "${aws_api_gateway_rest_api.ims_api.execution_arn}/*/*" # Allow access from any method and path
+    }
+  }
 }
 
 module "get_item" {
@@ -110,6 +150,14 @@ module "get_item" {
     }
   ]
   publish = true
+
+  # Allow the API Gateway to invoke the Lambda functions
+  allowed_triggers = {
+    APIGatewayAny = {
+      service    = "apigateway"
+      source_arn = "${aws_api_gateway_rest_api.ims_api.execution_arn}/*/*" # Allow access from any method and path
+    }
+  }
 }
 
 module "auth_test_user" {
@@ -125,6 +173,14 @@ module "auth_test_user" {
   lambda_role   = aws_iam_role.lambda_exec_role.arn
   source_path   = "${path.module}/lambdas/auth_test_user/"
   publish       = true
+
+  # Allow the API Gateway to invoke the Lambda functions
+  allowed_triggers = {
+    APIGatewayAny = {
+      service    = "apigateway"
+      source_arn = "${aws_api_gateway_rest_api.ims_api.execution_arn}/*/*" # Allow access from any method and path
+    }
+  }
 }
 
 module "auth_test_admin" {
@@ -140,6 +196,14 @@ module "auth_test_admin" {
   lambda_role   = aws_iam_role.lambda_exec_role.arn
   source_path   = "${path.module}/lambdas/auth_test_admin/"
   publish       = true
+
+  # Allow the API Gateway to invoke the Lambda functions
+  allowed_triggers = {
+    APIGatewayAny = {
+      service    = "apigateway"
+      source_arn = "${aws_api_gateway_rest_api.ims_api.execution_arn}/*/*" # Allow access from any method and path
+    }
+  }
 }
 
 module "get_credentials" {
@@ -191,6 +255,14 @@ module "get_all_stores" {
     }
   ]
   publish = true
+
+  # Allow the API Gateway to invoke the Lambda functions
+  allowed_triggers = {
+    APIGatewayAny = {
+      service    = "apigateway"
+      source_arn = "${aws_api_gateway_rest_api.ims_api.execution_arn}/*/*" # Allow access from any method and path
+    }
+  }
 }
 
 module "add_store" {
@@ -212,6 +284,14 @@ module "add_store" {
     }
   ]
   publish = true
+
+  # Allow the API Gateway to invoke the Lambda functions
+  allowed_triggers = {
+    APIGatewayAny = {
+      service    = "apigateway"
+      source_arn = "${aws_api_gateway_rest_api.ims_api.execution_arn}/*/*" # Allow access from any method and path
+    }
+  }
 }
 
 module "get_store" {
@@ -233,6 +313,14 @@ module "get_store" {
     }
   ]
   publish = true
+
+  # Allow the API Gateway to invoke the Lambda functions
+  allowed_triggers = {
+    APIGatewayAny = {
+      service    = "apigateway"
+      source_arn = "${aws_api_gateway_rest_api.ims_api.execution_arn}/*/*" # Allow access from any method and path
+    }
+  }
 }
 
 module "delete_store" {
@@ -254,4 +342,12 @@ module "delete_store" {
     }
   ]
   publish = true
+
+  # Allow the API Gateway to invoke the Lambda functions
+  allowed_triggers = {
+    APIGatewayAny = {
+      service    = "apigateway"
+      source_arn = "${aws_api_gateway_rest_api.ims_api.execution_arn}/*/*" # Allow access from any method and path
+    }
+  }
 }
