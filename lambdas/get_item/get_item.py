@@ -14,5 +14,4 @@ def lambda_handler(event, context):
     except KeyError:
         return http_utils.generate_response(404, 'Resource not found')
 
-    body = json.dumps(item)
-    return http_utils.generate_response(200, body)
+    return http_utils.generate_response(200, item)

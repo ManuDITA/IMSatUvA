@@ -19,5 +19,4 @@ def lambda_handler(event, context):
     if 'Attributes' not in response:
         return http_utils.generate_response(404, 'Resource not found')
 
-    body = json.dumps(response['Attributes'])
-    return http_utils.generate_response(200, body)
+    return http_utils.generate_response(200, response['Attributes'])
