@@ -43,7 +43,7 @@ module "move_store_item" {
 module "get_all_items" {
   source        = "terraform-aws-modules/lambda/aws"
   version       = "7.20.0"
-  function_name = "get_all_items"
+  function_name = "get_all_items-${terraform.workspace}"
   description   = "Get a list of all defined items"
   handler       = "get_all_items.lambda_handler"
   runtime       = "python3.13"
@@ -64,7 +64,7 @@ module "get_all_items" {
 module "register_item" {
   source        = "terraform-aws-modules/lambda/aws"
   version       = "7.20.0"
-  function_name = "register_item"
+  function_name = "register_item-${terraform.workspace}"
   description   = "Register a new item type"
   handler       = "register_item.lambda_handler"
   runtime       = "python3.13"
@@ -85,7 +85,7 @@ module "register_item" {
 module "delete_item" {
   source        = "terraform-aws-modules/lambda/aws"
   version       = "7.20.0"
-  function_name = "delete_item"
+  function_name = "delete_item-${terraform.workspace}"
   description   = "Delete an item type"
   handler       = "delete_item.lambda_handler"
   runtime       = "python3.13"
@@ -106,7 +106,7 @@ module "delete_item" {
 module "get_item" {
   source        = "terraform-aws-modules/lambda/aws"
   version       = "7.20.0"
-  function_name = "get_item"
+  function_name = "get_item-${terraform.workspace}"
   description   = "Delete an item type"
   handler       = "get_item.lambda_handler"
   runtime       = "python3.13"
