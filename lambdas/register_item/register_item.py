@@ -7,14 +7,14 @@ table = dynamodb.Table('item')
 
 
 def lambda_handler(event, context):
-    item_name = event['name']
+    body = json.loads(event['body'])
 
     item = {
-        "id": uuid.uuid4(),
-        "name": item_name
+        "id": body.get('id', str(uuid.uuid4())), # DynamoDB doesn't support raw UUIDs
+        "name": body['name']
     }
 
-    table.put_item(item)
+    table.put_item(Item=item)
     body = json.dumps(item)
 
     res = {
