@@ -1,0 +1,19 @@
+import json
+import uuid
+import boto3
+import modules.http_utils as http_utils
+
+dynamodb = boto3.resource("dynamodb")
+table = dynamodb.Table('item')
+
+
+def lambda_handler(event, context):
+    body = json.loads(event['body'])
+
+    item = {
+        "id": body.get('id', str(uuid.uuid4())), # DynamoDB doesn't support raw UUIDs
+        "name": body['name']
+    }
+
+    table.put_item(Item=item)
+    return http_utils.generate_response(200, item)

@@ -21,6 +21,28 @@ resource "aws_iam_role" "lambda_exec_role" {
   }
 }
 
+# IAM role policy for lambda to interact with DynamoDB
+resource "aws_iam_role_policy" "lambda_dynamodb_rw_policy" {
+  name = "lambda-dynamodb-rw-${terraform.workspace}"
+  role = aws_iam_role.lambda_exec_role.id
+
+  policy = jsonencode({
+    Version = "2012-10-17",
+    Statement = [{
+      Effect = "Allow",
+      Action = [
+        "dynamodb:Scan",
+        "dynamodb:PutItem",
+        "dynamodb:GetItem",
+        "dynamodb:UpdateItem",
+        "dynamodb:DeleteItem",
+        "dynamodb:DescribeTable"
+      ],
+      Resource = "arn:aws:dynamodb:${var.aws_region}:${data.aws_caller_identity.current.account_id}:table/*"
+    }]
+  })
+}
+
 # Get credentials lambda function policy
 resource "aws_iam_policy" "get_credentials_policy" {
   name        = "get-credentials-policy-${terraform.workspace}"
@@ -91,6 +113,9 @@ resource "aws_iam_role_policy" "user_deny_policy" {
       Effect = "Deny",
       Action = ["execute-api:Invoke"],
       Resource = [
+        "arn:aws:execute-api:${var.aws_region}:${data.aws_caller_identity.current.account_id}:${aws_api_gateway_rest_api.ims_api.id}/${aws_api_gateway_stage.ims_api_stage_deployment.stage_name}/GET/items",
+        "arn:aws:execute-api:${var.aws_region}:${data.aws_caller_identity.current.account_id}:${aws_api_gateway_rest_api.ims_api.id}/${aws_api_gateway_stage.ims_api_stage_deployment.stage_name}/PUT/items",
+        "arn:aws:execute-api:${var.aws_region}:${data.aws_caller_identity.current.account_id}:${aws_api_gateway_rest_api.ims_api.id}/${aws_api_gateway_stage.ims_api_stage_deployment.stage_name}/DELETE/items/*",
         "arn:aws:execute-api:${var.aws_region}:${data.aws_caller_identity.current.account_id}:${aws_api_gateway_rest_api.ims_api.id}/${aws_api_gateway_stage.ims_api_stage_deployment.stage_name}/GET/auth_test_admin"
       ]
     }]

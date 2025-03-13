@@ -7,6 +7,8 @@ module "hello_world" {
   runtime       = "python3.13"
   architectures = ["arm64"]
   timeout       = 120
+  create_role   = false
+  lambda_role   = aws_iam_role.lambda_exec_role.arn
   source_path   = "${path.module}/lambdas/hello_world/"
   publish       = true
 
@@ -28,8 +30,126 @@ module "move_store_item" {
   runtime       = "python3.13"
   architectures = ["arm64"]
   timeout       = 120
+  create_role   = false
+  lambda_role   = aws_iam_role.lambda_exec_role.arn
   source_path   = "${path.module}/lambdas/move_store_item/"
   publish       = true
+
+  # Allow the API Gateway to invoke the Lambda functions
+  allowed_triggers = {
+    APIGatewayAny = {
+      service    = "apigateway"
+      source_arn = "${aws_api_gateway_rest_api.ims_api.execution_arn}/*/*" # Allow access from any method and path
+    }
+  }
+}
+
+module "get_all_items" {
+  source        = "terraform-aws-modules/lambda/aws"
+  version       = "7.20.0"
+  function_name = "get_all_items-${terraform.workspace}"
+  description   = "Get a list of all defined items"
+  handler       = "get_all_items.lambda_handler"
+  runtime       = "python3.13"
+  architectures = ["arm64"]
+  timeout       = 120
+  create_role   = false
+  lambda_role   = aws_iam_role.lambda_exec_role.arn
+  source_path = [
+    "${path.module}/lambdas/get_all_items/",
+    {
+      path          = "${path.module}/lambdas/modules/"
+      prefix_in_zip = "modules"
+    }
+  ]
+  publish = true
+
+  # Allow the API Gateway to invoke the Lambda functions
+  allowed_triggers = {
+    APIGatewayAny = {
+      service    = "apigateway"
+      source_arn = "${aws_api_gateway_rest_api.ims_api.execution_arn}/*/*" # Allow access from any method and path
+    }
+  }
+}
+
+module "register_item" {
+  source        = "terraform-aws-modules/lambda/aws"
+  version       = "7.20.0"
+  function_name = "register_item-${terraform.workspace}"
+  description   = "Register a new item type"
+  handler       = "register_item.lambda_handler"
+  runtime       = "python3.13"
+  architectures = ["arm64"]
+  timeout       = 120
+  create_role   = false
+  lambda_role   = aws_iam_role.lambda_exec_role.arn
+  source_path = [
+    "${path.module}/lambdas/register_item/",
+    {
+      path          = "${path.module}/lambdas/modules/"
+      prefix_in_zip = "modules"
+    }
+  ]
+  publish = true
+
+  # Allow the API Gateway to invoke the Lambda functions
+  allowed_triggers = {
+    APIGatewayAny = {
+      service    = "apigateway"
+      source_arn = "${aws_api_gateway_rest_api.ims_api.execution_arn}/*/*" # Allow access from any method and path
+    }
+  }
+}
+
+module "delete_item" {
+  source        = "terraform-aws-modules/lambda/aws"
+  version       = "7.20.0"
+  function_name = "delete_item-${terraform.workspace}"
+  description   = "Delete an item type"
+  handler       = "delete_item.lambda_handler"
+  runtime       = "python3.13"
+  architectures = ["arm64"]
+  timeout       = 120
+  create_role   = false
+  lambda_role   = aws_iam_role.lambda_exec_role.arn
+  source_path = [
+    "${path.module}/lambdas/delete_item/",
+    {
+      path          = "${path.module}/lambdas/modules/"
+      prefix_in_zip = "modules"
+    }
+  ]
+  publish = true
+
+  # Allow the API Gateway to invoke the Lambda functions
+  allowed_triggers = {
+    APIGatewayAny = {
+      service    = "apigateway"
+      source_arn = "${aws_api_gateway_rest_api.ims_api.execution_arn}/*/*" # Allow access from any method and path
+    }
+  }
+}
+
+module "get_item" {
+  source        = "terraform-aws-modules/lambda/aws"
+  version       = "7.20.0"
+  function_name = "get_item-${terraform.workspace}"
+  description   = "Delete an item type"
+  handler       = "get_item.lambda_handler"
+  runtime       = "python3.13"
+  architectures = ["arm64"]
+  timeout       = 120
+  create_role   = false
+  lambda_role   = aws_iam_role.lambda_exec_role.arn
+  source_path = [
+    "${path.module}/lambdas/get_item/",
+    {
+      path          = "${path.module}/lambdas/modules/"
+      prefix_in_zip = "modules"
+    }
+  ]
+  publish = true
 
   # Allow the API Gateway to invoke the Lambda functions
   allowed_triggers = {
@@ -49,6 +169,8 @@ module "auth_test_user" {
   runtime       = "python3.13"
   architectures = ["arm64"]
   timeout       = 120
+  create_role   = false
+  lambda_role   = aws_iam_role.lambda_exec_role.arn
   source_path   = "${path.module}/lambdas/auth_test_user/"
   publish       = true
 
@@ -70,6 +192,8 @@ module "auth_test_admin" {
   runtime       = "python3.13"
   architectures = ["arm64"]
   timeout       = 120
+  create_role   = false
+  lambda_role   = aws_iam_role.lambda_exec_role.arn
   source_path   = "${path.module}/lambdas/auth_test_admin/"
   publish       = true
 
@@ -109,5 +233,5 @@ module "get_credentials" {
     "AWS_ACCOUNT_ID"   = data.aws_caller_identity.current.account_id
     "USER_POOL_ID"     = aws_cognito_user_pool.ims_user_pool.id
     "TF_AWS_REGION"    = var.aws_region
-}
+  }
 }

@@ -20,103 +20,123 @@ servers:
         default: v1
 
 paths:
-  # /items:
-  #   get:
-  #     tags: 
-  #       - Item Management  
-  #     summary: Gets all stock item definitions
-  #     operationId: getAllItemDefs
-  #     responses:
-  #       '200':
-  #         description: Success
-  #         content:
-  #           application/json:
-  #             schema:
-  #               type: array
-  #               items:
-  #                 $ref: "#/components/schemas/ItemTemplate"
-  #       '401':
-  #         $ref: '#/components/responses/UnauthorizedResponse'
-  #       '403':
-  #         $ref: '#/components/responses/ForbiddenResponse'
-  #   post:
-  #     tags: 
-  #        - Item Management
-  #      security:
-  #        - bearerAuthUser: []
-  #      summary: Creates a stock item definition
-  #      operationId: postItemDefs
-  #      requestBody:
-  #        required: true
-  #       content:
-  #
-  #           application/json:
-  #            schema:
-  #              type: object
-  #              properties:
-  #                obj:
-  #                  $ref: "#/components/schemas/ItemTemplateNoID"
-  #                warehouseId:
-  #                  example: w1001
-  #                  type: string
-  #      responses:
-  #        '200':
-  #          description: Success
-  #        '401':
-  #          $ref: '#/components/responses/UnauthorizedResponse'
-  #        '403':
-  #          $ref: '#/components/responses/ForbiddenResponse'   
-  # /items/{itemId}:
-  #   get:
-  #     tags: 
-  #       - Item Management
-  #     summary: Gets target item definition
-  #     operationId: getItemDef
-  #     parameters:
-  #       - name: itemId
-  #         in: path
-  #         required: true
-  #         schema:
-  #           type: string
-  #           format: uuid
-  #     responses:
-  #       '200':
-  #         description: Success
-  #         content:
-  #           application/json:
-  #             schema:
-  #               $ref: "#/components/schemas/ItemTemplate"
-  #       '401':
-  #         $ref: '#/components/responses/UnauthorizedResponse'
-  #       '403':
-  #         $ref: '#/components/responses/ForbiddenResponse'
-  #       '404':
-  #         $ref: '#/components/responses/NotFoundResponse'
-  #   delete:
-  #     tags: 
-  #       - Item Management
-  #     summary: Deletes target item definition
-  #     operationId: deleteItemDef
-  #     parameters:
-  #       - name: itemId
-  #         in: path
-  #         required: true
-  #         schema:
-  #           type: string
-  #           format: uuid
-  #     responses:
-  #       '200':
-  #         description: Deleted successfully
-  #         content:
-  #           application/json:
-  #             schema:
-  #               $ref: "#/components/schemas/ItemTemplate"
-  #       '401':
-  #         $ref: '#/components/responses/UnauthorizedResponse'
-  #       '403':
-  #         $ref: '#/components/responses/ForbiddenResponse'
-  #       '404':
-  #         $ref: '#/components/responses/NotFoundResponse'
+  /items:
+    get:
+      tags: 
+        - Item Management
+      summary: Gets all stock item definitions
+      operationId: getAllItemDefs
+      security:
+        - cognito_iam_authorizer: []
+      x-amazon-apigateway-integration:
+        type: "aws_proxy"
+        httpMethod: "POST"
+        uri: "${get_all_items_arn}"
+        passthroughBehavior: "when_no_match"
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/ItemTemplate"
+        '401':
+          $ref: '#/components/responses/UnauthorizedResponse'
+        '403':
+          $ref: '#/components/responses/ForbiddenResponse'
+    put:
+      tags: 
+        - Item Management
+      summary: Creates a stock item definition
+      operationId: postItemDefs
+      security:
+        - cognito_iam_authorizer: []
+      x-amazon-apigateway-integration:
+        type: "aws_proxy"
+        httpMethod: "POST"
+        uri: "${register_item_arn}"
+        passthroughBehavior: "when_no_match"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ItemTemplateNoID'
+      responses:
+        '200':
+          $ref: '#/components/responses/SuccessResponse'
+        '401':
+          $ref: '#/components/responses/UnauthorizedResponse'
+        '403':
+          $ref: '#/components/responses/ForbiddenResponse'   
+
+  /items/{itemId}:
+    get:
+      tags: 
+        - Item Management
+      summary: Gets target item definition
+      operationId: getItemDef
+      security:
+        - cognito_iam_authorizer: []
+      x-amazon-apigateway-integration:
+        type: "aws_proxy"
+        httpMethod: "POST"
+        uri: "${get_item_arn}"
+        passthroughBehavior: "when_no_match"
+      parameters:
+        - name: itemId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ItemTemplate"
+        '401':
+          $ref: '#/components/responses/UnauthorizedResponse'
+        '403':
+          $ref: '#/components/responses/ForbiddenResponse'
+        '404':
+          $ref: '#/components/responses/NotFoundResponse'
+    delete:
+      tags: 
+        - Item Management
+      summary: Deletes target item definition
+      operationId: deleteItemDef
+      security:
+        - cognito_iam_authorizer: []
+      x-amazon-apigateway-integration:
+        type: "aws_proxy"
+        httpMethod: "POST"
+        uri: "${delete_item_arn}"
+        passthroughBehavior: "when_no_match"
+      parameters:
+        - name: itemId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Deleted successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ItemTemplate"
+        '401':
+          $ref: '#/components/responses/UnauthorizedResponse'
+        '403':
+          $ref: '#/components/responses/ForbiddenResponse'
+        '404':
+          $ref: '#/components/responses/NotFoundResponse'
 
   # /stores:
   #   get:
@@ -345,6 +365,8 @@ paths:
     # delete:   
     #   tags:
     #     - Store Management
+    #   security:
+    #     - cognito_iam_authorizer: []
     #   summary: Deletes stock item from specified store
     #   operationId: deleteStoreItem
     #   parameters:
@@ -373,11 +395,7 @@ paths:
     #       $ref: '#/components/responses/ForbiddenResponse'
     #     '404':
     #       $ref: '#/components/responses/NotFoundResponse'
-    #   x-amazon-apigateway-integration:
-    #     type: "aws_proxy"
-    #     httpMethod: "POST"
-    #     uri: "${move_stock_item_arn}"
-    #     passthroughBehavior: "when_no_match"
+
   # /cart:
   #   get:   
   #     tags:
@@ -420,7 +438,7 @@ paths:
   #       '404':
   #         $ref: '#/components/responses/NotFoundResponse'
 
-  # /cart/stock/{itemId}:
+  # /cart/{itemId}:
   #   delete:
   #     tags: 
   #       - User Cart Management

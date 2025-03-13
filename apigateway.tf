@@ -10,6 +10,10 @@ resource "aws_api_gateway_rest_api" "ims_api" {
   description = "REST API Gateway for the Inventory Management System"
 
   body = jsonencode(yamldecode(templatefile("${path.module}/openapi.yaml", {
+    get_all_items_arn     = module.get_all_items.lambda_function_invoke_arn
+    register_item_arn     = module.register_item.lambda_function_invoke_arn
+    get_item_arn          = module.get_item.lambda_function_invoke_arn
+    delete_item_arn       = module.delete_item.lambda_function_invoke_arn
     move_stock_item_arn   = module.move_store_item.lambda_function_invoke_arn
     auth_test_user_arn    = module.auth_test_user.lambda_function_invoke_arn
     auth_test_admin_arn   = module.auth_test_admin.lambda_function_invoke_arn
