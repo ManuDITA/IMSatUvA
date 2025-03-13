@@ -106,19 +106,20 @@ jobs:
         run: |
           DELETE_BRANCH_NAME=${{ github.event.pull_request.head.ref }}
           BRANCH_NAME=$(echo $DELETE_BRANCH_NAME | sed 's|/|-|g') 
-          echo "${BRANCH_NAME}" >> $GITHUB_ENV
-          echo "Branch that was merged: ${BRANCH_NAME}"
-          echo "TF_STATE_KEY=env:/${BRANCH_NAME}/${BRANCH_NAME}.tfstate" >> $GITHUB_ENV
+          echo "BRANCH_NAME=${BRANCH_NAME}" >> $GITHUB_ENV
+          echo "Branch that was deleted: ${BRANCH_NAME}"
+          TF_STATE_KEY="env:/${BRANCH_NAME}/${BRANCH_NAME}.tfstate"
+          echo "TF_STATE_KEY=${TF_STATE_KEY}" >> $GITHUB_ENV
 
       - name: Set Terraform State File for Cleanup (Deleted branch after merge)
         if: ${{ github.event_name == 'push' && github.event.delete.ref != null }}
         run: |
           DELETE_BRANCH_NAME=$(echo $GITHUB_REF | sed 's|refs/heads/||') 
           BRANCH_NAME=$(echo $DELETE_BRANCH_NAME | sed 's|/|-|g') 
-          echo "${BRANCH_NAME}" >> $GITHUB_ENV
+          echo "BRANCH_NAME=${BRANCH_NAME}" >> $GITHUB_ENV
           echo "Branch that was deleted: ${BRANCH_NAME}"
-          echo "TF_STATE_KEY=env:/${BRANCH_NAME}/${BRANCH_NAME}.tfstate" >> $GITHUB_ENV
-      
+          TF_STATE_KEY="env:/${BRANCH_NAME}/${BRANCH_NAME}.tfstate"
+          echo "TF_STATE_KEY=${TF_STATE_KEY}" >> $GITHUB_ENV
       - name: Terraform Init
         id: init
         env:
