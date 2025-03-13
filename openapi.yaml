@@ -138,89 +138,117 @@ paths:
         '404':
           $ref: '#/components/responses/NotFoundResponse'
 
-  # /stores:
-  #   get:
-  #     tags: 
-  #       - Store Management
-  #     summary: Gets all stores
-  #     operationId: getAllStores
-  #     responses:
-  #       '200':
-  #         description: List of available stores
-  #         content:
-  #           application/json:
-  #             schema:
-  #               type: array
-  #               items:
-  #                 $ref: "#/components/schemas/Store"
-  #       '401':
-  #         $ref: '#/components/responses/UnauthorizedResponse'
-  #   put:
-  #     tags: 
-  #       - Store Management
-  #     summary: Adds or updates a store
-  #     operationId: updateStore
-  #     requestBody:
-  #       required: true
-  #       content:
-  #         application/json:
-  #           schema:
-  #             type: object
-  #     responses:
-  #       '200':
-  #         description: Store updated
-  #         content:
-  #           application/json:
-  #             schema:
-  #               $ref: "#/components/schemas/Store"
-  #       '401':
-  #         $ref: '#/components/responses/UnauthorizedResponse'
-  #       '403':
-  #         $ref: '#/components/responses/ForbiddenResponse'
+  /stores:
+    get:
+      tags: 
+        - Store Management
+      summary: Gets all stores
+      operationId: getAllStores
+      security:
+        - cognito_iam_authorizer: []
+      x-amazon-apigateway-integration:
+        type: "aws_proxy"
+        httpMethod: "POST"
+        uri: "${get_all_stores_arn}"
+        passthroughBehavior: "when_no_match"
+      responses:
+        '200':
+          description: List of available stores
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Store"
+        '401':
+          $ref: '#/components/responses/UnauthorizedResponse'
+    put:
+      tags: 
+        - Store Management
+      summary: Adds a store
+      operationId: addStore
+      security:
+        - cognito_iam_authorizer: []
+      x-amazon-apigateway-integration:
+        type: "aws_proxy"
+        httpMethod: "POST"
+        uri: "${add_store_arn}"
+        passthroughBehavior: "when_no_match"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/StoreNoID"
+      responses:
+        '200':
+          description: Store added
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Store"
+        '401':
+          $ref: '#/components/responses/UnauthorizedResponse'
+        '403':
+          $ref: '#/components/responses/ForbiddenResponse'
 
-  # /stores/{storeId}:
-  #   get:
-  #     tags: 
-  #       - Store Management
-  #     summary: Gets target store
-  #     operationId: getStoreById
-  #     parameters:
-  #       - name: storeId
-  #         in: path
-  #         required: true
-  #         schema:
-  #           type: string
-  #           format: uuid
-  #     responses:
-  #       '200':
-  #         description: Store details
-  #         content:
-  #           application/json:
-  #             schema:
-  #               $ref: "#/components/schemas/Store"
-  #       '401':
-  #         $ref: '#/components/responses/UnauthorizedResponse'
-  #   delete:
-  #     tags: 
-  #       - Store Management
-  #     summary: Deletes a store
-  #     operationId: deletetore
-  #     parameters:
-  #       - name: storeId
-  #         in: path
-  #         required: true
-  #         schema:
-  #           type: string
-  #           format: uuid
-  #     responses:
-  #       '200':
-  #         description: Store removed
-  #       '401':
-  #         $ref: '#/components/responses/UnauthorizedResponse'
-  #       '403':
-  #         $ref: '#/components/responses/ForbiddenResponse'
-  #       '404':
-  #         $ref: '#/components/responses/NotFoundResponse'
+  /stores/{storeId}:
+    get:
+      tags: 
+        - Store Management
+      summary: Gets target store
+      operationId: getStoreById
+      security:
+        - cognito_iam_authorizer: []
+      x-amazon-apigateway-integration:
+        type: "aws_proxy"
+        httpMethod: "POST"
+        uri: "${get_store_arn}"
+        passthroughBehavior: "when_no_match"
+      parameters:
+        - name: storeId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Store details
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Store"
+        '401':
+          $ref: '#/components/responses/UnauthorizedResponse'
+    delete:
+      tags: 
+        - Store Management
+      summary: Deletes a store
+      operationId: deletetore
+      security:
+        - cognito_iam_authorizer: []
+      x-amazon-apigateway-integration:
+        type: "aws_proxy"
+        httpMethod: "POST"
+        uri: "${delete_store_arn}"
+        passthroughBehavior: "when_no_match"
+      parameters:
+        - name: storeId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Store removed
+        '401':
+          $ref: '#/components/responses/UnauthorizedResponse'
+        '403':
+          $ref: '#/components/responses/ForbiddenResponse'
+        '404':
+          $ref: '#/components/responses/NotFoundResponse'
 
   # /stores/{storeId}/stock/:
   #   get:   
@@ -597,6 +625,19 @@ components:
         id:
           type: string
           format: uuid
+        name:
+          type: string
+          example: ACME Corporation
+        address:
+          type: string
+          format: address
+          example: 'Via Roma'
+      type: object
+    StoreNoID:
+      required:
+        - name
+        - address
+      properties:
         name:
           type: string
           example: ACME Corporation
