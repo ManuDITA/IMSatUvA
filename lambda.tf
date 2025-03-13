@@ -7,6 +7,8 @@ module "hello_world" {
   runtime       = "python3.13"
   architectures = ["arm64"]
   timeout       = 120
+  create_role   = false
+  lambda_role   = aws_iam_role.lambda_exec_role.arn
   source_path   = "${path.module}/lambdas/hello_world/"
   publish       = true
 
@@ -28,6 +30,8 @@ module "move_store_item" {
   runtime       = "python3.13"
   architectures = ["arm64"]
   timeout       = 120
+  create_role   = false
+  lambda_role   = aws_iam_role.lambda_exec_role.arn
   source_path   = "${path.module}/lambdas/move_store_item/"
   publish       = true
 
@@ -49,6 +53,8 @@ module "get_all_items" {
   runtime       = "python3.13"
   architectures = ["arm64"]
   timeout       = 120
+  create_role   = false
+  lambda_role   = aws_iam_role.lambda_exec_role.arn
   source_path   = "${path.module}/lambdas/get_all_items/"
   publish       = true
 
@@ -70,6 +76,8 @@ module "register_item" {
   runtime       = "python3.13"
   architectures = ["arm64"]
   timeout       = 120
+  create_role   = false
+  lambda_role   = aws_iam_role.lambda_exec_role.arn
   source_path   = "${path.module}/lambdas/register_item/"
   publish       = true
 
@@ -91,6 +99,8 @@ module "delete_item" {
   runtime       = "python3.13"
   architectures = ["arm64"]
   timeout       = 120
+  create_role   = false
+  lambda_role   = aws_iam_role.lambda_exec_role.arn
   source_path   = "${path.module}/lambdas/delete_item/"
   publish       = true
 
@@ -112,6 +122,8 @@ module "get_item" {
   runtime       = "python3.13"
   architectures = ["arm64"]
   timeout       = 120
+  create_role   = false
+  lambda_role   = aws_iam_role.lambda_exec_role.arn
   source_path   = "${path.module}/lambdas/get_item/"
   publish       = true
 
@@ -133,6 +145,8 @@ module "auth_test_user" {
   runtime       = "python3.13"
   architectures = ["arm64"]
   timeout       = 120
+  create_role   = false
+  lambda_role   = aws_iam_role.lambda_exec_role.arn
   source_path   = "${path.module}/lambdas/auth_test_user/"
   publish       = true
 
@@ -154,6 +168,8 @@ module "auth_test_admin" {
   runtime       = "python3.13"
   architectures = ["arm64"]
   timeout       = 120
+  create_role   = false
+  lambda_role   = aws_iam_role.lambda_exec_role.arn
   source_path   = "${path.module}/lambdas/auth_test_admin/"
   publish       = true
 

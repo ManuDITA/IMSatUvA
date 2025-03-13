@@ -33,10 +33,10 @@ resource "aws_iam_role_policy" "lambda_dynamodb_rw_policy" {
       Action = [
         "dynamodb:Scan",
         "dynamodb:PutItem",
-				"dynamodb:GetItem",
-				"dynamodb:UpdateItem",
-				"dynamodb:DeleteItem",
-				"dynamodb:DescribeTable"
+        "dynamodb:GetItem",
+        "dynamodb:UpdateItem",
+        "dynamodb:DeleteItem",
+        "dynamodb:DescribeTable"
       ],
       Resource = "arn:aws:dynamodb:${var.aws_region}:${data.aws_caller_identity.current.account_id}:table/*"
     }]
