@@ -134,6 +134,10 @@ jobs:
 
       - name: Debug Terraform State
         run: terraform state list || echo "No state found for this branch."
+      
+      - name: Terraform Apply 
+        run: |
+          terraform apply -auto-approve
 
       - name: Destroy Feature Branch Resources
         run: terraform destroy -auto-approve
