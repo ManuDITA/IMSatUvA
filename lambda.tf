@@ -162,6 +162,14 @@ module "get_credentials" {
     "USER_POOL_ID"     = aws_cognito_user_pool.ims_user_pool.id
     "TF_AWS_REGION"    = var.aws_region
   }
+
+  # Allow the API Gateway to invoke the Lambda functions
+  allowed_triggers = {
+    APIGatewayAny = {
+      service    = "apigateway"
+      source_arn = "${aws_api_gateway_rest_api.ims_api.execution_arn}/*/*" # Allow access from any method and path
+    }
+  }
 }
 
 module "get_all_stores" {
