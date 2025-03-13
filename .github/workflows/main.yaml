@@ -109,7 +109,8 @@ jobs:
         if: ${{ github.event.pull_request != null }}
         run: |
           DELETE_BRANCH_NAME=${{ github.event.pull_request.head.ref }}
-          BRANCH_NAME=$(echo $DELETE_BRANCH_NAME | sed 's|/|-|g')  >> $Github_ENV
+          BRANCH_NAME=$(echo $DELETE_BRANCH_NAME | sed 's|/|-|g') 
+          echo "${BRANCH_NAME}" >> $Github_ENV
           echo "Branch that was merged: ${BRANCH_NAME}"
           echo "TF_STATE_KEY=env:/${BRANCH_NAME}/${BRANCH_NAME}.tfstate" >> $GITHUB_ENV
 
@@ -117,7 +118,8 @@ jobs:
         if: ${{ github.event_name == 'push' && github.event.delete.ref != null }}
         run: |
           DELETE_BRANCH_NAME=$(echo $GITHUB_REF | sed 's|refs/heads/||') 
-          BRANCH_NAME=$(echo $DELETE_BRANCH_NAME | sed 's|/|-|g') >> $Github_ENV
+          BRANCH_NAME=$(echo $DELETE_BRANCH_NAME | sed 's|/|-|g') 
+          echo "${BRANCH_NAME}" >> $Github_ENV
           echo "Branch that was deleted: ${BRANCH_NAME}"
           echo "TF_STATE_KEY=env:/${BRANCH_NAME}/${BRANCH_NAME}.tfstate" >> $GITHUB_ENV
 
