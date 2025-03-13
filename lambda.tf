@@ -55,8 +55,14 @@ module "get_all_items" {
   timeout       = 120
   create_role   = false
   lambda_role   = aws_iam_role.lambda_exec_role.arn
-  source_path   = "${path.module}/lambdas/get_all_items/"
-  publish       = true
+  source_path = [
+    "${path.module}/lambdas/get_all_items/",
+    {
+      path          = "${path.module}/lambdas/modules/"
+      prefix_in_zip = "modules"
+    }
+  ]
+  publish = true
 
   # Allow the API Gateway to invoke the Lambda functions
   allowed_triggers = {
@@ -78,8 +84,14 @@ module "register_item" {
   timeout       = 120
   create_role   = false
   lambda_role   = aws_iam_role.lambda_exec_role.arn
-  source_path   = "${path.module}/lambdas/register_item/"
-  publish       = true
+  source_path = [
+    "${path.module}/lambdas/register_item/",
+    {
+      path          = "${path.module}/lambdas/modules/"
+      prefix_in_zip = "modules"
+    }
+  ]
+  publish = true
 
   # Allow the API Gateway to invoke the Lambda functions
   allowed_triggers = {
