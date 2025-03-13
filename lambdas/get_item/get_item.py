@@ -5,6 +5,7 @@ import modules.http_utils as http_utils
 dynamodb = boto3.resource("dynamodb")
 table = dynamodb.Table('item')
 
+
 def lambda_handler(event, context):
     item_id = event['pathParameters']['itemId']
 

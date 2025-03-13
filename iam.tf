@@ -43,6 +43,31 @@ resource "aws_iam_role_policy" "lambda_dynamodb_rw_policy" {
   })
 }
 
+# Define a policy that allows API Gateway to invoke Lambda functions
+resource "aws_iam_policy" "api_gateway_invoke_lambda" {
+  name        = "api-gateway-invoke-lambda-${terraform.workspace}"
+  description = "Policy to allow API Gateway to invoke Lambda functions"
+  policy = jsonencode({
+    Version = "2012-10-17",
+    Statement = [{
+      Effect   = "Allow",
+      Action   = "lambda:InvokeFunction",
+      Resource = "arn:aws:lambda:${var.aws_region}:${data.aws_caller_identity.current.account_id}:function:*",
+      Condition = {
+        ArnLike = {
+          "AWS:SourceArn" : "${aws_api_gateway_rest_api.ims_api.execution_arn}/*/*"
+        }
+      }
+    }]
+  })
+}
+
+# Attach the policy to the Lambda execution role
+resource "aws_iam_role_policy_attachment" "api_gateway_invoke_lambda_attachment" {
+  role       = aws_iam_role.lambda_exec_role.name
+  policy_arn = aws_iam_policy.api_gateway_invoke_lambda.arn
+}
+
 # Get credentials lambda function policy
 resource "aws_iam_policy" "get_credentials_policy" {
   name        = "get-credentials-policy-${terraform.workspace}"

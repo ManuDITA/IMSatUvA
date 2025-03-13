@@ -10,6 +10,10 @@ table = dynamodb.Table('item')
 def lambda_handler(event, context):
     body = json.loads(event['body'])
 
+    # Validate required fields
+    if 'name' not in body:
+        return http_utils.generate_response(400, f'Missing required fields: {[].join([field for field in ["name"] if field not in body])}')
+
     item = {
         "id": body.get('id', str(uuid.uuid4())), # DynamoDB doesn't support raw UUIDs
         "name": body['name']
