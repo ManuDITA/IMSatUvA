@@ -148,7 +148,7 @@ paths:
         - cognito_iam_authorizer: []
       x-amazon-apigateway-integration:
         type: "aws_proxy"
-        httpMethod: "GET"
+        httpMethod: "POST"
         uri: "${get_all_stores_arn}"
         passthroughBehavior: "when_no_match"
       responses:
@@ -171,7 +171,7 @@ paths:
         - cognito_iam_authorizer: []
       x-amazon-apigateway-integration:
         type: "aws_proxy"
-        httpMethod: "PUT"
+        httpMethod: "POST"
         uri: "${add_store_arn}"
         passthroughBehavior: "when_no_match"
       requestBody:
@@ -202,7 +202,7 @@ paths:
         - cognito_iam_authorizer: []
       x-amazon-apigateway-integration:
         type: "aws_proxy"
-        httpMethod: "GET"
+        httpMethod: "POST"
         uri: "${get_store_arn}"
         passthroughBehavior: "when_no_match"
       parameters:
@@ -230,7 +230,7 @@ paths:
         - cognito_iam_authorizer: []
       x-amazon-apigateway-integration:
         type: "aws_proxy"
-        httpMethod: "DELETE"
+        httpMethod: "POST"
         uri: "${delete_store_arn}"
         passthroughBehavior: "when_no_match"
       parameters:
