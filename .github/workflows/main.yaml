@@ -57,12 +57,8 @@ jobs:
           BRANCH_NAME=$(echo $GITHUB_REF | sed 's|refs/heads/||' | sed 's|/|-|g' | sed 's|env:/||g') 
           TF_STATE_KEY="${BRANCH_NAME}.tfstate"  
           echo "TF_STATE_KEY=${TF_STATE_KEY}" >> $GITHUB_ENV  
-          terraform init -backend-config="bucket=${AWS_BUCKET_NAME}" -backend-config="key=${TF_STATE_KEY}" -backend-config="region=${AWS_REGION}"
-          terraform workspace select "${BRANCH_NAME}" || terraform workspace new "${BRANCH_NAME}"
-          echo "Checking workspace list:"
-          terraform workspace list
-          echo "Current workspace:"
-          terraform workspace show
+          terraform init -backend-config="bucket=${AWS_BUCKET_NAME}" -backend-config="key=${env.TF_STATE_KEY}" -backend-config="region=${AWS_REGION}"
+          terraform workspace select "${env.BRANCH_NAME}" || terraform workspace new "${env.BRANCH_NAME}"
       
       - name: Terraform Validate
         id: validate
@@ -119,7 +115,7 @@ jobs:
         run: |
           DELETE_BRANCH_NAME=$(echo $GITHUB_REF | sed 's|refs/heads/||') 
           BRANCH_NAME=$(echo $DELETE_BRANCH_NAME | sed 's|/|-|g') 
-          echo "${BRANCH_NAME}" >>$GITHUB_ENV
+          echo "${BRANCH_NAME}" >> $GITHUB_ENV
           echo "Branch that was deleted: ${BRANCH_NAME}"
           echo "TF_STATE_KEY=env:/${BRANCH_NAME}/${BRANCH_NAME}.tfstate" >> $GITHUB_ENV
       
@@ -130,11 +126,11 @@ jobs:
           AWS_BUCKET_KEY_NAME: ${{ secrets.AWS_BUCKET_KEY_NAME }}
         run: | # doing this to get clean name without / and then get a terraform safe name
            BRANCH_NAME=$(echo $GITHUB_REF | sed 's|refs/heads/||' | sed 's|/|-|g')  
-           terraform init -backend-config="bucket=${AWS_BUCKET_NAME}" -backend-config="key=${BRANCH_NAME}.tfstate" -backend-config="region=${AWS_REGION}"
+           terraform init -backend-config="bucket=${AWS_BUCKET_NAME}" -backend-config="key=${env.TF_STATE_KEY}" -backend-config="region=${AWS_REGION}"
            
       - name: Select Terraform Workspace
         run: |
-         terraform workspace select ${BRANCH_NAME} || echo "Workspace not found, skipping."
+         terraform workspace select ${env.BRANCH_NAME} || echo "Workspace not found, skipping."
 
       - name: Debug Terraform State
         run: terraform state list || echo "No state found for this branch."
