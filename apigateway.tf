@@ -26,6 +26,7 @@ resource "aws_api_gateway_rest_api" "ims_api" {
     promote_user_arn      = module.promote_user.lambda_function_invoke_arn
     demote_user_arn       = module.demote_user.lambda_function_invoke_arn
     add_store_item_arn    = module.add_store_item.lambda_function_invoke_arn
+    delete_store_item_arn = module.delete_store_item.lambda_function_invoke_arn
     cognito_user_pool_arn = aws_cognito_user_pool.ims_user_pool.arn
   })))
 
