@@ -348,8 +348,8 @@ paths:
     post:
       tags: 
         - Store Management
-      summary: Moves specified stock item to target store
-      operationId: moveStockItem
+      summary: Add specified stock item to target store
+      operationId: addStockItem
       parameters:
         - name: storeId
           in: path
@@ -363,6 +363,12 @@ paths:
           schema:
             type: string
             format: uuid
+        - name: quantity
+          in: query
+          required: true
+          schema:
+            type: integer
+            format: int32
       requestBody:
         required: true
         content:
@@ -370,12 +376,15 @@ paths:
             schema:
               type: object
               properties:
+                storeId:
+                  type: string
+                  format: uuid
+                itemId:
+                  type: string
+                  format: uuid
                 quantity:
                   type: integer
                   format: int32
-                toStore:
-                  type: string
-                  format: uuid
       responses:
         '200':
           $ref: "#/components/responses/SuccessResponse"
@@ -385,6 +394,8 @@ paths:
           $ref: '#/components/responses/ForbiddenResponse'
         '404':
           $ref: '#/components/responses/NotFoundResponse'
+        '500':
+          $ref: '#/components/responses/500Response'
       x-amazon-apigateway-integration:
         type: "aws_proxy"
         httpMethod: "POST"
@@ -747,3 +758,5 @@ components:
       description: You don't have the necessary permissions to perform this action.
     NotFoundResponse:
       description: Resource not found
+    500Response:
+      description: Internal server error
