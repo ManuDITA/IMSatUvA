@@ -390,40 +390,42 @@ paths:
         httpMethod: "POST"
         uri: "${move_stock_item_arn}"
         passthroughBehavior: "when_no_match"
-    # delete:   
-    #   tags:
-    #     - Store Management
-    #   security:
-    #     - cognito_iam_authorizer: []
-    #   summary: Deletes stock item from specified store
-    #   operationId: deleteStoreItem
-    #   parameters:
-    #     - name: storeId
-    #       in: path
-    #       required: true
-    #       schema:
-    #         type: string
-    #         format: uuid
-    #     - name: itemId
-    #       in: path
-    #       required: true
-    #       schema:
-    #         type: string
-    #         format: uuid
-    #   responses:
-    #     '200':
-    #       description: Success
-    #       content:
-    #         application/json:
-    #           schema:
-    #               $ref: "#/components/schemas/StoreItem"
-    #     '401':
-    #       $ref: '#/components/responses/UnauthorizedResponse'
-    #     '403':
-    #       $ref: '#/components/responses/ForbiddenResponse'
-    #     '404':
-    #       $ref: '#/components/responses/NotFoundResponse'
-
+    delete:   
+      tags:
+        - Store Management
+      summary: Deletes stock item from specified store
+      operationId: deleteStoreItem
+      parameters:
+        - name: storeId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+        - name: itemId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                  $ref: "#/components/schemas/StoreItem"
+        '401':
+          $ref: '#/components/responses/UnauthorizedResponse'
+        '403':
+          $ref: '#/components/responses/ForbiddenResponse'
+        '404':
+          $ref: '#/components/responses/NotFoundResponse'
+      x-amazon-apigateway-integration:
+        type: "aws_proxy"
+        httpMethod: "POST"
+        uri: "${move_stock_item_arn}"
+        passthroughBehavior: "when_no_match"
   # /cart:
   #   get:   
   #     tags:
