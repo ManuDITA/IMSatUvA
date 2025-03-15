@@ -469,3 +469,32 @@ module "delete_store_item" {
     }
   }
 }
+
+module "update_store_item" {
+  source        = "terraform-aws-modules/lambda/aws"
+  version       = "7.20.0"
+  function_name = "update_store_item-${terraform.workspace}"
+  description   = "Get a list of all defined stores"
+  handler       = "update_store_item.lambda_handler"
+  runtime       = "python3.13"
+  architectures = ["arm64"]
+  timeout       = 120
+  create_role   = false
+  lambda_role   = aws_iam_role.lambda_exec_role.arn
+  source_path = [
+    "${path.module}/lambdas/update_store_item/",
+    {
+      path          = "${path.module}/lambdas/modules/"
+      prefix_in_zip = "modules"
+    }
+  ]
+  publish = true
+
+  # Allow the API Gateway to invoke the Lambda functions
+  allowed_triggers = {
+    APIGatewayAny = {
+      service    = "apigateway"
+      source_arn = "${aws_api_gateway_rest_api.ims_api.execution_arn}/*/*" # Allow access from any method and path
+    }
+  }
+}

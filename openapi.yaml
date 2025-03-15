@@ -437,11 +437,11 @@ paths:
         httpMethod: "POST"
         uri: "${move_stock_item_arn}"
         passthroughBehavior: "when_no_match"
-    delete:   
+    patch:   
       tags:
         - Store Management
-      summary: Deletes stock item from specified store
-      operationId: deleteStoreItem
+      summary: Updates stock item from specified store
+      operationId: updateStoreItem
       parameters:
         - name: storeId
           in: path
@@ -455,12 +455,30 @@ paths:
           schema:
             type: string
             format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                storeId:
+                  type: string
+                  format: uuid
+                itemId:
+                  type: string
+                  format: uuid
+                quantity:
+                  type: integer
+                  format: int32
       responses:
         '200':
           description: Success
           content:
             application/json:
               schema:
+                type: array
+                items:
                   $ref: "#/components/schemas/StoreItem"
         '401':
           $ref: '#/components/responses/UnauthorizedResponse'
@@ -468,11 +486,8 @@ paths:
           $ref: '#/components/responses/ForbiddenResponse'
         '404':
           $ref: '#/components/responses/NotFoundResponse'
-      x-amazon-apigateway-integration:
-        type: "aws_proxy"
-        httpMethod: "POST"
-        uri: "${move_stock_item_arn}"
-        passthroughBehavior: "when_no_match"
+        '500':
+          $ref: '#/components/responses/500Response'    
   # /cart:
   #   get:   
   #     tags:
