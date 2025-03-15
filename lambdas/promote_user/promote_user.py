@@ -19,7 +19,7 @@ def lambda_handler(event, context):
             GroupName=group_name
         )
 
-        return http_utils.generate_response(200, f"User \"{username}\" added to group \"{group_name}\"")
+        return http_utils.generate_response(200, f"User '{username}' added to group '{group_name}'")
     except cognito_client.exceptions.ResourceNotFoundException:
         return http_utils.generate_response(404, f"User or group not found")
     except Exception as e:
