@@ -12,15 +12,15 @@ def lambda_handler(event, context):
     group_name = body['groupName']
 
     try:
-        # Add the user to the specified group
-        cognito_client.admin_add_user_to_group(
+        # Remove the user from the specified group
+        cognito_client.admin_remove_user_from_group(
             UserPoolId=USER_POOL_ID,
             Username=username,
             GroupName=group_name
         )
 
-        return http_utils.generate_response(200, f"User \"{username}\" added to group \"{group_name}\"")
+        return http_utils.generate_response(200, f"User \"{username}\" removed from group \"{group_name}\"")
     except cognito_client.exceptions.ResourceNotFoundException:
         return http_utils.generate_response(404, f"User or group not found")
     except Exception as e:
-        return http_utils.generate_response(500, f"Error adding user to group: {str(e)}")
+        return http_utils.generate_response(500, f"Error removing user from group: {str(e)}")

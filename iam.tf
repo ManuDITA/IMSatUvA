@@ -136,7 +136,8 @@ resource "aws_iam_role_policy" "user_deny_policy" {
         "arn:aws:execute-api:${var.aws_region}:${data.aws_caller_identity.current.account_id}:${aws_api_gateway_rest_api.ims_api.id}/${aws_api_gateway_stage.ims_api_stage_deployment.stage_name}/PUT/stores",
         "arn:aws:execute-api:${var.aws_region}:${data.aws_caller_identity.current.account_id}:${aws_api_gateway_rest_api.ims_api.id}/${aws_api_gateway_stage.ims_api_stage_deployment.stage_name}/DELETE/stores/*",
         "arn:aws:execute-api:${var.aws_region}:${data.aws_caller_identity.current.account_id}:${aws_api_gateway_rest_api.ims_api.id}/${aws_api_gateway_stage.ims_api_stage_deployment.stage_name}/GET/auth_test_admin",
-        "arn:aws:execute-api:${var.aws_region}:${data.aws_caller_identity.current.account_id}:${aws_api_gateway_rest_api.ims_api.id}/${aws_api_gateway_stage.ims_api_stage_deployment.stage_name}/POST/users/promote/*"
+        "arn:aws:execute-api:${var.aws_region}:${data.aws_caller_identity.current.account_id}:${aws_api_gateway_rest_api.ims_api.id}/${aws_api_gateway_stage.ims_api_stage_deployment.stage_name}/POST/users/promote/*",
+        "arn:aws:execute-api:${var.aws_region}:${data.aws_caller_identity.current.account_id}:${aws_api_gateway_rest_api.ims_api.id}/${aws_api_gateway_stage.ims_api_stage_deployment.stage_name}/POST/users/demote/*"
       ]
     }]
   })

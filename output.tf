@@ -30,6 +30,10 @@ output "lambda_function_promote_user_invoke_arn" {
   value = module.promote_user.lambda_function_invoke_arn
 }
 
+output "lambda_function_demote_user_invoke_arn" {
+  value = module.demote_user.lambda_function_invoke_arn
+}
+
 output "lambda_function_get_all_items_invoke_arn" {
   value = module.get_all_items.lambda_function_invoke_arn
 }

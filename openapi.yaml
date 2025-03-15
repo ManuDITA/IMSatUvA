@@ -581,11 +581,11 @@ paths:
           $ref: '#/components/responses/SuccessResponse'
         '401':
           $ref: '#/components/responses/UnauthorizedResponse'
-  /users/promote/{userId}:
+  /users/promote/{username}:
     post:
       tags:
       - User Management
-      summary: Promote user to admin
+      summary: Promote user to specified group
       operationId: promoteUser
       security:
         - cognito_iam_authorizer: []
@@ -595,7 +595,45 @@ paths:
         uri: "${promote_user_arn}"
         passthroughBehavior: "when_no_match"
       parameters:
-        - name: userId
+        - name: username
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                groupName:
+                  type: string
+      responses:
+        '200':
+          $ref: '#/components/responses/SuccessResponse'
+        '401':
+          $ref: '#/components/responses/UnauthorizedResponse'
+        '403':
+          $ref: '#/components/responses/ForbiddenResponse'
+        '404':
+          $ref: '#/components/responses/NotFoundResponse'
+  /users/demote/{username}:
+    post:
+      tags:
+      - User Management
+      summary: Demote user from specified group
+      operationId: demoteUser
+      security:
+        - cognito_iam_authorizer: []
+      x-amazon-apigateway-integration:
+        type: "aws_proxy"
+        httpMethod: "POST"
+        uri: "${demote_user_arn}"
+        passthroughBehavior: "when_no_match"
+      parameters:
+        - name: username
           in: path
           required: true
           schema:
