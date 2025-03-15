@@ -19,6 +19,8 @@ module "hello_world" {
       source_arn = "${aws_api_gateway_rest_api.ims_api.execution_arn}/*/*" # Allow access from any method and path
     }
   }
+
+  tracing_mode = "Active"
 }
 
 module "get_all_items" {
@@ -48,6 +50,8 @@ module "get_all_items" {
       source_arn = "${aws_api_gateway_rest_api.ims_api.execution_arn}/*/*" # Allow access from any method and path
     }
   }
+
+  tracing_mode = "Active"
 }
 
 module "register_item" {
@@ -77,6 +81,8 @@ module "register_item" {
       source_arn = "${aws_api_gateway_rest_api.ims_api.execution_arn}/*/*" # Allow access from any method and path
     }
   }
+
+  tracing_mode = "Active"
 }
 
 module "delete_item" {
@@ -106,6 +112,8 @@ module "delete_item" {
       source_arn = "${aws_api_gateway_rest_api.ims_api.execution_arn}/*/*" # Allow access from any method and path
     }
   }
+
+  tracing_mode = "Active"
 }
 
 module "get_item" {
@@ -135,6 +143,8 @@ module "get_item" {
       source_arn = "${aws_api_gateway_rest_api.ims_api.execution_arn}/*/*" # Allow access from any method and path
     }
   }
+
+  tracing_mode = "Active"
 }
 
 module "auth_test_user" {
@@ -158,6 +168,8 @@ module "auth_test_user" {
       source_arn = "${aws_api_gateway_rest_api.ims_api.execution_arn}/*/*" # Allow access from any method and path
     }
   }
+
+  tracing_mode = "Active"
 }
 
 module "auth_test_admin" {
@@ -181,6 +193,8 @@ module "auth_test_admin" {
       source_arn = "${aws_api_gateway_rest_api.ims_api.execution_arn}/*/*" # Allow access from any method and path
     }
   }
+
+  tracing_mode = "Active"
 }
 
 module "get_credentials" {
@@ -211,6 +225,8 @@ module "get_credentials" {
       source_arn = "${aws_api_gateway_rest_api.ims_api.execution_arn}/*/*" # Allow access from any method and path
     }
   }
+
+  tracing_mode = "Active"
 }
 
 module "promote_user" {
@@ -244,6 +260,8 @@ module "promote_user" {
   environment_variables = {
     "USER_POOL_ID" = aws_cognito_user_pool.ims_user_pool.id
   }
+
+  tracing_mode = "Active"
 }
 
 module "demote_user" {
@@ -277,6 +295,8 @@ module "demote_user" {
   environment_variables = {
     "USER_POOL_ID" = aws_cognito_user_pool.ims_user_pool.id
   }
+
+  tracing_mode = "Active"
 }
 
 module "get_all_stores" {
@@ -306,6 +326,8 @@ module "get_all_stores" {
       source_arn = "${aws_api_gateway_rest_api.ims_api.execution_arn}/*/*" # Allow access from any method and path
     }
   }
+
+  tracing_mode = "Active"
 }
 
 module "add_store" {
@@ -335,6 +357,8 @@ module "add_store" {
       source_arn = "${aws_api_gateway_rest_api.ims_api.execution_arn}/*/*" # Allow access from any method and path
     }
   }
+
+  tracing_mode = "Active"
 }
 
 module "get_store" {
@@ -364,6 +388,8 @@ module "get_store" {
       source_arn = "${aws_api_gateway_rest_api.ims_api.execution_arn}/*/*" # Allow access from any method and path
     }
   }
+
+  tracing_mode = "Active"
 }
 
 module "delete_store" {
@@ -393,6 +419,8 @@ module "delete_store" {
       source_arn = "${aws_api_gateway_rest_api.ims_api.execution_arn}/*/*" # Allow access from any method and path
     }
   }
+
+  tracing_mode = "Active"
 }
 
 module "move_store_item" {
@@ -416,4 +444,6 @@ module "move_store_item" {
       source_arn = "${aws_api_gateway_rest_api.ims_api.execution_arn}/*/*" # Allow access from any method and path
     }
   }
+
+  tracing_mode = "Active"
 }

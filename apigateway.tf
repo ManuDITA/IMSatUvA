@@ -55,7 +55,8 @@ resource "aws_api_gateway_deployment" "ims_api_deployment" {
 # Create a stage for the deployment
 # ---------------------------------------------------------
 resource "aws_api_gateway_stage" "ims_api_stage_deployment" {
-  stage_name    = "dev"
-  deployment_id = aws_api_gateway_deployment.ims_api_deployment.id
-  rest_api_id   = aws_api_gateway_rest_api.ims_api.id
+  stage_name           = "dev"
+  deployment_id        = aws_api_gateway_deployment.ims_api_deployment.id
+  rest_api_id          = aws_api_gateway_rest_api.ims_api.id
+  xray_tracing_enabled = true
 }
