@@ -23,6 +23,8 @@ resource "aws_api_gateway_rest_api" "ims_api" {
     auth_test_user_arn    = module.auth_test_user.lambda_function_invoke_arn
     auth_test_admin_arn   = module.auth_test_admin.lambda_function_invoke_arn
     get_credentials_arn   = module.get_credentials.lambda_function_invoke_arn
+    promote_user_arn      = module.promote_user.lambda_function_invoke_arn
+    demote_user_arn       = module.demote_user.lambda_function_invoke_arn
     cognito_user_pool_arn = aws_cognito_user_pool.ims_user_pool.arn
   })))
 
