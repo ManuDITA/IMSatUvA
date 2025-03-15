@@ -8,7 +8,8 @@ USER_POOL_ID = os.environ['USER_POOL_ID']
 
 def lambda_handler(event, context):
     user_id = event['pathParameters']['userId']
-    group_name = event['queryStringParameters']['groupName']
+    body = json.loads(event['body'])
+    group_name = body['groupName']
 
     try:
         # Add the user to the specified group
@@ -17,7 +18,7 @@ def lambda_handler(event, context):
             Username=user_id,
             GroupName=group_name
         )
-        
+
         return http_utils.generate_response(200, f"User {user_id} added to group {group_name}")
     except cognito_client.exceptions.ResourceNotFoundException:
         return http_utils.generate_response(404, f"User or group not found")
