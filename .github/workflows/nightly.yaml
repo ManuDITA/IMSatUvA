@@ -15,4 +15,5 @@ jobs:
 
       - name: Run Collection
         run: |
-          newman run "https://api.getpostman.com/collections/${{ secrets.POSTMAN_COLLECTION_ID }}?apikey=${{ secrets.POSTMAN_API_KEY }}"
+          newman run "https://api.getpostman.com/collections/${{ secrets.POSTMAN_COLLECTION_ID }}?apikey=${{ secrets.POSTMAN_API_KEY }}" \
+            --environment "https://api.getpostman.com/environments/${{ secrets.POSTMAN_ENV_ID }}?apikey=${{ secrets.POSTMAN_API_KEY }}"
