@@ -78,7 +78,7 @@ resource "aws_iam_policy" "add_to_group_policy" {
         "cognito-idp:AdminAddUserToGroup",
         "cognito-idp:AdminRemoveUserFromGroup",
         "cognito-idp:AdminListGroupsForUser",
-
+        "cognito-idp:ListUsers"
       ],
       Resource = "arn:aws:cognito-idp:${var.aws_region}:${data.aws_caller_identity.current.account_id}:userpool/${aws_cognito_user_pool.ims_user_pool.id}"
     }]
