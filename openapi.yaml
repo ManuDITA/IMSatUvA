@@ -399,7 +399,7 @@ paths:
       x-amazon-apigateway-integration:
         type: "aws_proxy"
         httpMethod: "POST"
-        uri: "${move_stock_item_arn}"
+        uri: "${add_store_item_arn}"
         passthroughBehavior: "when_no_match"
     delete:   
       tags:
@@ -434,8 +434,8 @@ paths:
           $ref: '#/components/responses/NotFoundResponse'
       x-amazon-apigateway-integration:
         type: "aws_proxy"
-        httpMethod: "POST"
-        uri: "${move_stock_item_arn}"
+        httpMethod: "DELETE"
+        uri: "${delete_store_item_arn}"
         passthroughBehavior: "when_no_match"
     patch:   
       tags:
@@ -633,6 +633,11 @@ paths:
           $ref: '#/components/responses/UnauthorizedResponse'
         '403':
           $ref: '#/components/responses/ForbiddenResponse'
+      x-amazon-apigateway-integration:
+        type: "aws_proxy"
+        httpMethod: "POST"
+        uri: "${move_store_item_arn}"
+        passthroughBehavior: "when_no_match"
 
   /auth_test:
     get:
