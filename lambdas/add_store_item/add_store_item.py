@@ -31,26 +31,26 @@ def lambda_handler(event, context):
         }
 
         # Check if items array exists in store, else create it
-        store_items = store.get("items", [])
+        stock_items = store.get("stockItems", [])
 
         # Check if item already exists in store
-        for stored_item in store_items:
+        for stored_item in stock_items:
             if stored_item["itemId"] == item_id:
                 # Update quantity of existing item
                 stored_item["quantity"] += new_item["quantity"]  
                 break
         else:
             # Add new item since no existing item found
-            store_items.append(new_item) 
+            stock_items.append(new_item)
 
         # Update store with modified items list
         stores_table.update_item(
             Key={'id': store_id},
-            UpdateExpression="SET items = :items",
-            ExpressionAttributeValues={":items": store_items}
+            UpdateExpression="SET stockItems = :stockItems",
+            ExpressionAttributeValues={":stockItems": stock_items}
         )
 
-        return http_utils.generate_response(201, {"message": "Item added to store", "updatedItems": store_items})
+        return http_utils.generate_response(201, {"message": "Item added to store", "updatedItems": stock_items})
 
     except KeyError as e:
         return http_utils.generate_response(400, f"Missing required parameter: {str(e)}")

@@ -9,7 +9,6 @@ stores_table = dynamodb.Table("store")  # Table storing store details
 def lambda_handler(event, context):
     try:
         # Extract request body
-        
         body = json.loads(event.get('body', '{}'))
         fromStoreId = body.get("fromStoreId")
         toStoreId = body.get("toStoreId")
@@ -31,12 +30,12 @@ def lambda_handler(event, context):
             return http_utils.generate_response(404, "Destination store not found")
         destination_store = destination_response['Item']
 
-        # Get items from both stores
-        source_items = source_store.get("items", [])
-        destination_items = destination_store.get("items", [])
+        # Get stock items from both stores
+        source_stock_items = source_store.get("stockItems", [])
+        destination_stock_items = destination_store.get("stockItems", [])
 
         # Find item in source store
-        source_item = next((item for item in source_items if item["itemId"] == itemId), None)
+        source_item = next((item for item in source_stock_items if item["itemId"] == itemId), None)
         if not source_item:
             return http_utils.generate_response(404, "Item not found in source store")
 
@@ -46,15 +45,15 @@ def lambda_handler(event, context):
         # Deduct quantity from source store
         source_item["quantity"] -= quantity
         if source_item["quantity"] == 0:
-            source_items.remove(source_item)
+            source_stock_items.remove(source_item)
 
         # Find item in destination store
-        destination_item = next((item for item in destination_items if item["itemId"] == itemId), None)
+        destination_item = next((item for item in destination_stock_items if item["itemId"] == itemId), None)
 
         if destination_item:
             destination_item["quantity"] += quantity
         else:
-            destination_items.append({
+            destination_stock_items.append({
                 "itemId": itemId,
                 "quantity": quantity,
                 "price": source_item["price"]  # Assuming same price, adjust as needed
@@ -63,14 +62,14 @@ def lambda_handler(event, context):
         # Update both stores in DynamoDB
         stores_table.update_item(
             Key={'id': fromStoreId},
-            UpdateExpression="SET items = :items",
-            ExpressionAttributeValues={":items": source_items}
+            UpdateExpression="SET stockItems = :stockItems",
+            ExpressionAttributeValues={":stockItems": source_stock_items}
         )
 
         stores_table.update_item(
             Key={'id': toStoreId},
-            UpdateExpression="SET items = :items",
-            ExpressionAttributeValues={":items": destination_items}
+            UpdateExpression="SET stockItems = :stockItems",
+            ExpressionAttributeValues={":stockItems": destination_stock_items}
         )
 
         return http_utils.generate_response(200, {"message": "Stock moved successfully"})
