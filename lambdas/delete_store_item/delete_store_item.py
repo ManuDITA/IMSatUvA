@@ -8,11 +8,11 @@ store_table = dynamodb.Table("store")
 
 def lambda_handler(event, context):
     store_id = event['pathParameters']['storeId']
-    stock_id = event['pathParameters']['stockId']
+    item_id = event['pathParameters']['itemId']
 
     try:
         response = store_table.delete_item(
-            Key={'storeId': store_id, 'stockId': stock_id},
+            Key={'id': store_id, 'itemId': item_id},
             ReturnValues='ALL_OLD'
         )
     except KeyError:

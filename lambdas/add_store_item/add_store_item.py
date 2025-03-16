@@ -12,12 +12,13 @@ def lambda_handler(event, context):
         store_id = event['pathParameters']['storeId']
         item_id = event['pathParameters']['itemId']
 
-        store_response = stores_table.get_item(Key={'storeId': store_id})
+        store_response = stores_table.get_item(Key={'id': store_id})
         if 'Item' not in store_response:
             return http_utils.generate_response(404, "Store not found")
         store = store_response['Item']
 
-        item_response = items_table.get_item(Key={'itemId': item_id})
+        # Get item from item table (id of the item: id)
+        item_response = items_table.get_item(Key={'id': item_id})
         if 'Item' not in item_response:
             return http_utils.generate_response(404, "Item not found")
         item = item_response['Item']
@@ -44,7 +45,7 @@ def lambda_handler(event, context):
 
         # Update store with modified items list
         stores_table.update_item(
-            Key={'storeId': store_id},
+            Key={'id': store_id},
             UpdateExpression="SET items = :items",
             ExpressionAttributeValues={":items": store_items}
         )
