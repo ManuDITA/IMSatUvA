@@ -21,7 +21,7 @@ def lambda_handler(event, context):
     item = {
         "id": body.get('id', str(uuid.uuid4())), # DynamoDB doesn't support raw UUIDs
         "name": body['name'],
-        "price": body['price']
+        "price": Decimal(str(body['price']))
     }
 
     table.put_item(Item=item)
