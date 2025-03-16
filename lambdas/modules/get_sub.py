@@ -3,7 +3,7 @@ import jwt
 def get_sub(event):
     try :
         auth_header = event["headers"].get("Authorization", "")
-        if not auth_header.startsWith("Bearer "):
+        if not auth_header.startswith("Bearer "):
             return None
         
         token =  auth_header.split(" ")[1]  #trying to remove the "Bearer part"
