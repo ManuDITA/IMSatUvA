@@ -1,29 +1,83 @@
 import json
 import boto3
-from botocore.exceptions import ClientError
+import modules.http_utils as http_utils
 
-dynamodb = boto3.resource('dynamodb')
-store_items_table = dynamodb.Table('InventoryItem')
+dynamodb = boto3.resource("dynamodb")
+stores_table = dynamodb.Table("store")  # Table storing store details
+
 
 def lambda_handler(event, context):
-    # Extract path parameters from the event
-    store_id = event['pathParameters']['storeId']
-    stock_id = event['pathParameters']['stockId']
-    
-    # Extract body parameters from the event
-    body = json.loads(event['body'])
-    quantity = body['quantity']
-    to_store = body['toStore']
-
     try:
-        {
-        }
-    
-    except ClientError as e:
-        return {
-            'statusCode': 400,
-            'body': json.dumps({
-                'message': 'Error moving item.',
-                'error': str(e)
+        # Extract request body
+        
+        body = json.loads(event.get('body', '{}'))
+        fromStoreId = body.get("fromStoreId")
+        toStoreId = body.get("toStoreId")
+        itemId = body.get("itemId")
+        quantity = body.get("quantity")
+
+        if quantity is None or quantity <= 0:
+            return http_utils.generate_response(400, "Invalid quantity for transfer")
+
+        # Fetch source store from DynamoDB
+        source_response = stores_table.get_item(Key={'storeId': fromStoreId})
+        if 'Item' not in source_response:
+            return http_utils.generate_response(404, "Source store not found")
+        source_store = source_response['Item']
+
+        # Fetch destination store from DynamoDB
+        destination_response = stores_table.get_item(Key={'storeId': toStoreId})
+        if 'Item' not in destination_response:
+            return http_utils.generate_response(404, "Destination store not found")
+        destination_store = destination_response['Item']
+
+        # Get items from both stores
+        source_items = source_store.get("items", [])
+        destination_items = destination_store.get("items", [])
+
+        # Find item in source store
+        source_item = next((item for item in source_items if item["itemId"] == itemId), None)
+        if not source_item:
+            return http_utils.generate_response(404, "Item not found in source store")
+
+        if source_item["quantity"] < quantity:
+            return http_utils.generate_response(400, "Not enough stock available")
+
+        # Deduct quantity from source store
+        source_item["quantity"] -= quantity
+        if source_item["quantity"] == 0:
+            source_items.remove(source_item)
+
+        # Find item in destination store
+        destination_item = next((item for item in destination_items if item["itemId"] == itemId), None)
+
+        if destination_item:
+            destination_item["quantity"] += quantity
+        else:
+            destination_items.append({
+                "itemId": itemId,
+                "quantity": quantity,
+                "price": source_item["price"]  # Assuming same price, adjust as needed
             })
-        }
+
+        # Update both stores in DynamoDB
+        stores_table.update_item(
+            Key={'storeId': fromStoreId},
+            UpdateExpression="SET items = :items",
+            ExpressionAttributeValues={":items": source_items}
+        )
+
+        stores_table.update_item(
+            Key={'storeId': toStoreId},
+            UpdateExpression="SET items = :items",
+            ExpressionAttributeValues={":items": destination_items}
+        )
+
+        return http_utils.generate_response(200, {"message": "Stock moved successfully"})
+
+    except KeyError as e:
+        return http_utils.generate_response(400, f"Missing required parameter: {str(e)}")
+    except json.JSONDecodeError:
+        return http_utils.generate_response(400, "Invalid JSON format")
+    except Exception as e:
+        return http_utils.generate_response(500, f"Internal server error: {str(e)}")
