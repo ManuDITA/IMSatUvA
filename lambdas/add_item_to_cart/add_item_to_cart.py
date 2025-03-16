@@ -96,8 +96,11 @@ def lambda_handler(event, context):
                 
                 cart_table.put_item(Item=new_cart)
                 
-                store_table.put_item(Item={"storeId": store_id, "items": store_items})
-                
+                store_table.update_item(
+                    Key={"storeId": store_id},
+                    UpdateExpression="SET items = :items",
+                    ExpressionAttributeValues={":items": store_items}
+                )
                 return http_utils.generate_response(200, f"Item successfully added to cart")
         return http_utils.generate_response(404, "item not found in the store")
     

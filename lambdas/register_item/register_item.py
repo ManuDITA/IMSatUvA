@@ -14,10 +14,13 @@ def lambda_handler(event, context):
     if 'name' not in body:
         return http_utils.generate_response(400, f'Missing required fields: {[].join([field for field in ["name"] if field not in body])}')
 
+    if 'price' not in body:
+        return http_utils.generate_response(400, f'Missing required fields: {[].join([field for field in ["price"] if field not in body])}')
+
     item = {
         "id": body.get('id', str(uuid.uuid4())), # DynamoDB doesn't support raw UUIDs
         "name": body['name'],
-        "price": body['price']
+        "price": float(body['price'])
     }
 
     table.put_item(Item=item)

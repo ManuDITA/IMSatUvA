@@ -636,6 +636,7 @@ components:
       type: object
       required:
         - name
+        - price
       properties:
         name:
           type: string
