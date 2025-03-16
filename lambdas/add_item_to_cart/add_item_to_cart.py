@@ -12,7 +12,7 @@ cart_table = dynamodb.Table('cart')
 item_table = dynamodb.Table('item')
 
 
-def lambda_handler(event):
+def lambda_handler(event, context):
     userId = retrieve_sub_id.get_sub(event)
     
     if not userId:
