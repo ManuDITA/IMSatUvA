@@ -22,7 +22,6 @@ def lambda_handler(event, context):
     try:
         store_id = event['pathParameters']['storeId']
         item_id = event['pathParameters']['itemId']
-        print(f"StoreId: {store_id}, ItemId: {item_id}"	)
         body = json.loads(event['body'])
         
         # Validate required fields
@@ -31,68 +30,41 @@ def lambda_handler(event, context):
         
         quantity = body['quantity']
         
-        user_cart = cart_table.get_item(Key={'userId': userId, 'storeId': store_id})
+        existing_cart = get_cart(userId, store_id)
+        store = get_store(store_id)
         
-        #create new cart if cart for userId and StoreId dont exist
-        if 'Item' not in user_cart:
-            print(f"Item wasn't find so we will add one")
-            new_cart = {
-                'userId' : userId,
-                'storeId' : store_id,
-                'cartItems' : [],
-                'totalCartPrice' : 0
-            }
-            
-            cart_table.put_item(Item=new_cart)
-            existing_cart = new_cart
-            
-        else:
-            print(f"Ended up here because cart does exist")
-            #fetch the cart that exists
-            existing_cart = user_cart['Item']
-
-        #Retrieve store details
-        store_information = store_table.get_item(Key={'id': store_id})
-        if 'Item' not in store_information:
+        if not store:
             return http_utils.generate_response(404, f"Store doesn't exist")
         
         # Check if store has any items
-        store_items = store_information.get("Item", {}).get("stockItems", [])
+        store_items = store.get("Item", {}).get("stockItems", [])
         if not store_items:
             return http_utils.generate_response(404, "No items found in the store")
-            
+        
+        #Process the item in the store
         for stored_item in store_items:
-            print(f"stored_item: {stored_item}")
             if stored_item["itemId"] == item_id:
-                print(f"itemid founc")
+                
                 # if stock is less than asked, return error and ask for reserving instead
                 if stored_item["quantity"] < quantity:
                     return http_utils.generate_response(400, f"Not enough quantity available in the store. Available: {stored_item['quantity']}, you can reserve if required.")
                 
                 # reduce stock quantity in the store
                 stored_item["quantity"] -= quantity
-                print(f"stored_item quantity reduced : {stored_item["quantity"]}")
-
-                #get the item from the item table
-                item_record = item_table.get_item(Key={'id': item_id})
                 
-                if 'Item' not in item_record:
-                    return http_utils.generate_response(400, f"Item doesn't exist")
+                #get the necessary item
+                item_record = get_item(item_id)
+                
+                if not item_record:
+                    return http_utils.generate_response(400, "Item doesn't exist")
                 
                 price_per_item = Decimal(item_record['Item']['price'])
-                print(f"price_per_item: {price_per_item}")
                 cart_items = existing_cart.get("cartItems", [])
-                item_exists = False
                 
-                for cart_item in cart_items:
-                    if cart_item["itemId"] == item_id:
-                        cart_item["quantity"] += quantity
-                        cart_item["totalItemPrice"] = str(Decimal(cart_item["quantity"]) * price_per_item)
-                        item_exists = True
-                        break
+                #Add or update cart item
+                item_exists = update_cart_items(cart_items, item_id, quantity, price_per_item)
                     
                 if not item_exists:
-                    print(f"item doesn't exist")
                     cart_items.append({
                         "itemId" : item_id,
                         "name": item_record['Item']["name"],
@@ -119,3 +91,33 @@ def lambda_handler(event, context):
     except Exception as e:
         return http_utils.generate_response(500, f"Internal server error: {str(e)}")
     
+
+def get_cart(userId, store_id):
+    user_cart = cart_table.get_item(Key={'userId': userId, 'storeId': store_id})
+    if 'Item' not in user_cart:
+        new_cart = {
+            'userId' : userId,
+            'storeId' : store_id,
+            'cartItems' : [],
+            'totalCartPrice' : 0
+        }
+        
+        cart_table.put_item(Item=new_cart)
+        return new_cart
+    return user_cart['Item']
+
+def get_store(store_id):
+    store_information = store_table.get_item(Key={'id': store_id})
+    return store_information.get('Item') if 'Item' in store_information else None
+
+def get_item(item_id):
+    item_record = item_table.get_item(Key={'id': item_id})
+    return item_record.get('Item') if 'Item' in item_record else None
+
+def update_cart_items(cart_items, item_id, quantity, price_per_item):
+    for cart_item in cart_items:
+        if cart_item["itemId"] == item_id:
+            cart_item["quantity"] += quantity
+            cart_item["totalItemPrice"] = str(Decimal(cart_item["quantity"]) * price_per_item)
+            return True
+    return False
