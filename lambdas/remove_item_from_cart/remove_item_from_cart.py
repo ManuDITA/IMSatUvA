@@ -49,7 +49,7 @@ def lambda_handler(event, context):
         if not item_exists:
             return http_utils.generate_response(404, f'Item doesnt not exist in the cart')
         
-        #recalculating the total price of the cart
+        #re-calculating the total price of the cart
         existing_cart["cartItems"] = cart_items
         existing_cart["totalCartPrice"] = str(sum(Decimal(item["totalItemPrice"]) for item in cart_items))
         
@@ -74,6 +74,7 @@ def lambda_handler(event, context):
                     UpdateExpression="SET stockItems = :stockItems",
                     ExpressionAttributeValues={":stockItems": store_items}
                 )
+        
         return http_utils.generate_response(200,f"item successfully removed from cart")
     
     except KeyError as e:
