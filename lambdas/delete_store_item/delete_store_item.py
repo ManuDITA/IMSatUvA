@@ -17,9 +17,13 @@ def lambda_handler(event, context):
         )
     except KeyError:
         return http_utils.generate_response(404, 'Resource not found')
+    except Exception as e:
+        return http_utils.generate_response(500, f"Internal server error: {str(e)}")
 
     # If the item was not found, the response will not contain the 'Attributes' key
     if 'Attributes' not in response:
         return http_utils.generate_response(404, 'Resource not found')
 
     return http_utils.generate_response(200, response['Attributes'])
+
+
