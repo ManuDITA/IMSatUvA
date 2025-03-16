@@ -10,10 +10,6 @@ output "cognito_user_pool_arn" {
   value = aws_cognito_user_pool.ims_user_pool.arn
 }
 
-output "lambda_function_move_store_item_invoke_arn" {
-  value = module.move_store_item.lambda_function_invoke_arn
-}
-
 output "lambda_function_auth_test_user_invoke_arn" {
   value = module.auth_test_user.lambda_function_invoke_arn
 }
