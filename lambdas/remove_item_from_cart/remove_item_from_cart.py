@@ -34,16 +34,16 @@ def lambda_handler(event, context):
             return http_utils.generate_response(400,f'Cart does not exist')
         
         existing_cart = user_cart['Item']
-        
-        cart_items = existing_cart.get("Item, {}").get("cartItems", [])
+        print(existing_cart)
+        cart_items = existing_cart.get("cartItems", [])
+        print(cart_items)
         item_exists = False
         
         for cart_item in cart_items:
             if cart_item["itemId"] == item_id:
                 item_exists = True
                 quantity = cart_item["quantity"]
-                cart_item.remove(cart_item)
-                
+                cart_items = [prod for prod in cart_items if prod["itemId"] != item_id] #filtering out the item id
                 break
         
         if not item_exists:
@@ -63,8 +63,6 @@ def lambda_handler(event, context):
             )
         
         #increase the stock in the store since item is removed from the cart
-        
-        
         store_items = store_information.get("Item", {}).get("stockItems", [])
         for stored_item in store_items:
             if stored_item["itemId"] == item_id:

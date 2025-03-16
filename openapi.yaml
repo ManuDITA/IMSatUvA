@@ -500,7 +500,7 @@ paths:
          '404':
            $ref: '#/components/responses/NotFoundResponse'
        
-     delete:
+     patch:
        tags: 
          - User Cart Management
        summary: Removes stock item from the logged-in user's shopping cart
