@@ -13,9 +13,11 @@ item_table = dynamodb.Table('item')
 
 
 def lambda_handler(event, context):
-    userId = retrieve_sub_id.get_sub(event)
+    # Extract the caller's user ID from cognitoAuthenticationProvider
+    auth_provider = event['requestContext']['identity']['cognitoAuthenticationProvider']
+    caller_user_id = auth_provider.split(':')[-1]  # Extract the user ID (last part of the string)
     
-    if not userId:
+    if not caller_user_id:
         return http_utils.generate_response(401, 'Not authorized')
     
     try:

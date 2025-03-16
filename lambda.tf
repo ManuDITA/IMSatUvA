@@ -474,5 +474,4 @@ module "add_item_to_cart" {
     }
   }
   
-  layers = [aws_lambda_layer_version.dependencies_layer.arn]
 }
