@@ -8,6 +8,7 @@ import modules.getSubId as getSubId
 dynamodb = boto3.resource("dynamodb")
 store_table = dynamodb.Table('store')
 cart_table = dynamodb.Table('cart')
+item_table = dynamodb.Table('item')
 
 
 def lambda_handler(event, context):
@@ -20,6 +21,7 @@ def lambda_handler(event, context):
         store_id = event['pathParameters']['storeId']
         item_id = event['pathParameters']['itemId']
         
+        
         body = json.loads(event['body'])
 
         # Validate required fields
@@ -29,6 +31,7 @@ def lambda_handler(event, context):
         quantity = body['quantity']
         user_cart = cart_table.get_item(Key={'userId': userId, 'storeId': store_id})
         
+        #create new cart if cart for userId and StoreId dont exist
         if 'Item' not in user_cart:
             new_cart = {
                 'userId' : userId,
@@ -36,14 +39,18 @@ def lambda_handler(event, context):
                 'items' : [],
                 'totalPrice' : 0
             }
+            
             cart_table.put_item(Item=new_cart)
         else:
+            #fetch the cart that exists
             new_cart = user_cart['Item']
 
-        store_information = store_table.get_item(Key={'storeId'})
+        #Retrieve store details
+        store_information = store_table.get_item(Key={'storeId': store_id})
         if 'Item' not in store_information:
             return http_utils.generate_response(404, f"Store doesn't exist")
         
+        #Check if store has any items
         store_items = store_information.get("items")
         if not store_items:
             return http_utils.generate_response(404, "No items found in the store")
@@ -51,15 +58,19 @@ def lambda_handler(event, context):
             
         for stored_item in store_items:
             if stored_item["itemId"] == item_id:
-                # if stock is less than asked, return error for reserving instead
+                # if stock is less than asked, return error and ask for reserving instead
                 if stored_item["quantity"] < quantity:
-                    return http_utils.generate_response(400, f'Not enough quantity available in the store. Available:{stored_item['quantity']}, you can reserve if required.')
+                    return http_utils.generate_response(400, f"Not enough quantity available in the store. Available: {stored_item['quantity']}, you can reserve if required.")
                 
                 # reduce stock quantity in the store
                 stored_item["quantity"] -= quantity
                 
-                price_per_item = stored_item.get("price")
+                #get the item from the item table
+                item_record = item_table.get_item(Key={'id': item_id})
+                if 'Item' not in item_record:
+                    return http_utils.generate_response(400, f"Item doesn't exist")
                 
+                price_per_item = item_record["price"]
                 
                 cart_items = new_cart.get("items", [])
                 item_exists = False
@@ -70,11 +81,12 @@ def lambda_handler(event, context):
                         cart_item["totalPrice"] = cart_item["quantity"] * price_per_item
                         item_exists = True
                         break
+                    
                 if not item_exists:
                     cart_items.append({
                         "item_id" : item_id,
-                        "name": stored_item.get("name"),
-                        "quantity": quantity
+                        "name": item_record["name"],
+                        "quantity": quantity,
                         "totalPrice": quantity * price_per_item
                     })    
                     
@@ -91,7 +103,7 @@ def lambda_handler(event, context):
     
     except KeyError as e:
         return http_utils.generate_response(400, f"Missing required parameter: {str(e)}")
-    except KeyError as e:
+    except Exception as e:
          return http_utils.generate_response(500, f"Internal server error: {str(e)}")
     
     
