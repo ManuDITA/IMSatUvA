@@ -6,10 +6,11 @@ dynamodb = boto3.resource("dynamodb")
 store_table = dynamodb.Table("store")
 
 def lambda_handler(event, context):
-    store_id = event['pathParameters']['storeId']
-    item_id = event['pathParameters']['itemId']
+
 
     try:
+        store_id = event['pathParameters']['storeId']
+        item_id = event['pathParameters']['itemId']
         # Retrieve the store from the table
         response = store_table.get_item(Key={'id': store_id})
         if 'Item' not in response:
