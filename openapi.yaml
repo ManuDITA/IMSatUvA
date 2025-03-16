@@ -586,6 +586,43 @@ paths:
   #       '404':
   #         $ref: '#/components/responses/NotFoundResponse'
   
+  /stores/moveStoreItem:
+    post:
+      summary: Transfer stock between stores
+      description: Moves a specified quantity of a stock item from one store to another.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - itemId
+                - fromStoreId
+                - toStoreId
+                - quantity
+              properties:
+                itemId:
+                  type: string
+                  example: "123456"
+                fromStoreId:
+                  type: string
+                  example: "store_001"
+                toStoreId:
+                  type: string
+                  example: "store_002"
+                quantity:
+                  type: integer
+                  minimum: 1
+                  example: 10
+      responses:
+        '200':
+          $ref: '#/components/responses/SuccessResponse'
+        '401':
+          $ref: '#/components/responses/UnauthorizedResponse'
+        '403':
+          $ref: '#/components/responses/ForbiddenResponse'
+
   /auth_test:
     get:
       tags: 

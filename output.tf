@@ -67,5 +67,9 @@ output "lambda_function_delete_store_item_nvoke_arn" {
 }
 
 output "lambda_function_update_store_item_nvoke_arn" {
-  value = module.delete_update_item.lambda_function_invoke_arn
+  value = module.update_store_item.lambda_function_invoke_arn
+}
+
+output "lambda_function_move_store_item_nvoke_arn" {
+  value = module.move_store_item.lambda_function_invoke_arn
 }
