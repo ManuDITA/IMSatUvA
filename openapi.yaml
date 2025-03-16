@@ -344,6 +344,8 @@ paths:
       tags: 
         - Store Management
       summary: Add specified stock item to target store
+      security:
+        - cognito_iam_authorizer: []
       operationId: addStockItem
       parameters:
         - name: storeId
@@ -400,6 +402,8 @@ paths:
       tags:
         - Store Management
       summary: Deletes stock item from specified store
+      security:
+        - cognito_iam_authorizer: []
       operationId: deleteStoreItem
       parameters:
         - name: storeId
@@ -425,13 +429,15 @@ paths:
           $ref: '#/components/responses/NotFoundResponse'
       x-amazon-apigateway-integration:
         type: "aws_proxy"
-        httpMethod: "DELETE"
+        httpMethod: "POST"
         uri: "${delete_store_item_arn}"
         passthroughBehavior: "when_no_match"
     patch:   
       tags:
         - Store Management
       summary: Updates stock item from specified store
+      security:
+        - cognito_iam_authorizer: []
       operationId: updateStoreItem
       parameters:
         - name: storeId
@@ -591,6 +597,8 @@ paths:
   /stores/moveStoreItem:
     post:
       summary: Transfer stock between stores
+      security:
+        - cognito_iam_authorizer: []
       description: Moves a specified quantity of a stock item from one store to another.
       requestBody:
         required: true
