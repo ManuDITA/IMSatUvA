@@ -1,5 +1,7 @@
+import json
 import boto3
 import modules.http_utils as http_utils
+
 dynamodb = boto3.resource("dynamodb")
 table = dynamodb.Table('item')
 
