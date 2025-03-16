@@ -38,7 +38,10 @@ jobs:
           role-to-assume: ${{ secrets.AWS_ROLE }}
           aws-region: ${{ secrets.AWS_REGION }}
           role-session-name: GitHub-OIDC-TERRAFORM
-      
+          
+      - name: Zip layers
+        run: bash package_layer.sh 
+
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v3.1.2
         with:

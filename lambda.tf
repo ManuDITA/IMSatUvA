@@ -407,4 +407,6 @@ module "add_item_to_cart" {
       source_arn = "${aws_api_gateway_rest_api.ims_api.execution_arn}/*/*" # Allow access from any method and path
     }
   }
+  
+  layers = [aws_lambda_layer_version.dependencies_layer.arn]
 }
