@@ -762,6 +762,9 @@ components:
       type: object
     CartItems:
       properties:
+        itemId:
+          type: string
+          example: 123333
         name:
           type: string
           example: Watch
@@ -769,7 +772,10 @@ components:
           type: integer
           format: int32
           example: 1102
-        totalPrice:
+        totalItemPrice:
+          type: string
+          example: "140.43"
+        totalCartPrice:
           type: string
           example: "50.0"
           
