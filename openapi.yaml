@@ -500,31 +500,41 @@ paths:
          '404':
            $ref: '#/components/responses/NotFoundResponse'
        
-
-  # /cart/{itemId}:
-  #   delete:
-  #     tags: 
-  #       - User Cart Management
-  #     summary: Removes stock item from the logged-in user's shopping cart
-  #     operationId: removeItemFromCart
-  #     parameters:
-  #       - name: itemId
-  #         in: path
-  #         required: true
-  #         schema:
-  #           type: string
-  #           format: uuid
-  #     responses:
-  #       '200':
-  #         description: Success
-  #         content:
-  #           application/json:
-  #             schema:
-  #               $ref: "#/components/schemas/StoreItem"
-  #       '401':
-  #         $ref: '#/components/responses/UnauthorizedResponse'
-  #       '404':
-  #         $ref: '#/components/responses/NotFoundResponse'
+     delete:
+       tags: 
+         - User Cart Management
+       summary: Removes stock item from the logged-in user's shopping cart
+       operationId: removeItemFromCart
+       parameters:
+        - name: storeId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+        - name: itemId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+       security:
+        - cognito_iam_authorizer: []
+       x-amazon-apigateway-integration:
+        type: "aws_proxy"
+        httpMethod: "POST"
+        uri: "${remove_item_from_cart_arn}"
+       responses:
+         '200':
+           description: Success
+           content:
+             application/json:
+               schema:
+                 $ref: "#/components/schemas/StoreItem"
+         '401':
+           $ref: '#/components/responses/UnauthorizedResponse'
+         '404':
+           $ref: '#/components/responses/NotFoundResponse'
 
   # /cart/reserve/{itemId}:
   #   post:
