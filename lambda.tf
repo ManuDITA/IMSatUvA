@@ -213,6 +213,72 @@ module "get_credentials" {
   }
 }
 
+module "promote_user" {
+  source        = "terraform-aws-modules/lambda/aws"
+  version       = "7.20.0"
+  function_name = "promote_user-${terraform.workspace}"
+  description   = "Promote a user (Add a user to a group)"
+  handler       = "promote_user.lambda_handler"
+  runtime       = "python3.13"
+  architectures = ["arm64"]
+  timeout       = 120
+  source_path = [
+    "${path.module}/lambdas/promote_user/",
+    {
+      path          = "${path.module}/lambdas/modules/"
+      prefix_in_zip = "modules"
+    }
+  ]
+  publish       = true
+  attach_policy = true
+  policy        = aws_iam_policy.add_to_group_policy.arn
+
+  # Allow the API Gateway to invoke the Lambda functions
+  allowed_triggers = {
+    APIGatewayAny = {
+      service    = "apigateway"
+      source_arn = "${aws_api_gateway_rest_api.ims_api.execution_arn}/*/*" # Allow access from any method and path
+    }
+  }
+
+  environment_variables = {
+    "USER_POOL_ID" = aws_cognito_user_pool.ims_user_pool.id
+  }
+}
+
+module "demote_user" {
+  source        = "terraform-aws-modules/lambda/aws"
+  version       = "7.20.0"
+  function_name = "demote_user-${terraform.workspace}"
+  description   = "Demote a user (Remove a user from a group)"
+  handler       = "demote_user.lambda_handler"
+  runtime       = "python3.13"
+  architectures = ["arm64"]
+  timeout       = 120
+  source_path = [
+    "${path.module}/lambdas/demote_user/",
+    {
+      path          = "${path.module}/lambdas/modules/"
+      prefix_in_zip = "modules"
+    }
+  ]
+  publish       = true
+  attach_policy = true
+  policy        = aws_iam_policy.add_to_group_policy.arn
+
+  # Allow the API Gateway to invoke the Lambda functions
+  allowed_triggers = {
+    APIGatewayAny = {
+      service    = "apigateway"
+      source_arn = "${aws_api_gateway_rest_api.ims_api.execution_arn}/*/*" # Allow access from any method and path
+    }
+  }
+
+  environment_variables = {
+    "USER_POOL_ID" = aws_cognito_user_pool.ims_user_pool.id
+  }
+}
+
 module "get_all_stores" {
   source        = "terraform-aws-modules/lambda/aws"
   version       = "7.20.0"

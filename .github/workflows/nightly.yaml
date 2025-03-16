@@ -1,0 +1,19 @@
+name: "Nightly Postman Tests"
+on:
+  schedule:
+    - cron: "0 0 * * *"  # Runs daily at midnight UTC
+  workflow_dispatch:
+
+jobs:
+  run-postman-tests:
+    runs-on: ubuntu-latest
+    container:
+      image: node:18-alpine
+    steps:
+      - name: Install Newman
+        run: npm install -g newman
+
+      - name: Run Collection
+        run: |
+          newman run "https://api.getpostman.com/collections/${{ secrets.POSTMAN_COLLECTION_ID }}?apikey=${{ secrets.POSTMAN_API_KEY }}" \
+            --environment "https://api.getpostman.com/environments/${{ secrets.POSTMAN_ENV_ID }}?apikey=${{ secrets.POSTMAN_API_KEY }}"

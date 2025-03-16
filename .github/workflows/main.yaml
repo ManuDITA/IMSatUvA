@@ -57,7 +57,7 @@ jobs:
           AWS_BUCKET_NAME: ${{ secrets.AWS_BUCKET_NAME }}
           AWS_BUCKET_KEY_NAME: ${{ secrets.AWS_BUCKET_KEY_NAME }}
         run: | # doing this to get clean name without / and then get a terraform safe name
-          BRANCH_NAME=$(echo $GITHUB_REF | sed 's|refs/heads/||' | sed 's|/|-|g' | sed 's|env:/||g')
+          BRANCH_NAME=$(echo $GITHUB_REF | sed 's|refs/heads/||' | sed 's|/|-|g' | sed 's|_|-|g' | sed 's|env:/||g')
           echo "BRANCH_NAME=${BRANCH_NAME}" >> $GITHUB_ENV
           TF_STATE_KEY="${BRANCH_NAME}.tfstate"  
           echo "TF_STATE_KEY=${TF_STATE_KEY}" >> $GITHUB_ENV  
@@ -112,7 +112,7 @@ jobs:
         if: ${{ github.event.pull_request != null }}
         run: |
           DELETE_BRANCH_NAME=${{ github.event.pull_request.head.ref }}
-          BRANCH_NAME=$(echo $DELETE_BRANCH_NAME | sed 's|/|-|g') 
+          BRANCH_NAME=$(echo $DELETE_BRANCH_NAME | sed 's|/|-|g' | sed 's|_|-|g') 
           echo "BRANCH_NAME=${BRANCH_NAME}" >> $GITHUB_ENV
           echo "Branch that was deleted: ${BRANCH_NAME}"
           TF_STATE_KEY="${BRANCH_NAME}.tfstate"  
@@ -122,7 +122,7 @@ jobs:
         if: ${{ github.event_name == 'push' && github.event_name == 'delete' }}
         run: |
           DELETE_BRANCH_NAME=$(echo $GITHUB_REF | sed 's|refs/heads/||') 
-          BRANCH_NAME=$(echo $DELETE_BRANCH_NAME | sed 's|/|-|g') 
+          BRANCH_NAME=$(echo $DELETE_BRANCH_NAME | sed 's|/|-|g' | sed 's|_|-|g') 
           echo "BRANCH_NAME=${BRANCH_NAME}" >> $GITHUB_ENV
           echo "Branch that was deleted: ${BRANCH_NAME}"
           TF_STATE_KEY="${BRANCH_NAME}.tfstate"  
