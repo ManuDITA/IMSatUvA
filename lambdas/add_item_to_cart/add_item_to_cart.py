@@ -3,7 +3,7 @@ import uuid
 import boto3
 from decimal import Decimal
 import modules.http_utils as http_utils
-import modules.getSubId as getSubId
+import modules.getSubId as retrieve_sub_id
 
 
 dynamodb = boto3.resource("dynamodb")
@@ -13,7 +13,7 @@ item_table = dynamodb.Table('item')
 
 
 def lambda_handler(event, context):
-    userId = getSubId(event)
+    userId = retrieve_sub_id.getSubId(event)
     
     if not userId:
         return http_utils.generate_response(401, 'Not authorized')
