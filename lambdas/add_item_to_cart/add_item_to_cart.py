@@ -52,7 +52,7 @@ def lambda_handler(event, context):
             return http_utils.generate_response(404, f"Store doesn't exist")
         
         #Check if store has any items
-        store_items = store_information.get("items")
+        store_items = store_information.get("stockItems")
         if not store_items:
             return http_utils.generate_response(404, "No items found in the store")
         
@@ -99,8 +99,8 @@ def lambda_handler(event, context):
                 
                 store_table.update_item(
                     Key={"storeId": store_id},
-                    UpdateExpression="SET items = :items",
-                    ExpressionAttributeValues={":items": store_items}
+                    UpdateExpression="SET stockItems = :stockItems",
+                    ExpressionAttributeValues={":stockItems": store_items}
                 )
                 return http_utils.generate_response(200, f"Item successfully added to cart")
         return http_utils.generate_response(404, "item not found in the store")
