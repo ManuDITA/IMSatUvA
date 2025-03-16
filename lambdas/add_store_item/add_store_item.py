@@ -50,7 +50,7 @@ def lambda_handler(event, context):
             ExpressionAttributeValues={":stockItems": stock_items}
         )
 
-        return http_utils.generate_response(201, {"message": "Item added to store", "updatedItems": stock_items})
+        return http_utils.generate_response(201, {"message": "Item added to store"})
 
     except KeyError as e:
         return http_utils.generate_response(400, f"Missing required parameter: {str(e)}")
