@@ -30,39 +30,59 @@ def lambda_handler(event, context):
         
         quantity = body['quantity']
         
-        existing_cart = get_cart(userId, store_id)
-        store = get_store(store_id)
+        user_cart = cart_table.get_item(Key={'userId': userId, 'storeId': store_id})
         
-        if not store:
+        #create new cart if cart for userId and StoreId dont exist
+        if 'Item' not in user_cart:
+            new_cart = {
+                'userId' : userId,
+                'storeId' : store_id,
+                'cartItems' : [],
+                'totalCartPrice' : 0
+            }
+            
+            cart_table.put_item(Item=new_cart)
+            existing_cart = new_cart
+            
+        else:
+            #fetch the cart that exists
+            existing_cart = user_cart['Item']
+
+        #Retrieve store details
+        store_information = store_table.get_item(Key={'id': store_id})
+        if 'Item' not in store_information:
             return http_utils.generate_response(404, f"Store doesn't exist")
         
         # Check if store has any items
-        store_items = store.get("Item", {}).get("stockItems", [])
+        store_items = store_information.get("Item", {}).get("stockItems", [])
         if not store_items:
             return http_utils.generate_response(404, "No items found in the store")
-        
-        #Process the item in the store
+            
         for stored_item in store_items:
             if stored_item["itemId"] == item_id:
-                
                 # if stock is less than asked, return error and ask for reserving instead
                 if stored_item["quantity"] < quantity:
                     return http_utils.generate_response(400, f"Not enough quantity available in the store. Available: {stored_item['quantity']}, you can reserve if required.")
                 
                 # reduce stock quantity in the store
                 stored_item["quantity"] -= quantity
+
+                #get the item from the item table
+                item_record = item_table.get_item(Key={'id': item_id})
                 
-                #get the necessary item
-                item_record = get_item(item_id)
-                
-                if not item_record:
-                    return http_utils.generate_response(400, "Item doesn't exist")
+                if 'Item' not in item_record:
+                    return http_utils.generate_response(400, f"Item doesn't exist")
                 
                 price_per_item = Decimal(item_record['Item']['price'])
                 cart_items = existing_cart.get("cartItems", [])
+                item_exists = False
                 
-                #Add or update cart item
-                item_exists = update_cart_items(cart_items, item_id, quantity, price_per_item)
+                for cart_item in cart_items:
+                    if cart_item["itemId"] == item_id:
+                        cart_item["quantity"] += quantity
+                        cart_item["totalItemPrice"] = str(Decimal(cart_item["quantity"]) * price_per_item)
+                        item_exists = True
+                        break
                     
                 if not item_exists:
                     cart_items.append({
@@ -91,33 +111,3 @@ def lambda_handler(event, context):
     except Exception as e:
         return http_utils.generate_response(500, f"Internal server error: {str(e)}")
     
-
-def get_cart(userId, store_id):
-    user_cart = cart_table.get_item(Key={'userId': userId, 'storeId': store_id})
-    if 'Item' not in user_cart:
-        new_cart = {
-            'userId' : userId,
-            'storeId' : store_id,
-            'cartItems' : [],
-            'totalCartPrice' : 0
-        }
-        
-        cart_table.put_item(Item=new_cart)
-        return new_cart
-    return user_cart['Item']
-
-def get_store(store_id):
-    store_information = store_table.get_item(Key={'id': store_id})
-    return store_information.get('Item') if 'Item' in store_information else None
-
-def get_item(item_id):
-    item_record = item_table.get_item(Key={'id': item_id})
-    return item_record.get('Item') if 'Item' in item_record else None
-
-def update_cart_items(cart_items, item_id, quantity, price_per_item):
-    for cart_item in cart_items:
-        if cart_item["itemId"] == item_id:
-            cart_item["quantity"] += quantity
-            cart_item["totalItemPrice"] = str(Decimal(cart_item["quantity"]) * price_per_item)
-            return True
-    return False
