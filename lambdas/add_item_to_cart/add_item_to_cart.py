@@ -89,7 +89,6 @@ def lambda_handler(event, context):
                         cart_item["quantity"] += quantity
                         cart_item["totalItemPrice"] = str(Decimal(cart_item["quantity"]) * price_per_item)
                         item_exists = True
-                        print(f"item_exists)
                         break
                     
                 if not item_exists:
