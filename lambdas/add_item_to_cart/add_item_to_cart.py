@@ -1,6 +1,7 @@
 import json
 import uuid
 import boto3
+from decimal import Decimal
 import modules.http_utils as http_utils
 import modules.getSubId as getSubId
 
@@ -70,7 +71,7 @@ def lambda_handler(event, context):
                 if 'Item' not in item_record:
                     return http_utils.generate_response(400, f"Item doesn't exist")
                 
-                price_per_item = item_record["price"]
+                price_per_item = Decimal(item_record["price"])
                 
                 cart_items = new_cart.get("items", [])
                 item_exists = False
@@ -78,7 +79,7 @@ def lambda_handler(event, context):
                 for cart_item in cart_items:
                     if cart_item["itemId"] == item_id:
                         cart_item["quantity"] += quantity
-                        cart_item["totalPrice"] = cart_item["quantity"] * price_per_item
+                        cart_item["totalPrice"] = str(cart_item["quantity"] * price_per_item)
                         item_exists = True
                         break
                     
@@ -87,12 +88,12 @@ def lambda_handler(event, context):
                         "item_id" : item_id,
                         "name": item_record["name"],
                         "quantity": quantity,
-                        "totalPrice": quantity * price_per_item
+                        "totalPrice": str(quantity * price_per_item)
                     })    
                     
                 new_cart["items"] = cart_items
                 
-                new_cart["totalPrice"] = sum(item["totalPrice"] for item in new_cart["items"])
+                new_cart["totalPrice"] = str(sum(item["totalPrice"] for item in new_cart["items"]))
                 
                 cart_table.put_item(Item=new_cart)
                 

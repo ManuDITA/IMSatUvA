@@ -642,9 +642,8 @@ components:
           type: string
           example: Watch
         price:
-          type: number
-          format: float
-          example: 10.00    
+          type: string
+          example: "10.00"
     StoreItem:
       type: object
       required:
@@ -695,9 +694,8 @@ components:
           format: int32
           example: 1102
         totalPrice:
-          type: number
-          format: float
-          example: 50.0
+          type: string
+          example: "50.0"
           
   securitySchemes:
     cognito_iam_authorizer:
