@@ -20,13 +20,13 @@ def lambda_handler(event, context):
             return http_utils.generate_response(400, "Invalid quantity for transfer")
 
         # Fetch source store from DynamoDB
-        source_response = stores_table.get_item(Key={'storeId': fromStoreId})
+        source_response = stores_table.get_item(Key={'id': fromStoreId})
         if 'Item' not in source_response:
             return http_utils.generate_response(404, "Source store not found")
         source_store = source_response['Item']
 
         # Fetch destination store from DynamoDB
-        destination_response = stores_table.get_item(Key={'storeId': toStoreId})
+        destination_response = stores_table.get_item(Key={'id': toStoreId})
         if 'Item' not in destination_response:
             return http_utils.generate_response(404, "Destination store not found")
         destination_store = destination_response['Item']
@@ -62,13 +62,13 @@ def lambda_handler(event, context):
 
         # Update both stores in DynamoDB
         stores_table.update_item(
-            Key={'storeId': fromStoreId},
+            Key={'id': fromStoreId},
             UpdateExpression="SET items = :items",
             ExpressionAttributeValues={":items": source_items}
         )
 
         stores_table.update_item(
-            Key={'storeId': toStoreId},
+            Key={'id': toStoreId},
             UpdateExpression="SET items = :items",
             ExpressionAttributeValues={":items": destination_items}
         )
