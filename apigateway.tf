@@ -19,7 +19,7 @@ resource "aws_api_gateway_rest_api" "ims_api" {
     add_store_arn             = module.add_store.lambda_function_invoke_arn
     get_store_arn             = module.get_store.lambda_function_invoke_arn
     delete_store_arn          = module.delete_store.lambda_function_invoke_arn
-    move_stock_item_arn       = module.move_store_item.lambda_function_invoke_arn
+    move_store_item_arn       = module.move_store_item.lambda_function_invoke_arn
     auth_test_user_arn        = module.auth_test_user.lambda_function_invoke_arn
     auth_test_admin_arn       = module.auth_test_admin.lambda_function_invoke_arn
     get_credentials_arn       = module.get_credentials.lambda_function_invoke_arn
@@ -29,6 +29,9 @@ resource "aws_api_gateway_rest_api" "ims_api" {
     get_cart_arn              = module.get_cart.lambda_function_invoke_arn
     add_item_to_cart_arn      = module.add_item_to_cart.lambda_function_invoke_arn 
     remove_item_from_cart_arn = module.remove_item_from_cart.lambda_function_invoke_arn
+    add_store_item_arn        = module.add_store_item.lambda_function_invoke_arn
+    update_store_item_arn     = module.update_store_item.lambda_function_invoke_arn
+    delete_store_item_arn     = module.delete_store_item.lambda_function_invoke_arn
   })))
 
   endpoint_configuration {
