@@ -4,9 +4,9 @@ import modules.http_utils as http_utils
 
 
 dynamodb = boto3.resource("dynamodb")
-store_table = dynamodb.Table('store')
-cart_table = dynamodb.Table('cart')
 reservation_table = dynamodb.Table('user-stock-reserve')
+sns_client = boto3.client('sns', region_name= "eu-west-3")
+SNS_TOPIC_ARN = 'arn:aws:sns:eu-west-3:225989358926:stockAvailable'
 
 
 def lambda_handler(event, context):
@@ -57,7 +57,8 @@ def lambda_handler(event, context):
             'email': email,
             'reserveItems': [item_id]
         }
-        
+        # Subscribe user to SNS topic
+        subscribe_user_to_sns(email)
         reservation_table.put_item(Item=reservation)
         
         return http_utils.generate_response(200, 'Item reserved successfully, you will be notified when in stock')
@@ -67,3 +68,14 @@ def lambda_handler(event, context):
     except Exception as e:
         return http_utils.generate_response(500, f"Internal server error: {str(e)}")
 
+
+def subscribe_user_to_sns(email):
+    try:
+        response = sns_client.subscribe(
+        TopicArn=SNS_TOPIC_ARN,
+        Protocol='email',
+        Endpoint=email
+        )
+        print(f'Subscription response: {response}')
+    except Exception as e:
+        print(f'Error subscribing user to SNS: {str(e)}')
