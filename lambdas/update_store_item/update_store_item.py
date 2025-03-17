@@ -13,7 +13,7 @@ def lambda_handler(event, context):
         item_id = event['pathParameters']['itemId']
 
         #Fetch store from DynamoDB
-        store_response = stores_table.get_item(Key={'storeId': store_id})
+        store_response = stores_table.get_item(Key={'id': store_id})
         if 'Item' not in store_response:
             return http_utils.generate_response(404, "Store not found")
         store = store_response['Item']
@@ -42,7 +42,7 @@ def lambda_handler(event, context):
 
         # Update store record in DynamoDB
         stores_table.update_item(
-            Key={'storeId': store_id},
+            Key={'id': store_id},
             UpdateExpression="SET items = :items",
             ExpressionAttributeValues={":items": store_items}
         )
