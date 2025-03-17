@@ -1,6 +1,6 @@
 import boto3
 import modules.http_utils as http_utils
-import decimal
+import modules.converters as cv
 
 dynamodb = boto3.resource("dynamodb")
 cart_table = dynamodb.Table('cart')
@@ -36,22 +36,10 @@ def lambda_handler(event, context):
             existing_cart = user_cart['Item']
         
         
-        return http_utils.generate_response(200, convert_decimal(existing_cart))
+        return http_utils.generate_response(200, cv.convert_decimal(existing_cart))
     except KeyError as e:
         return http_utils.generate_response(400, f"Missing required parameter: {str(e)}")
     except Exception as e:
         return http_utils.generate_response(500, f"Internal server error: {str(e)}")
-    
-
-def convert_decimal(obj):
-    # Recursively convert Decimal from dynamoDb to int as json doesn't accept otherwise.
-    
-    if isinstance(obj, list):
-        return [convert_decimal(i) for i in obj]
-    elif isinstance(obj, dict):
-        return {k: convert_decimal(v) for k, v in obj.items()}
-    elif isinstance(obj, decimal.Decimal):
-        return int(obj) 
-    return obj
 
 
