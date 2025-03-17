@@ -43,7 +43,9 @@ resource "aws_iam_role_policy" "lambda_dynamodb_rw_policy" {
         "dynamodb:GetItem",
         "dynamodb:UpdateItem",
         "dynamodb:DeleteItem",
-        "dynamodb:DescribeTable"
+        "dynamodb:DescribeTable",
+        "dynamodb:Query"
+        
       ],
       Resource = "arn:aws:dynamodb:${var.aws_region}:${data.aws_caller_identity.current.account_id}:table/*"
     }]
@@ -179,3 +181,29 @@ resource "aws_iam_role_policy" "admin_allow_policy" {
   })
 }
 
+# IAM role policy for lambda to interact with DynamoDB
+resource "aws_iam_role_policy" "lambda_dynamodb_stream_policy" {
+  name = "lambda-dynamodb-stream-${terraform.workspace}"
+  role = aws_iam_role.lambda_exec_role.id
+
+  policy = jsonencode({
+    Version = "2012-10-17",
+    Statement = [{
+      Effect = "Allow",
+      Action = [
+        "dynamodb:DescribeStream",
+        "dynamodb:GetRecords",
+        "dynamodb:GetShardIterator",
+        "dynamodb:ListStreams"
+        
+      ],
+       Resource = data.aws_dynamodb_table.store.stream_arn
+    }]
+  })
+}
+
+
+resource "aws_iam_role_policy_attachment" "lambda_dynamodb_attach" {
+  role       = aws_iam_role.lambda_role.name
+  policy_arn = aws_iam_policy.lambda_dynamodb_policy.arn
+}
