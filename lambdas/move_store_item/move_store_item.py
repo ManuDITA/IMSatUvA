@@ -2,6 +2,11 @@ import json
 import boto3
 from botocore.exceptions import ClientError
 
+# AWS X-Ray tracing for invoked resources
+# Source: https://github.com/aws/aws-xray-sdk-python/blob/master/docs/thirdparty.rst
+from aws_xray_sdk.core import patch_all
+patch_all()
+
 dynamodb = boto3.resource('dynamodb')
 store_items_table = dynamodb.Table('InventoryItem')
 

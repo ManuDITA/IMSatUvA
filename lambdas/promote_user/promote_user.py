@@ -3,6 +3,11 @@ import boto3
 import modules.http_utils as http_utils
 import os
 
+# AWS X-Ray tracing for invoked resources
+# Source: https://github.com/aws/aws-xray-sdk-python/blob/master/docs/thirdparty.rst
+from aws_xray_sdk.core import patch_all
+patch_all()
+
 cognito_client = boto3.client('cognito-idp')
 USER_POOL_ID = os.environ['USER_POOL_ID']
 

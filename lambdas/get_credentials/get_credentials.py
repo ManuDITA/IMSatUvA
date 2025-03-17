@@ -2,6 +2,11 @@ import json
 import boto3
 import os
 
+# AWS X-Ray tracing for invoked resources
+# Source: https://github.com/aws/aws-xray-sdk-python/blob/master/docs/thirdparty.rst
+from aws_xray_sdk.core import patch_all
+patch_all()
+
 def lambda_handler(event, context):
     auth_header = event["headers"]["Authorization"]
     id_token = auth_header.split(" ")[1] # Remove the "Bearer" prefix
