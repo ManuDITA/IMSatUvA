@@ -13,15 +13,12 @@ def lambda_handler(event, context):
     for record in event['Records']:
         if record['eventName'] == 'MODIFY':
             new_image = record['dynamodb']['NewImage']
-            
-            # Safely retrieve stockItems
             store_id = new_image['id']['S']
             new_stock_items = {item['M']['itemId']['S']: int(item['M']['quantity']['N']) for item in new_image['stockItems']['L']}
             
             # Check for items with a quantity less than 5
             for item_id, quantity in new_stock_items.items():
                 if quantity < 5:
-                    # Collect notifications for this store
                     if store_id not in low_stock_list:
                         low_stock_list[store_id] = []
                     low_stock_list[store_id].append(item_id)
