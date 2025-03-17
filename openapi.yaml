@@ -490,11 +490,11 @@ paths:
         '404':
           $ref: '#/components/responses/NotFoundResponse'
         '500':
-          $ref: '#/components/responses/500Response'
+          $ref: '#/components/responses/500Response'    
       x-amazon-apigateway-integration:
         type: "aws_proxy"
         httpMethod: "POST"
-        uri: "${move_stock_item_arn}"
+        uri: "${update_store_item_arn}"
         passthroughBehavior: "when_no_match"
   # /cart:
   #   get:   

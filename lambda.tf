@@ -406,7 +406,13 @@ module "add_store_item" {
   timeout       = 120
   create_role   = false
   lambda_role   = aws_iam_role.lambda_exec_role.arn
-  source_path   = "${path.module}/lambdas/add_store_item/"
+    source_path = [
+    "${path.module}/lambdas/add_store_item/",
+    {
+      path          = "${path.module}/lambdas/modules/"
+      prefix_in_zip = "modules"
+    }
+  ]
   publish       = true
 
   # Allow the API Gateway to invoke the Lambda functions
