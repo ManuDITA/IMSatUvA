@@ -65,3 +65,13 @@ output "lambda_function_get_store_invoke_arn" {
 output "lambda_function_delete_store_invoke_arn" {
   value = module.delete_store.lambda_function_invoke_arn
 }
+
+output "lambda_function_get_cart_invoke_arn" {
+  value = module.get_cart.lambda_function_invoke_arn
+}
+
+output  "lambda_function_add_item_to_cart_invoke_arn"{
+  value = module.add_item_to_cart.lambda_function_invoke_arn
+}
+
+
