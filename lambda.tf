@@ -12,6 +12,9 @@ module "hello_world" {
   source_path   = "${path.module}/lambdas/hello_world/"
   publish       = true
 
+  # Attach the lambda layer
+  layers = [aws_lambda_layer_version.lambda_layer.arn]
+
   # Allow the API Gateway to invoke the Lambda functions
   allowed_triggers = {
     APIGatewayAny = {
@@ -42,6 +45,9 @@ module "get_all_items" {
     }
   ]
   publish = true
+
+  # Attach the lambda layer
+  layers = [aws_lambda_layer_version.lambda_layer.arn]
 
   # Allow the API Gateway to invoke the Lambda functions
   allowed_triggers = {
@@ -74,6 +80,9 @@ module "register_item" {
   ]
   publish = true
 
+  # Attach the lambda layer
+  layers = [aws_lambda_layer_version.lambda_layer.arn]
+
   # Allow the API Gateway to invoke the Lambda functions
   allowed_triggers = {
     APIGatewayAny = {
@@ -104,6 +113,9 @@ module "delete_item" {
     }
   ]
   publish = true
+
+  # Attach the lambda layer
+  layers = [aws_lambda_layer_version.lambda_layer.arn]
 
   # Allow the API Gateway to invoke the Lambda functions
   allowed_triggers = {
@@ -136,6 +148,9 @@ module "get_item" {
   ]
   publish = true
 
+  # Attach the lambda layer
+  layers = [aws_lambda_layer_version.lambda_layer.arn]
+
   # Allow the API Gateway to invoke the Lambda functions
   allowed_triggers = {
     APIGatewayAny = {
@@ -161,6 +176,9 @@ module "auth_test_user" {
   source_path   = "${path.module}/lambdas/auth_test_user/"
   publish       = true
 
+  # Attach the lambda layer
+  layers = [aws_lambda_layer_version.lambda_layer.arn]
+
   # Allow the API Gateway to invoke the Lambda functions
   allowed_triggers = {
     APIGatewayAny = {
@@ -185,6 +203,9 @@ module "auth_test_admin" {
   lambda_role   = aws_iam_role.lambda_exec_role.arn
   source_path   = "${path.module}/lambdas/auth_test_admin/"
   publish       = true
+
+  # Attach the lambda layer
+  layers = [aws_lambda_layer_version.lambda_layer.arn]
 
   # Allow the API Gateway to invoke the Lambda functions
   allowed_triggers = {
@@ -218,6 +239,9 @@ module "get_credentials" {
     "TF_AWS_REGION"    = var.aws_region
   }
 
+  # Attach the lambda layer
+  layers = [aws_lambda_layer_version.lambda_layer.arn]
+
   # Allow the API Gateway to invoke the Lambda functions
   allowed_triggers = {
     APIGatewayAny = {
@@ -248,6 +272,9 @@ module "promote_user" {
   publish       = true
   attach_policy = true
   policy        = aws_iam_policy.add_to_group_policy.arn
+
+  # Attach the lambda layer
+  layers = [aws_lambda_layer_version.lambda_layer.arn]
 
   # Allow the API Gateway to invoke the Lambda functions
   allowed_triggers = {
@@ -284,6 +311,9 @@ module "demote_user" {
   attach_policy = true
   policy        = aws_iam_policy.add_to_group_policy.arn
 
+  # Attach the lambda layer
+  layers = [aws_lambda_layer_version.lambda_layer.arn]
+
   # Allow the API Gateway to invoke the Lambda functions
   allowed_triggers = {
     APIGatewayAny = {
@@ -319,6 +349,9 @@ module "get_all_stores" {
   ]
   publish = true
 
+  # Attach the lambda layer
+  layers = [aws_lambda_layer_version.lambda_layer.arn]
+
   # Allow the API Gateway to invoke the Lambda functions
   allowed_triggers = {
     APIGatewayAny = {
@@ -349,6 +382,9 @@ module "add_store" {
     }
   ]
   publish = true
+
+  # Attach the lambda layer
+  layers = [aws_lambda_layer_version.lambda_layer.arn]
 
   # Allow the API Gateway to invoke the Lambda functions
   allowed_triggers = {
@@ -381,6 +417,9 @@ module "get_store" {
   ]
   publish = true
 
+  # Attach the lambda layer
+  layers = [aws_lambda_layer_version.lambda_layer.arn]
+
   # Allow the API Gateway to invoke the Lambda functions
   allowed_triggers = {
     APIGatewayAny = {
@@ -412,6 +451,9 @@ module "delete_store" {
   ]
   publish = true
 
+  # Attach the lambda layer
+  layers = [aws_lambda_layer_version.lambda_layer.arn]
+
   # Allow the API Gateway to invoke the Lambda functions
   allowed_triggers = {
     APIGatewayAny = {
@@ -436,6 +478,9 @@ module "move_store_item" {
   lambda_role   = aws_iam_role.lambda_exec_role.arn
   source_path   = "${path.module}/lambdas/move_store_item/"
   publish       = true
+
+  # Attach the lambda layer
+  layers = [aws_lambda_layer_version.lambda_layer.arn]
 
   # Allow the API Gateway to invoke the Lambda functions
   allowed_triggers = {

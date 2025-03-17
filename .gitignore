@@ -72,6 +72,8 @@ override.tf.json
 # Include tfplan files to ignore the plan output of command: terraform plan -out=tfplan
 # example: tfplan
 
+# Ignore python raw dependency files
+layer/python/raws/*
 
 # Ignore CLI configuration files
 .terraform
