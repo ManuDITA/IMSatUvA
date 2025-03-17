@@ -46,7 +46,7 @@ def lambda_handler(event, context):
             for userReservation in reservations.get('Items',[]):
                 userId = userReservation['userId']
                 email = userReservation['email']
-                item_list = userReservation['reserveItems',[]]
+                item_list = userReservation['reserveItems']
                 
                 if item_id in item_list:  # Only proceed if the itemId exists in the reservation
                     # Send email notification
