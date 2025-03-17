@@ -526,6 +526,8 @@ module "reserve_stock" {
     }
   ]
   publish = true
+  attach_policy = true
+  policy        = aws_iam_policy.reserve_stock_sns_policy.arn
 
   # Allow the API Gateway to invoke the Lambda functions
   allowed_triggers = {
@@ -557,7 +559,8 @@ module "notify_user" {
     }
   ]
   publish = true
-
+  attach_policy = true
+  policy        = aws_iam_policy.reserve_stock_sns_policy.arn
   # Allow the API Gateway to invoke the Lambda functions
   allowed_triggers = {
     APIGatewayAny = {

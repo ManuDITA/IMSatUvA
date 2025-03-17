@@ -195,9 +195,24 @@ resource "aws_iam_role_policy" "lambda_dynamodb_stream_policy" {
         "dynamodb:GetRecords",
         "dynamodb:GetShardIterator",
         "dynamodb:ListStreams"
-        
       ],
        Resource = data.aws_dynamodb_table.store.stream_arn
+    }]
+  })
+}
+
+resource "aws_iam_policy" "reserve_stock_sns_policy" {
+  name        = "reserve-stock-sns-policy-${terraform.workspace}"
+  description = "Policy for the reserve_stock Lambda to interact with SNS"
+  policy      = jsonencode({
+    Version = "2012-10-17",
+    Statement = [{
+      Effect = "Allow",
+      Action = [
+        "sns:Subscribe",
+        "sns:Publish"
+      ],
+      Resource = "arn:aws:sns:${var.aws_region}:${data.aws_caller_identity.current.account_id}:stockAvailable" 
     }]
   })
 }
