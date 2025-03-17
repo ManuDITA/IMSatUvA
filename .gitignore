@@ -73,7 +73,7 @@ override.tf.json
 # example: tfplan
 
 # Ignore python raw dependency files
-layer/python/raws/*
+layers/python/*
 
 # Ignore CLI configuration files
 .terraform
