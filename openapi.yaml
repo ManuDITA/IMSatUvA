@@ -566,6 +566,10 @@ paths:
                  email:
                    type: string
                    format: email
+                 quantity:
+                   type: integer
+                   format: int32
+                   example: 5
       security:
         - cognito_iam_authorizer: []
       x-amazon-apigateway-integration:
