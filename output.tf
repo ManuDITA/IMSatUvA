@@ -74,7 +74,7 @@ output  "lambda_function_add_item_to_cart_invoke_arn"{
   value = module.add_item_to_cart.lambda_function_invoke_arn
 }
 
-output "lambda_function_register_item_invoke_arn" {
+output "lambda_function_reserve_item_invoke_arn" {
   value = module.reserve_item.lambda_function_invoke_arn
   
 }
