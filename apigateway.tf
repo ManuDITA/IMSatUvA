@@ -32,6 +32,7 @@ resource "aws_api_gateway_rest_api" "ims_api" {
     add_store_item_arn        = module.add_store_item.lambda_function_invoke_arn
     update_store_item_arn     = module.update_store_item.lambda_function_invoke_arn
     delete_store_item_arn     = module.delete_store_item.lambda_function_invoke_arn
+    reserve_stock_arn         = module.reserve_stock.lambda_function_invoke_arn
   })))
 
   endpoint_configuration {
