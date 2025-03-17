@@ -1,4 +1,3 @@
-import json
 import boto3
 import modules.http_utils as http_utils
 import modules.converters as cv
