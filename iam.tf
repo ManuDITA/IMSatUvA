@@ -219,5 +219,21 @@ resource "aws_iam_policy" "reserve_stock_sns_policy" {
 
 resource "aws_iam_role_policy_attachment" "sns_policy_attachment" {
   role       = aws_iam_role.lambda_exec_role.name
-  policy_arn = aws_iam_policy.reserve_stock_sns_policy.arn
+  policy_arn = [aws_iam_policy.reserve_stock_sns_policy.arn,aws_iam_policy.low_stock_sns_policy.arn]
+}
+
+resource "aws_iam_policy" "low_stock_sns_policy" {
+  name        = "low-stock-sns-policy-${terraform.workspace}"
+  description = "Policy for the low_stock Lambda to interact with SNS"
+  policy      = jsonencode({
+    Version = "2012-10-17",
+    Statement = [{
+      Effect = "Allow",
+      Action = [
+        "sns:Subscribe",
+        "sns:Publish"
+      ],
+      Resource = "arn:aws:sns:eu-west-3:225989358926:lowstock" 
+    }]
+  })
 }
