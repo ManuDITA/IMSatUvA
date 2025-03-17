@@ -212,7 +212,7 @@ resource "aws_iam_policy" "reserve_stock_sns_policy" {
         "sns:Subscribe",
         "sns:Publish"
       ],
-      Resource = "arn:aws:sns:${var.aws_region}:${data.aws_caller_identity.current.account_id}:stockAvailable" 
+      Resource = "arn:aws:sns:eu-west-3:225989358926:stockAvailable" 
     }]
   })
 }
