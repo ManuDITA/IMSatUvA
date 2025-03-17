@@ -507,7 +507,7 @@ module "remove_item_from_cart" {
 }
 
 
-module "reserve_item_arn" {
+module "reserve_stock" {
   source        = "terraform-aws-modules/lambda/aws"
   version       = "7.20.0"
   function_name = "reserve_stock_arn-${terraform.workspace}"
