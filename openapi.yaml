@@ -450,9 +450,15 @@ paths:
            content:
              application/json:
                schema:
-                 type: array
-                 items:
-                   $ref: "#/components/schemas/CartItems"
+                 type: object
+                 properties:
+                  totalCartPrice:
+                    type: string
+                    example: "50.0"
+                  items:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/CartItems"
          '401':
            $ref: '#/components/responses/UnauthorizedResponse'
          '404':
@@ -526,11 +532,7 @@ paths:
         uri: "${remove_item_from_cart_arn}"
        responses:
          '200':
-           description: Success
-           content:
-             application/json:
-               schema:
-                 $ref: "#/components/schemas/StoreItem"
+           $ref: '#/components/responses/SuccessResponse'
          '401':
            $ref: '#/components/responses/UnauthorizedResponse'
          '404':
@@ -785,9 +787,7 @@ components:
         totalItemPrice:
           type: string
           example: "140.43"
-        totalCartPrice:
-          type: string
-          example: "50.0"
+        
           
   securitySchemes:
     cognito_iam_authorizer:
