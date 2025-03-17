@@ -519,7 +519,7 @@ module "reserve_stock" {
   create_role   = false
   lambda_role   = aws_iam_role.lambda_exec_role.arn
   source_path = [
-    "${path.module}/lambdas/reserve_item_arn/",
+    "${path.module}/lambdas/reserve_stock/",
     {
       path          = "${path.module}/lambdas/modules/"
       prefix_in_zip = "modules"
@@ -538,19 +538,19 @@ module "reserve_stock" {
 }
 
 
-module "notify_user_arn" {
+module "notify_user" {
   source        = "terraform-aws-modules/lambda/aws"
   version       = "7.20.0"
-  function_name = "notify_user_arn-${terraform.workspace}"
+  function_name = "notify_user-${terraform.workspace}"
   description   = "notify_user"
-  handler       = "notify_user_arn.lambda_handler"
+  handler       = "notify_user.lambda_handler"
   runtime       = "python3.13"
   architectures = ["arm64"]
   timeout       = 120
   create_role   = false
   lambda_role   = aws_iam_role.lambda_exec_role.arn
   source_path = [
-    "${path.module}/lambdas/notify_user_arn/",
+    "${path.module}/lambdas/notify_user/",
     {
       path          = "${path.module}/lambdas/modules/"
       prefix_in_zip = "modules"
