@@ -575,7 +575,7 @@ paths:
       x-amazon-apigateway-integration:
         type: "aws_proxy"
         httpMethod: "POST"
-        uri: "${reserve_item_arn}"
+        uri: "${reserve_stock_arn}"
       responses:
          '200':
            $ref: '#/components/responses/SuccessResponse'

@@ -29,8 +29,8 @@ resource "aws_api_gateway_rest_api" "ims_api" {
     get_cart_arn              = module.get_cart.lambda_function_invoke_arn
     add_item_to_cart_arn      = module.add_item_to_cart.lambda_function_invoke_arn 
     remove_item_from_cart_arn = module.remove_item_from_cart.lambda_function_invoke_arn
-    reserve_item_arn          = module.reserve_item_arn.lambda_function_invoke_arn
-    
+    reserve_stock_arn          = module.reserve_stock_arn.lambda_function_invoke_arn
+
   })))
 
   endpoint_configuration {

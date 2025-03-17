@@ -510,9 +510,9 @@ module "remove_item_from_cart" {
 module "reserve_item_arn" {
   source        = "terraform-aws-modules/lambda/aws"
   version       = "7.20.0"
-  function_name = "reserve_item_arn-${terraform.workspace}"
+  function_name = "reserve_stock_arn-${terraform.workspace}"
   description   = "reserve_item"
-  handler       = "reserve_item_arn.lambda_handler"
+  handler       = "reserve_stock_arn.lambda_handler"
   runtime       = "python3.13"
   architectures = ["arm64"]
   timeout       = 120
