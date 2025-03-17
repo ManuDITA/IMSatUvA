@@ -53,11 +53,7 @@ def lambda_handler(event, context):
         if destination_item:
             destination_item["quantity"] += quantity
         else:
-            destination_stock_items.append({
-                "itemId": itemId,
-                "quantity": quantity,
-                "price": source_item["price"]  # Assuming same price, adjust as needed
-            })
+            destination_stock_items.append(source_item)
 
         # Update both stores in DynamoDB
         stores_table.update_item(
