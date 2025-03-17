@@ -11,8 +11,6 @@ def lambda_handler(event, context):
         if record['eventName'] == 'MODIFY':
             new_image = record['dynamodb']['NewImage']
             old_image = record['dynamodb']['OldImage']
-            print(f"This is new: {json.dumps(new_image)}")
-            print(f"This is old: {json.dumps(old_image)}")
             
             # Safely retrieve stockItems
             store_id = new_image['id']['S']
@@ -21,7 +19,7 @@ def lambda_handler(event, context):
             
             # Check which items have changed
             updated_items = [item_id for item_id in new_stock_items if new_stock_items[item_id] > old_stock_items.get(item_id, 0)]
-            print(f"Updated items: {updated_items}")
+            
             if not updated_items:
                 continue  # No items restocked
             try:
@@ -35,18 +33,13 @@ def lambda_handler(event, context):
                     }
                     )
                     
-                    print(f"Reservations: {json.dumps(reservations)}")
                     for userReservation in reservations.get('Items', []):
-                        print(f"User reservation: {json.dumps(userReservation)}")
                         userId = userReservation['userId']
                         email = userReservation['email']
                         item_list = userReservation['reserveItems']
-                        print(f"Item list: {item_list}")
                         # Check if there's any intersection between item_list and updated_items
                         matching_items = set(item_list).intersection(updated_items)
-                        print(f"Matching items: {matching_items}")
                         if matching_items:
-                            print(f"Matching items 2: {matching_items}")
                             for item_id in matching_items:  # Only proceed if the itemId exists in the reservation
                                 # Send email notification
                                 message = f"The item you reserved is back in stock!"
