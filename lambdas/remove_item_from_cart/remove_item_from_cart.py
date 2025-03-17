@@ -1,5 +1,3 @@
-import json
-import uuid
 import boto3
 from decimal import Decimal
 import modules.http_utils as http_utils
