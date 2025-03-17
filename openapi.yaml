@@ -340,13 +340,16 @@ paths:
     #       $ref: '#/components/responses/UnauthorizedResponse'
     #     '404':
     #       $ref: '#/components/responses/NotFoundResponse'
+    # x-amazon-apigateway-integration:
+    #     type: "aws_proxy"
+    #     httpMethod: "POST"
+    #     uri: "${move_stock_item_arn}"
+    #     passthroughBehavior: "when_no_match"
     post:
       tags: 
         - Store Management
-      summary: Add specified stock item to target store
-      security:
-        - cognito_iam_authorizer: []
-      operationId: addStockItem
+      summary: Moves specified stock item to target store
+      operationId: moveStockItem
       parameters:
         - name: storeId
           in: path
@@ -360,12 +363,6 @@ paths:
           schema:
             type: string
             format: uuid
-        - name: quantity
-          in: query
-          required: true
-          schema:
-            type: integer
-            format: int32
       requestBody:
         required: true
         content:
@@ -373,51 +370,12 @@ paths:
             schema:
               type: object
               properties:
-                storeId:
-                  type: string
-                  format: uuid
-                itemId:
-                  type: string
-                  format: uuid
                 quantity:
                   type: integer
                   format: int32
-      responses:
-        '200':
-          $ref: "#/components/responses/SuccessResponse"
-        '401':
-          $ref: '#/components/responses/UnauthorizedResponse'
-        '403':
-          $ref: '#/components/responses/ForbiddenResponse'
-        '404':
-          $ref: '#/components/responses/NotFoundResponse'
-        '500':
-          $ref: '#/components/responses/500Response'
-      x-amazon-apigateway-integration:
-        type: "aws_proxy"
-        httpMethod: "POST"
-        uri: "${add_store_item_arn}"
-        passthroughBehavior: "when_no_match"
-    delete:   
-      tags:
-        - Store Management
-      summary: Deletes stock item from specified store
-      security:
-        - cognito_iam_authorizer: []
-      operationId: deleteStoreItem
-      parameters:
-        - name: storeId
-          in: path
-          required: true
-          schema:
-            type: string
-            format: uuid
-        - name: itemId
-          in: path
-          required: true
-          schema:
-            type: string
-            format: uuid
+                toStore:
+                  type: string
+                  format: uuid
       responses:
         '200':
           $ref: "#/components/responses/SuccessResponse"
@@ -430,71 +388,7 @@ paths:
       x-amazon-apigateway-integration:
         type: "aws_proxy"
         httpMethod: "POST"
-        uri: "${delete_store_item_arn}"
-        passthroughBehavior: "when_no_match"
-    patch:   
-      tags:
-        - Store Management
-      summary: Updates stock item from specified store
-      security:
-        - cognito_iam_authorizer: []
-      operationId: updateStoreItem
-      parameters:
-        - name: storeId
-          in: path
-          required: true
-          schema:
-            type: string
-            format: uuid
-        - name: itemId
-          in: path
-          required: true
-          schema:
-            type: string
-            format: uuid
-        - name: quantity
-          in: query
-          required: true
-          schema:
-            type: integer
-            format: int32
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                storeId:
-                  type: string
-                  format: uuid
-                itemId:
-                  type: string
-                  format: uuid
-                quantity:
-                  type: integer
-                  format: int32
-      responses:
-        '200':
-          description: Success
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: "#/components/schemas/StoreItem"
-        '401':
-          $ref: '#/components/responses/UnauthorizedResponse'
-        '403':
-          $ref: '#/components/responses/ForbiddenResponse'
-        '404':
-          $ref: '#/components/responses/NotFoundResponse'
-        '500':
-          $ref: '#/components/responses/500Response'    
-      x-amazon-apigateway-integration:
-        type: "aws_proxy"
-        httpMethod: "POST"
-        uri: "${update_store_item_arn}"
+        uri: "${move_stock_item_arn}"
         passthroughBehavior: "when_no_match"
     # delete:   
     #   tags:
@@ -675,50 +569,6 @@ paths:
   #       '404':
   #         $ref: '#/components/responses/NotFoundResponse'
   
-  /stores/moveStoreItem:
-    post:
-      summary: Transfer stock between stores
-      security:
-        - cognito_iam_authorizer: []
-      description: Moves a specified quantity of a stock item from one store to another.
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              required:
-                - itemId
-                - fromStoreId
-                - toStoreId
-                - quantity
-              properties:
-                itemId:
-                  type: string
-                  example: "123456"
-                fromStoreId:
-                  type: string
-                  example: "store_001"
-                toStoreId:
-                  type: string
-                  example: "store_002"
-                quantity:
-                  type: integer
-                  minimum: 1
-                  example: 10
-      responses:
-        '200':
-          $ref: '#/components/responses/SuccessResponse'
-        '401':
-          $ref: '#/components/responses/UnauthorizedResponse'
-        '403':
-          $ref: '#/components/responses/ForbiddenResponse'
-      x-amazon-apigateway-integration:
-        type: "aws_proxy"
-        httpMethod: "POST"
-        uri: "${move_store_item_arn}"
-        passthroughBehavior: "when_no_match"
-
   /auth_test:
     get:
       tags: 
@@ -964,5 +814,3 @@ components:
       description: You don't have the necessary permissions to perform this action.
     NotFoundResponse:
       description: Resource not found
-    500Response:
-      description: Internal server error
