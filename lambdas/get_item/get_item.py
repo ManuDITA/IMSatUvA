@@ -1,6 +1,6 @@
-import json
 import boto3
 import modules.http_utils as http_utils
+import modules.converters as cv
 
 # AWS X-Ray tracing for invoked resources
 # Source: https://github.com/aws/aws-xray-sdk-python/blob/master/docs/thirdparty.rst
@@ -17,6 +17,7 @@ def lambda_handler(event, context):
     item = {}
     try:
         item = table.get_item(Key={'id': item_id})['Item']
+        item = cv.convert_decimal(item)
     except KeyError:
         return http_utils.generate_response(404, 'Resource not found')
 

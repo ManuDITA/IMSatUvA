@@ -16,12 +16,15 @@ def lambda_handler(event, context):
     body = json.loads(event['body'])
 
     # Validate required fields
-    if 'name' not in body:
-        return http_utils.generate_response(400, f'Missing required fields: {[].join([field for field in ["name"] if field not in body])}')
+    if "name" not in body or "price" not in body:
+        missing_fields = [field for field in ["name", "price"] if field not in body]
+        return http_utils.generate_response(400, f"Missing required fields: {', '.join(missing_fields)}")
+
 
     item = {
-        "id": body.get('id', str(uuid.uuid4())), # DynamoDB doesn't support raw UUIDs
-        "name": body['name']
+        "id"   : body.get('id', str(uuid.uuid4())), # DynamoDB doesn't support raw UUIDs
+        "name" : body['name'],
+        "price": body['price']
     }
 
     table.put_item(Item=item)
