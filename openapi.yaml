@@ -211,7 +211,7 @@ paths:
           required: true
           schema:
             type: string
-            format: uuid
+            format: uuid 
       responses:
         '200':
           description: Store details
@@ -496,72 +496,153 @@ paths:
         httpMethod: "POST"
         uri: "${update_store_item_arn}"
         passthroughBehavior: "when_no_match"
-  # /cart:
-  #   get:   
-  #     tags:
-  #       - User Cart Management
-  #     summary: Gets the logged-in user's shopping cart
-  #     operationId: getUserCart
-  #     responses:
-  #       '200':
-  #         description: Success
-  #         content:
-  #           application/json:
-  #             schema:
-  #               type: array
-  #               items:
-  #                 $ref: "#/components/schemas/StoreItem"
-  #       '401':
-  #         $ref: '#/components/responses/UnauthorizedResponse'
-  #       '404':
-  #         $ref: '#/components/responses/NotFoundResponse'
-  #   put:
-  #     tags: 
-  #       - User Cart Management
-  #     summary: Adds or updates stock item to the logged-in user's shopping cart
-  #     operationId: updateCartItem
-  #     requestBody:
-  #       required: true
-  #       content:
-  #         application/json:
-  #           schema:
-  #             type: object
-  #     responses:
-  #       '200':
-  #         description: Success
-  #         content:
-  #           application/json:
-  #             schema:
-  #               $ref: "#/components/schemas/StoreItem"
-  #       '401':
-  #         $ref: '#/components/responses/UnauthorizedResponse'
-  #       '404':
-  #         $ref: '#/components/responses/NotFoundResponse'
+    # delete:   
+    #   tags:
+    #     - Store Management
+    #   security:
+    #     - cognito_iam_authorizer: []
+    #   summary: Deletes stock item from specified store
+    #   operationId: deleteStoreItem
+    #   parameters:
+    #     - name: storeId
+    #       in: path
+    #       required: true
+    #       schema:
+    #         type: string
+    #         format: uuid
+    #     - name: itemId
+    #       in: path
+    #       required: true
+    #       schema:
+    #         type: string
+    #         format: uuid
+    #   responses:
+    #     '200':
+    #       description: Success
+    #       content:
+    #         application/json:
+    #           schema:
+    #               $ref: "#/components/schemas/StoreItem"
+    #     '401':
+    #       $ref: '#/components/responses/UnauthorizedResponse'
+    #     '403':
+    #       $ref: '#/components/responses/ForbiddenResponse'
+    #     '404':
+    #       $ref: '#/components/responses/NotFoundResponse'
 
-  # /cart/{itemId}:
-  #   delete:
-  #     tags: 
-  #       - User Cart Management
-  #     summary: Removes stock item from the logged-in user's shopping cart
-  #     operationId: removeItemFromCart
-  #     parameters:
-  #       - name: itemId
-  #         in: path
-  #         required: true
-  #         schema:
-  #           type: string
-  #           format: uuid
-  #     responses:
-  #       '200':
-  #         description: Success
-  #         content:
-  #           application/json:
-  #             schema:
-  #               $ref: "#/components/schemas/StoreItem"
-  #       '401':
-  #         $ref: '#/components/responses/UnauthorizedResponse'
-  #       '404':
-  #         $ref: '#/components/responses/NotFoundResponse'
+  /cart/store/{storeId}:
+     get:   
+       tags:
+         - User Cart Management
+       summary: Gets the logged-in user's shopping cart for the specific store
+       operationId: getUserCart
+       parameters:
+        - name: storeId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+       security:
+        - cognito_iam_authorizer: []
+       x-amazon-apigateway-integration:
+        type: "aws_proxy"
+        httpMethod: "POST"
+        uri: "${get_cart_arn}"
+        passthroughBehavior: "when_no_match"
+       responses:
+         '200':
+           description: Success
+           content:
+             application/json:
+               schema:
+                 type: object
+                 properties:
+                  totalCartPrice:
+                    type: string
+                    example: "50.0"
+                  cartItems:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/CartItems"
+         '401':
+           $ref: '#/components/responses/UnauthorizedResponse'
+         '404':
+           $ref: '#/components/responses/NotFoundResponse'
+  /cart/store/{storeId}/item/{itemId}:
+     put:
+       tags: 
+         - User Cart Management
+       summary: Adds or updates stock item to the logged-in user's shopping cart
+       operationId: updateCartItem
+       parameters:
+        - name: storeId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+        - name: itemId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+       requestBody:
+        required: true
+        content:
+           application/json:
+            schema:
+               type: object
+               properties:
+                 quantity:
+                   type: integer
+                   format: int32
+       security:
+        - cognito_iam_authorizer: []
+       x-amazon-apigateway-integration:
+        type: "aws_proxy"
+        httpMethod: "POST"
+        uri: "${add_item_to_cart_arn}"
+       responses:
+         '200':
+          $ref: '#/components/responses/SuccessResponse'
+         '401':
+           $ref: '#/components/responses/UnauthorizedResponse'
+         '404':
+           $ref: '#/components/responses/NotFoundResponse'
+       
+     patch:
+       tags: 
+         - User Cart Management
+       summary: Removes stock item from the logged-in user's shopping cart
+       operationId: removeItemFromCart
+       parameters:
+        - name: storeId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+        - name: itemId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+       security:
+        - cognito_iam_authorizer: []
+       x-amazon-apigateway-integration:
+        type: "aws_proxy"
+        httpMethod: "POST"
+        uri: "${remove_item_from_cart_arn}"
+       responses:
+         '200':
+           $ref: '#/components/responses/SuccessResponse'
+         '401':
+           $ref: '#/components/responses/UnauthorizedResponse'
+         '404':
+           $ref: '#/components/responses/NotFoundResponse'
 
   # /cart/reserve/{itemId}:
   #   post:
@@ -793,11 +874,14 @@ components:
       type: object
       required:
         - name
+        - price
       properties:
         name:
           type: string
           example: Watch
-        
+        price:
+          type: string
+          example: "10.00"
     StoreItem:
       type: object
       required:
@@ -838,6 +922,23 @@ components:
           format: address
           example: 'Via Roma'
       type: object
+    CartItems:
+      properties:
+        itemId:
+          type: string
+          example: 123333
+        name:
+          type: string
+          example: Watch
+        quantity:
+          type: integer
+          format: int32
+          example: 1102
+        totalItemPrice:
+          type: string
+          example: "140.43"
+        
+          
   securitySchemes:
     cognito_iam_authorizer:
       type: apiKey
