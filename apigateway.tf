@@ -14,6 +14,7 @@ resource "aws_api_gateway_rest_api" "ims_api" {
     register_item_arn         = module.register_item.lambda_function_invoke_arn
     get_item_arn              = module.get_item.lambda_function_invoke_arn
     delete_item_arn           = module.delete_item.lambda_function_invoke_arn
+    move_stock_item_arn       = module.move_store_item.lambda_function_invoke_arn
     get_all_stores_arn        = module.get_all_stores.lambda_function_invoke_arn
     add_store_arn             = module.add_store.lambda_function_invoke_arn
     get_store_arn             = module.get_store.lambda_function_invoke_arn
