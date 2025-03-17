@@ -10,10 +10,6 @@ output "cognito_user_pool_arn" {
   value = aws_cognito_user_pool.ims_user_pool.arn
 }
 
-output "lambda_function_move_store_item_invoke_arn" {
-  value = module.move_store_item.lambda_function_invoke_arn
-}
-
 output "lambda_function_auth_test_user_invoke_arn" {
   value = module.auth_test_user.lambda_function_invoke_arn
 }
@@ -66,6 +62,21 @@ output "lambda_function_delete_store_invoke_arn" {
   value = module.delete_store.lambda_function_invoke_arn
 }
 
+output "lambda_function_add_store_item_nvoke_arn" {
+  value = module.add_store_item.lambda_function_invoke_arn
+}
+
+output "lambda_function_delete_store_item_nvoke_arn" {
+  value = module.delete_store_item.lambda_function_invoke_arn
+}
+
+output "lambda_function_update_store_item_nvoke_arn" {
+  value = module.update_store_item.lambda_function_invoke_arn
+}
+
+output "lambda_function_move_store_item_nvoke_arn" {
+  value = module.move_store_item.lambda_function_invoke_arn
+}
 output "lambda_function_get_cart_invoke_arn" {
   value = module.get_cart.lambda_function_invoke_arn
 }
