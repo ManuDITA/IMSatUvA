@@ -505,7 +505,7 @@ paths:
            $ref: '#/components/responses/UnauthorizedResponse'
          '404':
            $ref: '#/components/responses/NotFoundResponse'
-       
+    
      patch:
        tags: 
          - User Cart Management
@@ -536,38 +536,49 @@ paths:
          '401':
            $ref: '#/components/responses/UnauthorizedResponse'
          '404':
-           $ref: '#/components/responses/NotFoundResponse'
-
-  # /cart/reserve/{itemId}:
-  #   post:
-  #     tags: 
-  #       - User Cart Management
-  #     summary: Reserves an out-of-stock stock item
-  #     operationId: reserveStockItem
-  #     parameters:
-  #       - name: itemId
-  #         in: path
-  #         required: true
-  #         schema:
-  #           type: string
-  #           format: uuid
-  #     requestBody:
-  #       required: true
-  #       content:
-  #         application/json:
-  #           schema:
-  #             type: object
-  #             properties:
-  #               email:
-  #                 type: string
-  #                 format: email
-  #     responses:
-  #       '200':
-  #         $ref: '#/components/responses/SuccessResponse'
-  #       '401':
-  #         $ref: '#/components/responses/UnauthorizedResponse'
-  #       '404':
-  #         $ref: '#/components/responses/NotFoundResponse'
+           $ref: '#/components/responses/NotFoundResponse'   
+  /cart/reserve/store/{storeId}/item/{itemId}:
+     post:
+      tags:
+        - Reserve Item in store
+      summary: Reserve item to be notified when store stocks up
+      operationId: reserveStockItem
+      parameters:
+        - name: storeId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+        - name: itemId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: true
+        content:
+           application/json:
+            schema:
+               type: object
+               properties:
+                 email:
+                   type: string
+                   format: email
+      security:
+        - cognito_iam_authorizer: []
+      x-amazon-apigateway-integration:
+        type: "aws_proxy"
+        httpMethod: "POST"
+        uri: "${reserve_item_arn}"
+      responses:
+         '200':
+           $ref: '#/components/responses/SuccessResponse'
+         '401':
+           $ref: '#/components/responses/UnauthorizedResponse'
+         '404':
+           $ref: '#/components/responses/NotFoundResponse' 
   
   /auth_test:
     get:
