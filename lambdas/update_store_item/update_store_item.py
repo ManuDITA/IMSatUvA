@@ -13,7 +13,7 @@ def lambda_handler(event, context):
         item_id = event['pathParameters']['itemId']
 
         #Fetch store from DynamoDB
-        store_response = stores_table.get_item(Key={'id': store_id})
+        store_response = stores_table.get_item(Key={'storeId': store_id})
         if 'Item' not in store_response:
             return http_utils.generate_response(404, "Store not found")
         store = store_response['Item']
@@ -23,10 +23,10 @@ def lambda_handler(event, context):
         updated_quantity = body.get("quantity")
 
         if updated_quantity is None:
-            return http_utils.generate_response(400, "No valid update fields provided")
+            return http_utils.generate_response(400, "No valid update fields provided. Please provide a quantity")
 
         # Get store's item list
-        store_items = store.get("items", [])
+        store_items = store.get("stockItems", [])
         item_found = False
 
         # Update item in the store's item list
@@ -43,11 +43,11 @@ def lambda_handler(event, context):
         # Update store record in DynamoDB
         stores_table.update_item(
             Key={'id': store_id},
-            UpdateExpression="SET items = :items",
-            ExpressionAttributeValues={":items": store_items}
+            UpdateExpression="SET stockItems = :stockItems",
+            ExpressionAttributeValues={":stockItems": store_items}
         )
 
-        return http_utils.generate_response(200, {"message": "Item updated successfully", "updatedItems": store_items})
+        return http_utils.generate_response(200, {"message": "Item updated successfully"})
 
     except KeyError as e:
         return http_utils.generate_response(400, f"Missing required parameter: {str(e)}")
