@@ -181,7 +181,7 @@ resource "aws_iam_role_policy" "admin_allow_policy" {
   })
 }
 
-# IAM role policy for lambda to interact with DynamoDB
+# IAM role policy for lambda to interact with DynamoDB streams
 resource "aws_iam_role_policy" "lambda_dynamodb_stream_policy" {
   name = "lambda-dynamodb-stream-${terraform.workspace}"
   role = aws_iam_role.lambda_exec_role.id
@@ -200,10 +200,4 @@ resource "aws_iam_role_policy" "lambda_dynamodb_stream_policy" {
        Resource = data.aws_dynamodb_table.store.stream_arn
     }]
   })
-}
-
-
-resource "aws_iam_role_policy_attachment" "lambda_dynamodb_attach" {
-  role       = aws_iam_role.lambda_role.name
-  policy_arn = aws_iam_policy.lambda_dynamodb_policy.arn
 }
