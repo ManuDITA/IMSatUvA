@@ -455,7 +455,7 @@ paths:
                   totalCartPrice:
                     type: string
                     example: "50.0"
-                  items:
+                  cartItems:
                     type: array
                     items:
                       $ref: "#/components/schemas/CartItems"
