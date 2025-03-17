@@ -65,3 +65,7 @@ output "lambda_function_get_store_invoke_arn" {
 output "lambda_function_delete_store_invoke_arn" {
   value = module.delete_store.lambda_function_invoke_arn
 }
+
+output "lambda_layer_arn" {
+  value = aws_lambda_layer_version.lambda_layer.arn
+}
