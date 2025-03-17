@@ -216,3 +216,8 @@ resource "aws_iam_policy" "reserve_stock_sns_policy" {
     }]
   })
 }
+
+resource "aws_iam_role_policy_attachment" "sns_policy_attachment" {
+  role       = aws_iam_role.lambda_exec_role.name
+  policy_arn = aws_iam_policy.reserve_stock_sns_policy.arn
+}
