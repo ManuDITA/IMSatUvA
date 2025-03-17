@@ -27,7 +27,7 @@ resource "aws_api_gateway_rest_api" "ims_api" {
     demote_user_arn           = module.demote_user.lambda_function_invoke_arn
     cognito_user_pool_arn     = aws_cognito_user_pool.ims_user_pool.arn
     get_cart_arn              = module.get_cart.lambda_function_invoke_arn
-    add_item_to_cart_arn      = module.add_item_to_cart.lambda_function_invoke_arn 
+    add_item_to_cart_arn      = module.add_item_to_cart.lambda_function_invoke_arn
     remove_item_from_cart_arn = module.remove_item_from_cart.lambda_function_invoke_arn
   })))
 

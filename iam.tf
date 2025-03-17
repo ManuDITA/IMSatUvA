@@ -50,6 +50,24 @@ resource "aws_iam_role_policy" "lambda_dynamodb_rw_policy" {
   })
 }
 
+# IAM role policy for lambda to send X-Ray traces
+resource "aws_iam_role_policy" "lambda_xray_policy" {
+  name = "lambda-xray-${terraform.workspace}"
+  role = aws_iam_role.lambda_exec_role.id
+
+  policy = jsonencode({
+    Version = "2012-10-17",
+    Statement = [{
+      Effect = "Allow",
+      Action = [
+        "xray:PutTraceSegments",
+        "xray:PutTelemetryRecords"
+      ],
+      Resource = "*"
+    }]
+  })
+}
+
 # Get credentials lambda function policy
 resource "aws_iam_policy" "get_credentials_policy" {
   name        = "get-credentials-policy-${terraform.workspace}"
@@ -63,6 +81,14 @@ resource "aws_iam_policy" "get_credentials_policy" {
         "cognito-identity:GetCredentialsForIdentity"
       ],
       Resource = ["arn:aws:cognito-identity:${var.aws_region}:${data.aws_caller_identity.current.account_id}:identitypool/${aws_cognito_identity_pool.ims_identity_pool.id}"]
+      },
+      {
+        "Effect" = "Allow",
+        "Action" = [
+          "xray:PutTraceSegments",
+          "xray:PutTelemetryRecords"
+        ],
+        "Resource" = "*"
     }]
   })
 }
@@ -81,6 +107,14 @@ resource "aws_iam_policy" "add_to_group_policy" {
         "cognito-idp:ListUsers"
       ],
       Resource = "arn:aws:cognito-idp:${var.aws_region}:${data.aws_caller_identity.current.account_id}:userpool/${aws_cognito_user_pool.ims_user_pool.id}"
+      },
+      {
+        "Effect" = "Allow",
+        "Action" = [
+          "xray:PutTraceSegments",
+          "xray:PutTelemetryRecords"
+        ],
+        "Resource" = "*"
     }]
   })
 }
