@@ -237,7 +237,8 @@ resource "aws_iam_policy" "low_stock_sns_policy" {
       Effect = "Allow",
       Action = [
         "sns:Subscribe",
-        "sns:Publish"
+        "sns:Publish",
+        "sns:ListSubscriptionsByTopic"
       ],
       Resource = "arn:aws:sns:eu-west-3:225989358926:lowstock" 
     }]
