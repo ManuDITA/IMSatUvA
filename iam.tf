@@ -70,7 +70,7 @@ resource "aws_iam_policy" "get_credentials_policy" {
 }
 
 # Add group to Cognito user (User pools) lambda function policy
-resource "aws_iam_policy" "add_to_group_policyadd_to_group_policy" {
+resource "aws_iam_policy" "add_to_group_policy" {
   name = "add-to-group-policy-${terraform.workspace}"
   policy = jsonencode({
     Version = "2012-10-17",
