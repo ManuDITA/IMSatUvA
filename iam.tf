@@ -227,6 +227,7 @@ resource "aws_iam_role_policy_attachment" "low_stock_sns_policy_attachment" {
   role       = aws_iam_role.lambda_exec_role.name
   policy_arn = aws_iam_policy.low_stock_sns_policy.arn
 }
+
 resource "aws_iam_policy" "low_stock_sns_policy" {
   name        = "low-stock-sns-policy-${terraform.workspace}"
   description = "Policy for the low_stock Lambda to interact with SNS"
@@ -243,3 +244,8 @@ resource "aws_iam_policy" "low_stock_sns_policy" {
   })
 }
 
+
+resource "aws_iam_role_policy_attachment" "add_to_group_policy_attachment" {
+  role       = aws_iam_role.lambda_exec_role.name
+  policy_arn = aws_iam_policy.add_to_group_policy.arn
+}
