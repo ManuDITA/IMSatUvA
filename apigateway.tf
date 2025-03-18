@@ -14,6 +14,7 @@ resource "aws_api_gateway_rest_api" "ims_api" {
     register_item_arn         = module.register_item.lambda_function_invoke_arn
     get_item_arn              = module.get_item.lambda_function_invoke_arn
     delete_item_arn           = module.delete_item.lambda_function_invoke_arn
+    move_stock_item_arn       = module.move_store_item.lambda_function_invoke_arn
     get_all_stores_arn        = module.get_all_stores.lambda_function_invoke_arn
     add_store_arn             = module.add_store.lambda_function_invoke_arn
     get_store_arn             = module.get_store.lambda_function_invoke_arn
@@ -28,6 +29,13 @@ resource "aws_api_gateway_rest_api" "ims_api" {
     add_item_to_cart_arn      = module.add_item_to_cart.lambda_function_invoke_arn 
     move_store_item_arn       = module.move_store_item.lambda_function_invoke_arn
     remove_item_from_cart_arn = module.remove_item_from_cart.lambda_function_invoke_arn
+    reserve_stock_arn         = module.reserve_stock.lambda_function_invoke_arn
+    add_store_item_arn        = module.add_store_item.lambda_function_invoke_arn
+    update_store_item_arn     = module.update_store_item.lambda_function_invoke_arn
+    delete_store_item_arn     = module.delete_store_item.lambda_function_invoke_arn
+    move_store_item_arn       = module.move_store_item.lambda_function_invoke_arn
+
+
   })))
 
   endpoint_configuration {

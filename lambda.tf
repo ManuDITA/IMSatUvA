@@ -486,7 +486,7 @@ module "move_store_item" {
   source        = "terraform-aws-modules/lambda/aws"
   version       = "7.20.0"
   function_name = "move_store_item-${terraform.workspace}"
-  description   = "Get a list of all defined stores"
+  description   = "Move item from one store to another "
   handler       = "move_store_item.lambda_handler"
   runtime       = "python3.13"
   architectures = ["arm64"]
@@ -589,6 +589,71 @@ module "remove_item_from_cart" {
   ]
   publish = true
 
+  # Allow the API Gateway to invoke the Lambda functions
+  allowed_triggers = {
+    APIGatewayAny = {
+      service    = "apigateway"
+      source_arn = "${aws_api_gateway_rest_api.ims_api.execution_arn}/*/*" # Allow access from any method and path
+    }
+  }
+  
+}
+
+
+module "reserve_stock" {
+  source        = "terraform-aws-modules/lambda/aws"
+  version       = "7.20.0"
+  function_name = "reserve_stock-${terraform.workspace}"
+  description   = "reserve_item"
+  handler       = "reserve_stock.lambda_handler"
+  runtime       = "python3.13"
+  architectures = ["arm64"]
+  timeout       = 120
+  create_role   = false
+  lambda_role   = aws_iam_role.lambda_exec_role.arn
+  source_path = [
+    "${path.module}/lambdas/reserve_stock/",
+    {
+      path          = "${path.module}/lambdas/modules/"
+      prefix_in_zip = "modules"
+    }
+  ]
+  publish = true
+  attach_policy = true
+  policy        = aws_iam_policy.reserve_stock_sns_policy.arn
+
+  # Allow the API Gateway to invoke the Lambda functions
+  allowed_triggers = {
+    APIGatewayAny = {
+      service    = "apigateway"
+      source_arn = "${aws_api_gateway_rest_api.ims_api.execution_arn}/*/*" # Allow access from any method and path
+    }
+  }
+  
+}
+
+
+module "notify_user" {
+  source        = "terraform-aws-modules/lambda/aws"
+  version       = "7.20.0"
+  function_name = "notify_user-${terraform.workspace}"
+  description   = "notify_user"
+  handler       = "notify_user.lambda_handler"
+  runtime       = "python3.13"
+  architectures = ["arm64"]
+  timeout       = 120
+  create_role   = false
+  lambda_role   = aws_iam_role.lambda_exec_role.arn
+  source_path = [
+    "${path.module}/lambdas/notify_user/",
+    {
+      path          = "${path.module}/lambdas/modules/"
+      prefix_in_zip = "modules"
+    }
+  ]
+  publish = true
+  attach_policy = true
+  policy        = aws_iam_policy.reserve_stock_sns_policy.arn
   # Allow the API Gateway to invoke the Lambda functions
   allowed_triggers = {
     APIGatewayAny = {
