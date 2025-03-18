@@ -242,3 +242,4 @@ resource "aws_iam_policy" "low_stock_sns_policy" {
     }]
   })
 }
+

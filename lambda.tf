@@ -580,8 +580,6 @@ module "notify_admin" {
   runtime       = "python3.13"
   architectures = ["arm64"]
   timeout       = 120
-  create_role   = false
-  lambda_role   = aws_iam_role.lambda_exec_role.arn
   source_path = [
     "${path.module}/lambdas/notify_admin/",
     {
