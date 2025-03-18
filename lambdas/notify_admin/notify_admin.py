@@ -22,9 +22,9 @@ def lambda_handler(event, context):
             if 'stockItems' in new_image: 
                 new_stock_items = {item['M']['itemId']['S']: int(item['M']['quantity']['N']) for item in new_image['stockItems']['L']}
 
-                # Check for items with a quantity less than 3
+                # Check for items with a quantity less than 5
                 for item_id, quantity in new_stock_items.items():
-                    if quantity < 3:
+                    if quantity < 5:
                         if store_id not in low_stock_list:
                             low_stock_list[store_id] = []
                         low_stock_list[store_id].append(item_id)
@@ -33,7 +33,7 @@ def lambda_handler(event, context):
 
     if low_stock_list:
         for store_id, items in low_stock_list.items():
-            email_message = f"The following items in store {store_id} are now below 3:\n" + "\n".join(items)
+            email_message = f"The following items in store {store_id} are now below 5:\n" + "\n".join(items)
             try:
                 response = cognito_client.list_users_in_group(
                     UserPoolId=USER_POOL_ID,
