@@ -599,4 +599,8 @@ module "notify_admin" {
       source_arn = "${aws_api_gateway_rest_api.ims_api.execution_arn}/*/*" # Allow access from any method and path
     }
   }
+
+  environment_variables = {
+    "USER_POOL_ID" = aws_cognito_user_pool.ims_user_pool.id
+  }
 }

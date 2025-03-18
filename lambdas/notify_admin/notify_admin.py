@@ -1,8 +1,8 @@
 import json
 import boto3
+import os
 
 dynamodb = boto3.resource("dynamodb")
-reservation_table = dynamodb.Table('user-stock-reserve')
 sns_client = boto3.client('sns', region_name="eu-west-3")
 SNS_TOPIC_ARN = 'arn:aws:sns:eu-west-3:225989358926:lowstock'
 cognito_client = boto3.client('cognito-idp')
