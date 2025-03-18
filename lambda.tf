@@ -591,7 +591,7 @@ module "notify_admin" {
   ]
   publish = true
   attach_policy = true
-  policy        = aws_iam_policy.reserve_stock_sns_policy.arn
+  policy        = aws_iam_policy.add_to_group_policy.arn
   # Allow the API Gateway to invoke the Lambda functions
   allowed_triggers = {
     APIGatewayAny = {
