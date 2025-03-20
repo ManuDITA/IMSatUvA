@@ -80,7 +80,8 @@ resource "aws_iam_policy" "add_to_group_policy" {
         "cognito-idp:AdminAddUserToGroup",
         "cognito-idp:AdminRemoveUserFromGroup",
         "cognito-idp:AdminListGroupsForUser",
-        "cognito-idp:ListUsers"
+        "cognito-idp:ListUsers",
+        "cognito-idp:ListUsersInGroup"
       ],
       Resource = "arn:aws:cognito-idp:${var.aws_region}:${data.aws_caller_identity.current.account_id}:userpool/${aws_cognito_user_pool.ims_user_pool.id}"
     }]
@@ -219,7 +220,35 @@ resource "aws_iam_policy" "reserve_stock_sns_policy" {
   })
 }
 
-resource "aws_iam_role_policy_attachment" "sns_policy_attachment" {
+resource "aws_iam_role_policy_attachment" "reserve_stock_sns_policy_attachment" {
   role       = aws_iam_role.lambda_exec_role.name
   policy_arn = aws_iam_policy.reserve_stock_sns_policy.arn
+}
+
+resource "aws_iam_role_policy_attachment" "low_stock_sns_policy_attachment" {
+  role       = aws_iam_role.lambda_exec_role.name
+  policy_arn = aws_iam_policy.low_stock_sns_policy.arn
+}
+
+resource "aws_iam_policy" "low_stock_sns_policy" {
+  name        = "low-stock-sns-policy-${terraform.workspace}"
+  description = "Policy for the low_stock Lambda to interact with SNS"
+  policy      = jsonencode({
+    Version = "2012-10-17",
+    Statement = [{
+      Effect = "Allow",
+      Action = [
+        "sns:Subscribe",
+        "sns:Publish",
+        "sns:ListSubscriptionsByTopic"
+      ],
+      Resource = "arn:aws:sns:eu-west-3:225989358926:lowstock" 
+    }]
+  })
+}
+
+
+resource "aws_iam_role_policy_attachment" "add_to_group_policy_attachment" {
+  role       = aws_iam_role.lambda_exec_role.name
+  policy_arn = aws_iam_policy.add_to_group_policy.arn
 }

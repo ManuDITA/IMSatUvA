@@ -663,3 +663,35 @@ module "notify_user" {
   }
   
 }
+
+module "notify_admin" {
+  source        = "terraform-aws-modules/lambda/aws"
+  version       = "7.20.0"
+  function_name = "notify_admin-${terraform.workspace}"
+  description   = "notify_admin"
+  handler       = "notify_admin.lambda_handler"
+  runtime       = "python3.13"
+  architectures = ["arm64"]
+  timeout       = 120
+  create_role   = false
+  lambda_role   = aws_iam_role.lambda_exec_role.arn
+  source_path = [
+    "${path.module}/lambdas/notify_admin/",
+    {
+      path          = "${path.module}/lambdas/modules/"
+      prefix_in_zip = "modules"
+    }
+  ]
+  publish = true
+  # Allow the API Gateway to invoke the Lambda functions
+  allowed_triggers = {
+    APIGatewayAny = {
+      service    = "apigateway"
+      source_arn = "${aws_api_gateway_rest_api.ims_api.execution_arn}/*/*" # Allow access from any method and path
+    }
+  }
+
+  environment_variables = {
+    "USER_POOL_ID" = aws_cognito_user_pool.ims_user_pool.id
+  }
+}
